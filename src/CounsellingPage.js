@@ -57,7 +57,7 @@ const ChatScreen = () => {
 
       return response.data.choices[0].message.content;
     } catch (err) {
-      console.log(process.env.OPENAI_API_KEY);
+      console.log(config.OPENAI_API_KEY);
       console.log(err, 'api call error');
     }
   };
