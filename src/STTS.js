@@ -1,36 +1,17 @@
 import React, {useState, useEffect} from 'react';
 import {GiftedChat, InputToolbar} from 'react-native-gifted-chat';
 import {StyleSheet, TouchableOpacity} from 'react-native';
-import {FontAwesome5} from '@expo/vector-icons';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import axios from 'axios';
 import Voice from 'react-native-voice';
 
-const apiKey = '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';
+const apiKey = '';
 const apiUrl = 'https://api.openai.com/v1/chat/completions';
 
 const ChatScreen = () => {
   const [messages, setMessages] = useState([]);
   const [isRecording, setIsRecording] = useState(false); // Add isRecording state and its setter
 
-  useEffect(() => {
-    Voice.onSpeechStart = () => {
-      setIsRecording(true);
-    };
-
-    Voice.onSpeechEnd = () => {
-      setIsRecording(false);
-    };
-
-    Voice.onSpeechResults = event => {
-      // When speech recognition is complete, get the recognized text and send it to OpenAI
-      const recognizedText = event.value[0];
-      handleSpeechResult(recognizedText);
-    };
-
-    return () => {
-      Voice.destroy().then(Voice.removeAllListeners);
-    };
-  }, []);
   const sendMessage = async message => {
     try {
       const response = await axios.post(
@@ -85,7 +66,7 @@ const ChatScreen = () => {
   const renderMicrophoneButton = () => {
     return (
       <TouchableOpacity onPress={onMicrophonePress}>
-        <FontAwesome5
+        <FontAwesome5Icon
           name={isRecording ? 'microphone' : 'microphone-slash'}
           size={25}
           color={isRecording ? 'red' : 'black'}
