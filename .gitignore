@@ -66,4 +66,4 @@ yarn-error.log
 /coverage
 
 #api key
-.env
+*.env

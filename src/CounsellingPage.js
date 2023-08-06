@@ -4,6 +4,11 @@ import config from '../config';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 const apiUrl = 'https://api.openai.com/v1/chat/completions';
 
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+
 import axios from 'axios';
 import {
   View,
@@ -96,7 +101,7 @@ const ChatScreen = () => {
             {...props}
             wrapperStyle={{
               right: {
-                backgroundColor: '#2ecc71',
+                backgroundColor: '#2eccEE',
               },
               left: {
                 backgroundColor: '#1abc9c',
@@ -114,6 +119,7 @@ const ChatScreen = () => {
         )}
         renderInputToolbar={renderInputToolbar}
       />
+      {/* <Icon name="heart" size={30} color="#900" /> */}
       {Platform.OS === 'ios' ? (
         <KeyboardAvoidingView behavior="padding" />
       ) : null}
