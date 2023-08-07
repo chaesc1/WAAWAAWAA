@@ -1,3 +1,4 @@
+import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -6,6 +7,8 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Voice from '@react-native-voice/voice';
 
 export default function QuizPage({navigation}) {
   // const [searchText, setSearchText] = useState('');
@@ -19,12 +22,62 @@ export default function QuizPage({navigation}) {
   //   console.log('검색어:', searchText);
   //   // 예: 데이터를 가져오거나 검색 결과를 업데이트하는 등의 동작 수행
   // };
+  const [searchText, setSearchText] = useState(''); // searchText 상태 변수 초기화
+  const [result, setResult] = useState('');
+  const [error, setError] = useState('');
+  const [isRecording, setIsRecording] = useState(false);
+
+  Voice.onSpeechStart = () => setIsRecording(true);
+  Voice.onSpeechEnd = () => setIsRecording(false);
+  // Voice.onSpeechError = err => setError(err.error);
+  Voice.onSpeechError = err =>
+    setError(`${err.error.code}: ${err.error.message}`);
+  Voice.onSpeechResults = result => {
+    setResult(result.value[0]);
+    // const recognizedText = result.value[0];
+    // setResult(recognizedText); // 옵션: 필요에 따라 음성인식 결과를 보여주기 위해 result 상태를 유지할 수 있습니다
+    // setSearchText(recognizedText); // 음성인식 결과로 searchText 상태를 업데이트합니다
+  };
+
+  const startRecording = async () => {
+    try {
+      await Voice.start('ko-KR');
+    } catch (err) {
+      console.error('녹음 시작 오류:', err);
+      setError(err.message);
+    }
+  };
+
+  const stopRecording = async () => {
+    try {
+      await Voice.stop();
+    } catch (error) {
+      console.error('녹음 종료 오류:', error);
+      setError(error.message);
+    }
+  };
 
   return (
+    // 음성인식 테스트 코드
+    // <View>
+    //   <Text style={{fontSize: 30, color: 'green', fontWeight: '500'}}>
+    //     Voice Input
+    //   </Text>
+    //   <Text>{result}</Text>
+    //   <Text>{error}</Text>
+
+    //   <TouchableOpacity
+    //     style={{marginTop: 30}}
+    //     onPress={isRecording ? stopRecording : startRecording}>
+    //     <Text style={{color: 'red'}}>
+    //       {isRecording ? 'Stop Recording' : 'Start Recording'}
+    //     </Text>
+    //   </TouchableOpacity>
+    // </View>
     <View style={styles.container}>
       {/* 바깥의 네모모양 창 */}
       <View style={styles.square}>
-        <Text style={styles.mainText}>글에 해당하는 단어를 말해주세요</Text>
+        <Text style={styles.mainText}></Text>
         {/* 내부의 또 다른 네모모양 창 */}
         <View style={styles.innerSquare}>
           {/* 내부의 또 다른 네모모양 창의 내부 */}
@@ -35,18 +88,23 @@ export default function QuizPage({navigation}) {
           <TextInput
             style={styles.searchInput}
             placeholder="주제를 입력하세요"
-            // value={searchText}
-            // onChangeText={handleSearchChange}
+            value={result}
+            onChangeText={text => setResult(text)}
           />
-          {/* sound 사진 */}
-          <Image
-            style={styles.soundPicture}
-            //source={require('../../assets/sound.png')}
-          />
+          {/* sound 사진 마이크 아이콘 클릭시 음성인식 -> textinput 으로*/}
+          <TouchableOpacity style={styles.soundPicture}>
+            <Icon
+              name={isRecording ? 'mic-off' : 'mic'}
+              size={30}
+              style={{marginRight: 15}}
+              onPress={isRecording ? stopRecording : startRecording} // 마이크 버튼 누를 때 음성 인식 시작 또는 종료
+            />
+          </TouchableOpacity>
+
           {/* 확인 버튼 */}
           <TouchableOpacity
             style={styles.startButton}
-            onPress={() => navigation.navigate('Quiz1')}>
+            onPress={() => navigation.navigate('QuizStart')}>
             <Text style={styles.buttonText}>확인</Text>
           </TouchableOpacity>
         </View>
@@ -92,8 +150,8 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     position: 'absolute',
-    top: 200,
-    right: 120,
+    top: 204,
+    right: 115,
   },
   mainText: {
     fontSize: 24,
