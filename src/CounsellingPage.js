@@ -41,11 +41,11 @@ const ChatScreen = () => {
             },
             {
               role: 'system',
-              content: '넌 또래상담사야 무조건이야..',
+              content: '넌 또래상담사야',
             },
           ],
           model: 'gpt-3.5-turbo',
-          temperature: 0.5,
+          temperature: 0.2,
         },
         {
           headers: {
