@@ -6,6 +6,7 @@ import MemberMainPage from './src/MemberMainPage'; //로그인시 메인페이�
 import CounsellingPage from './src/CounsellingPage'; //상담페이지
 import QuizPage from './src/QuizPage'; //퀴즈 페이지
 import RegisterPage from './src/RegisterPage'; //회원가입
+import MyPage from './src/MyPage'; // 마이페이지
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 // import sttsPage from './src/STTS';
@@ -96,6 +97,19 @@ const App = () => {
           />
           {/* 스무고개 페이지 */}
           {/* 끝말잇기 페에지 */}
+          {/*마이 페이지*/}
+          <Stack.Screen
+            name="MyPage"
+            component={MyPage}
+            options={{
+              title: '',
+              headerBackTitleVisible: false,
+              headerBackImage: 'BackBtn',
+              headerStyle: {
+                backgroundColor: '#f3e99f',
+              },
+            }}
+          />
         </Stack.Navigator>
       }
     </NavigationContainer>
