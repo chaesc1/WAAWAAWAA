@@ -7,12 +7,15 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  Alert,
 } from 'react-native';
 
 const MyPage = ({navigation}) => {
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [age, setAge] = useState('');
+  const [nickname, setNickname] = useState('');
 
   const toggleAccordion = menuIndex => {
     if (selectedMenu === menuIndex) {
@@ -25,10 +28,20 @@ const MyPage = ({navigation}) => {
   const handlePasswordChange = () => {
     if (password === confirmPassword) {
       // Perform password change logic here
-      navigation.navigate('LandingPage'); // Navigate to LandingPage after password change
+      navigation.navigate('LandingPage');
     } else {
       // Show an error message or handle mismatched passwords
     }
+  };
+
+  const handleAgeChange = () => {
+    navigation.navigate('MyPage');
+    Alert.alert('나이가 변경되었습니다.');
+  };
+
+  const handleNickChange = () => {
+    navigation.navigate('Mypage');
+    Alert.alert('닉네임이 변경되었습니다.');
   };
 
   return (
@@ -49,14 +62,14 @@ const MyPage = ({navigation}) => {
           <View style={styles.accordionContent}>
             <TextInput
               style={styles.input}
-              placeholder="New Password"
+              placeholder="변경할 비밀번호"
               value={password}
               onChangeText={text => setPassword(text)}
               secureTextEntry
             />
             <TextInput
               style={styles.input}
-              placeholder="Confirm Password"
+              placeholder="비밀번호 재확인"
               value={confirmPassword}
               onChangeText={text => setConfirmPassword(text)}
               secureTextEntry
@@ -88,7 +101,17 @@ const MyPage = ({navigation}) => {
         {selectedMenu === 2 && (
           <View style={styles.accordionContent}>
             {/* Your age settings form can go here */}
-            <Text>Age Settings Form</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="변경하고 싶으신 나이를 입력해주세요."
+              onChangeText={text => setAge(text)}
+              value={age}
+            />
+            <TouchableOpacity
+              onPress={handleAgeChange}
+              style={styles.confirmButton}>
+              <Text style={styles.confirmButtonText}>변경하기</Text>
+            </TouchableOpacity>
           </View>
         )}
         <TouchableOpacity
@@ -99,7 +122,19 @@ const MyPage = ({navigation}) => {
         {selectedMenu === 3 && (
           <View style={styles.accordionContent}>
             {/* Your nickname change form can go here */}
-            <Text>Nickname Change Form</Text>
+
+            {/* Your age settings form can go here */}
+            <TextInput
+              style={styles.input}
+              placeholder="변경하고 싶으신 닉네임을 입력해주세요."
+              onChangeText={text => setNickname(text)}
+              value={nickname}
+            />
+            <TouchableOpacity
+              onPress={handleNickChange}
+              style={styles.confirmButton}>
+              <Text style={styles.confirmButtonText}>변경하기</Text>
+            </TouchableOpacity>
           </View>
         )}
       </View>
@@ -156,7 +191,8 @@ const styles = StyleSheet.create({
     borderTopColor: 'gray',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: '#FFE2DF',
+    marginBottom: 5,
+    backgroundColor: '#C8E4B2',
   },
   input: {
     borderWidth: 1,
@@ -165,9 +201,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   confirmButton: {
-    backgroundColor: 'blue',
+    backgroundColor: '#7EAA92',
     paddingVertical: 10,
     paddingHorizontal: 20,
+
     alignItems: 'center',
   },
   confirmButtonText: {
