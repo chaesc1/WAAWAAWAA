@@ -1,11 +1,12 @@
 import React from 'react';
 
-import LandingPage from './src/LandingPage';
-import LoginPage from './src/LoginPage';
-import MemberMainPage from './src/MemberMainPage'; //로그인시 메인페이지
-import CounsellingPage from './src/CounsellingPage'; //상담페이지
-import QuizPage from './src/QuizPage'; //퀴즈 페이지
-import RegisterPage from './src/RegisterPage'; //회원가입
+import LandingPage from './src/screens/LandingPage';
+import LoginPage from './src/screens/LoginPage';
+import MemberMainPage from './src/screens/MemberMainPage'; //로그인시 메인페이지
+import CounsellingPage from './src/screens/CounsellingRe'; //상담페이지
+import QuizPage from './src/screens/QuizPage_test'; //퀴즈 페이지
+import QuizMainPage from './src/screens/QuizMainPage'; //퀴즈 메인 화면
+import RegisterPage from './src/screens/RegisterPage'; //회원가입
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 // import sttsPage from './src/STTS';
@@ -64,7 +65,7 @@ const App = () => {
               headerBackTitleVisible: false,
               headerBackImage: 'BackBtn',
               headerStyle: {
-                backgroundColor: '#f3e99f',
+                backgroundColor: '#ffffff',
               },
             }}
           />
@@ -81,10 +82,23 @@ const App = () => {
               },
             }}
           />
-          {/* 퀴즈 페이지 */}
+          {/* 퀴즈 첫 시작페이지 */}
           <Stack.Screen
             name="Quiz"
             component={QuizPage}
+            options={{
+              title: '',
+              headerBackTitleVisible: false,
+              headerBackImage: 'BackBtn',
+              headerStyle: {
+                backgroundColor: '#f3e99f',
+              },
+            }}
+          />
+          {/* 퀴즈 게임 화면 */}
+          <Stack.Screen
+            name="QuizStart"
+            component={QuizMainPage}
             options={{
               title: '',
               headerBackTitleVisible: false,
