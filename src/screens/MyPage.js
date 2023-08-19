@@ -47,7 +47,7 @@ const MyPage = ({navigation}) => {
   return (
     <View style={styles.container}>
       <View style={styles.profileContainer}>
-        <Image source={require('../assets/gold.png')} style={styles.avatar} />
+        {/* <Image source={require('../assets/gold.png')} style={styles.avatar} /> */}
         <Text style={styles.username}>시후</Text>
         <Text style={styles.age}>나이: 7</Text>
       </View>

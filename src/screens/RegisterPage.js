@@ -18,7 +18,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import noAuthClient from './apis/noAuthClient';
+import noAuthClient from '../apis/noAuthClient';
 
 export default function RegisterPage({navigation}) {
   const [username, setUsername] = useState('');
