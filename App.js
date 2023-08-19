@@ -112,6 +112,8 @@ const App = () => {
           />
           {/* 스무고개 페이지 */}
           {/* 끝말잇기 페에지 */}
+          {/*마이 페이지*/}
+          <Stack.Screen name="MyPage" component={MyPage} />
           <Stack.Screen
             name="ConnectStart"
             component={ConnectEndingPage}

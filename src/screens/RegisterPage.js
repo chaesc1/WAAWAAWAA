@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   StyleSheet,
   View,
@@ -13,122 +13,96 @@ import {
   Platform,
 } from 'react-native';
 import {StatusBar} from 'expo-status-bar';
-
+import axios from 'axios';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import noAuthClient from './apis/noAuthClient';
 
 export default function RegisterPage({navigation}) {
-  // const [type, setType] = useState('로그인'); // 로그인 / 등록
-  // const [action, setAction] = useState('로그인'); // 로그인 / 등록
-  // const [actionMode, setActionMode] = useState('회원가입'); // 회원가입 / 로그인 화면으
-  //   const [hasErrors, setHasErrors] = useState(false);
+  const [username, setUsername] = useState('');
+  const [userId, setUserId] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  //   const [form, setForm] = useState({
-  //     email: {
-  //       value: '',
-  //       type: 'textInput',
-  //       rules: {
-  //         isRequired: true,
-  //         isEmail: true,
-  //       },
-  //       valid: false,
-  //     },
-  //     password: {
-  //       value: '',
-  //       type: 'textInput',
-  //       rules: {
-  //         isRequired: true,
-  //         minLength: 6,
-  //       },
-  //       valid: false,
-  //     },
-  //     confirmPassword: {
-  //       value: '',
-  //       type: 'textInput',
-  //       rules: {
-  //         confirmPassword: 'password',
-  //       },
-  //       valid: false,
-  //     },
-  //   });
+  // 유효성 검사
+  const [isName, setIsName] = useState(false);
+  const [isId, setIsId] = useState(false);
+  const [isPassword, setIsPassword] = useState(false);
+  const [isPasswordConfirm, setIsPasswordConfirm] = useState(false);
 
-  //   updateInput = (name, value) => {
-  //     setHasErrors(false);
-  //     let formCopy = form;
-  //     formCopy[name].value = value;
-  //     let rules = formCopy[name].rules;
-  //     let valid = validationRules(value, rules, formCopy);
-  //     formCopy[name].valid = valid;
-  //     setForm(form => {
-  //       return {...formCopy};
-  //     });
-  //   };
+  // 이름
+  const onChangeNickName = useCallback(e => {
+    setUsername(e.nativeEvent.text);
+  }, []);
 
-  //   confirmPassword = () => {
-  //     return type != '로그인' ? (
-  //       <Input
-  //         value={form.confirmPassword.value}
-  //         type={form.confirmPassword.type}
-  //         secureTextEntry={true}
-  //         placeholder="비밀번호 재입력"
-  //         placeholderTextColor={'#ddd'}
-  //         onChangeText={value => updateInput('confirmPassword', value)}
-  //       />
-  //     ) : null;
-  //   };
+  // 아이디
+  const onChangeId = useCallback(e => {
+    const idCurrent = e.nativeEvent.text;
+    setUserId(idCurrent);
 
-  //   formHasErrors = () => {
-  //   return hasErrors ? (
-  //     <View style={styles.errorContainer}>
-  //       <Text style={styles.errorLabel}>
-  //         앗! 로그인 정보를 다시 확인해주세요~
-  //       </Text>
-  //     </View>
-  //   ) : null;
-  // };
+    setIsId(true);
+  }, []);
 
-  // changeForm = () => {
-  //   type === '로그인'
-  //     ? (setType('등록'), setAction('등록'), setActionMode('로그인 화면으로'))
-  //     : (setType('로그인'), setAction('로그인'), setActionMode('회원가입'));
-  // };
+  // 비밀번호
+  const onChangePassword = useCallback(e => {
+    const passwordRegex =
+      /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
+    const passwordCurrent = e.nativeEvent.text;
+    setPassword(passwordCurrent);
 
-  // submitUser = () => {
-  //   //Init.
-  //   let isFormValid = true;
-  //   let submittedForm = {};
-  //   const formCopy = form;
+    if (!passwordRegex.test(passwordCurrent)) {
+      setIsPassword(false);
+    } else {
+      setIsPassword(true);
+    }
+  }, []);
 
-  //   for (let key in formCopy) {
-  //     if (type === '로그인') {
-  //       if (key !== 'confirmPassword') {
-  //         isFormValid = isFormValid && formCopy[key].valid;
-  //         submittedForm[key] = formCopy[key].value;
-  //       }
-  //     } else {
-  //       isFormValid = isFormValid && formCopy[key].valid;
-  //       submittedForm[key] = formCopy[key].value;
-  //     }
-  //   }
+  // 비밀번호 확인
+  const onChangePasswordConfirm = useCallback(
+    e => {
+      const passwordConfirmCurrent = e.nativeEvent.text;
+      setConfirmPassword(passwordConfirmCurrent);
 
-  //   if (isFormValid) {
-  //     if (type === '로그인') {
-  //       console.log('로그인: ');
-  //       for (let key in submittedForm) {
-  //         console.log(submittedForm[key]);
-  //       }
-  //     } else {
-  //       console.log('회원가입: ');
-  //       for (let key in submittedForm) {
-  //         console.log(submittedForm[key]);
-  //       }
-  //     }
-  //   } else {
-  //     setHasErrors(true);
-  //   }
-  // };
+      if (password === passwordConfirmCurrent) {
+        setIsPasswordConfirm(true);
+      } else {
+        setIsPasswordConfirm(false);
+      }
+    },
+    [password],
+  );
+
+  // 유저생성 요청 api
+  const register = async () => {
+    try {
+      const res = await axios({
+        method: 'post',
+        url: `http://15.164.50.203:3000/users`,
+        data: {
+          username: username,
+          userId: userId,
+          password: password,
+        },
+      });
+
+      if (res.status === 201) {
+        Alert.alert('유저 생성 성공');
+        navigation.navigate('LoginPage'); // 회원가입 성공 시 로그인 페이지로 이동
+      } else {
+        // 서버 응답이 실패인 경우
+        console.log(username, userId, password);
+        Alert.alert('유저 생성 실패', '유저 생성에 실패했습니다.');
+      }
+    } catch (error) {
+      console.log(username, userId, password);
+      console.log('Test Error:', error);
+    }
+  };
+
+  console.log(username, userId, password);
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
@@ -139,23 +113,27 @@ export default function RegisterPage({navigation}) {
             <TextInput
               style={styles.textFormTop}
               placeholder={'이름'}
+              value={username}
               autoCapitalize="none"
               returnKeyType="next"
-              onSubmitEditing={() =>
-                passwordInputRef.current && passwordInputRef.current.focus()
-              }
+              onChange={onChangeNickName}
+              // onSubmitEditing={() =>
+              //   passwordInputRef.current && passwordInputRef.current.focus()
+              // }
               underlineColorAndroid="#f000"
               blurOnSubmit={false}
             />
             <TextInput
               style={styles.textFormTop}
-              placeholder={'이메일 주소'}
+              placeholder={'아이디'}
               //onChangeText={value => updateInput('email', value)}
               autoCapitalize="none"
               returnKeyType="next"
-              onSubmitEditing={() =>
-                passwordInputRef.current && passwordInputRef.current.focus()
-              }
+              // onSubmitEditing={() =>
+              //   passwordInputRef.current && passwordInputRef.current.focus()
+              // }
+              value={userId}
+              onChange={onChangeId}
               underlineColorAndroid="#f000"
               blurOnSubmit={false}
             />
@@ -169,6 +147,8 @@ export default function RegisterPage({navigation}) {
               // onSubmitEditing={() =>
               //   passwordInputRef.current && passwordInputRef.current.focus()
               // }
+              value={password}
+              onChange={onChangePassword}
               underlineColorAndroid="#f000"
               blurOnSubmit={false}
             />
@@ -184,14 +164,14 @@ export default function RegisterPage({navigation}) {
               // onSubmitEditing={() =>
               //   passwordInputRef.current && passwordInputRef.current.focus()
               // }
+              value={confirmPassword}
+              onChange={onChangePasswordConfirm}
               underlineColorAndroid="#f000"
               blurOnSubmit={false}
             />
           </View>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => navigation.navigate('Login')}>
+            <TouchableOpacity style={styles.button} onPress={register}>
               <Text style={styles.buttonText}>회원가입</Text>
             </TouchableOpacity>
           </View>
