@@ -8,7 +8,7 @@ import QuizPage from './src/screens/QuizPage_test'; //퀴즈 페이지
 import QuizMainPage from './src/screens/QuizMainPage'; //퀴즈 메인 화면
 import RegisterPage from './src/screens/RegisterPage'; //회원가입
 import ConnectEndingPage from './src/screens/ConnectEnding'; //끝말잇기
-
+import MyPage from './src/screens/MyPage';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 // import sttsPage from './src/STTS';
