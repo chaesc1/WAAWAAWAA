@@ -12,7 +12,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-export default function CounselingPage({navigation}) {
+export default function MemberMainPage({navigation}) {
   return (
     <View style={styles.container}>
       {/* 퀴즈, 상담 */}
@@ -45,7 +45,7 @@ export default function CounselingPage({navigation}) {
           </TouchableOpacity>
         </View>
         <View style={styles.column}>
-          <TouchableOpacity onPress={() => navigation.navigate('Quiz')}>
+          <TouchableOpacity onPress={() => navigation.navigate('ConnectStart')}>
             <View style={styles.Button}>
               <Text style={styles.Text}>끝말잇기</Text>
             </View>

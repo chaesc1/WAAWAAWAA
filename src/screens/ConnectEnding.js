@@ -1,3 +1,4 @@
+// 끝말잇기 페이지
 import {
   Alert,
   Image,
@@ -13,44 +14,52 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import Features from '../components/feature';
-import {dummyMessages} from '../constants';
+import Features from '../components/ConnectFeature';
 import Voice from '@react-native-voice/voice';
-import {apiCall} from '../api/OpenAI';
+import {ConnectEndApi} from '../api/OpenAI';
 import Tts from 'react-native-tts';
 Tts.requestInstallData();
 
-export default CounsellingRe = () => {
+export default CounsellingRe = ({navigation}) => {
   const [messages, setMessages] = useState([]);
   const [result, setResult] = useState();
   const [recording, setRecording] = useState(recording);
   const [loading, setLoading] = useState(false);
   const [speaking, setSpeaking] = useState(false);
+  const [gptLastLetter, setGptLastLetter] = useState('');
   const scrollViewRef = useRef();
 
   const fetchResponse = () => {
     if (result.trim().length > 0) {
       let newMessages = [...messages];
-      newMessages.push({role: 'user', content: result.trim()});
-      setMessages([...newMessages]);
-      updateScrollView();
-      setLoading(true);
+      if (result.trim().slice(0, 1) !== gptLastLetter && messages.length != 0) {
+        Alert.alert('틀렸어!', '다시해!!', [
+          {text: '응', onPress: () => setMessages([])},
+        ]);
+      } else {
+        newMessages.push({role: 'user', content: result.trim()});
+        setMessages([...newMessages]);
+        updateScrollView();
+        setLoading(true);
 
-      // fetching response from chatGPT with our prompt and old messages
-      apiCall(result.trim(), newMessages).then(res => {
-        console.log('got api data');
-        setLoading(false);
-        if (res.success) {
-          setMessages([...res.data]);
-          setResult('');
-          updateScrollView();
+        // fetching response from chatGPT with our prompt and old messages
+        ConnectEndApi(result.trim(), newMessages).then(res => {
+          console.log('got api data');
+          setLoading(false);
+          if (res.success) {
+            setMessages([...res.data]);
+            setGptLastLetter(res.data[res.data.length - 1].content.slice(-1));
 
-          // now play the response to user
-          startTextToSpeech(res.data[res.data.length - 1]);
-        } else {
-          Alert.alert('Error', res.msg);
-        }
-      });
+            setResult('');
+            updateScrollView();
+
+            // now play the response to user
+            startTextToSpeech(res.data[res.data.length - 1]);
+          } else {
+            Alert.alert('Error', res.msg);
+          }
+        });
+      }
     }
   };
   const startTextToSpeech = message => {
@@ -73,7 +82,6 @@ export default CounsellingRe = () => {
   const clear = () => {
     setMessages([]);
     setLoading(false);
-    setSpeaking(false);
     Voice.stop();
     Tts.stop();
   };
@@ -104,7 +112,7 @@ export default CounsellingRe = () => {
     try {
       await Voice.start('ko-KR');
     } catch (error) {
-      console.log('errpr:', error);
+      console.log('err:', error);
     }
   };
 
@@ -117,7 +125,7 @@ export default CounsellingRe = () => {
       //fetch Response
       fetchResponse();
     } catch (error) {
-      console.log('errpr:', error);
+      console.log('err:', error);
     }
   };
   useEffect(() => {
@@ -167,7 +175,7 @@ export default CounsellingRe = () => {
               }}>
               {messages.length > 0 ? (
                 <View style={{flex: 1, marginVertical: 1}}>
-                  <Text style={styles.assistantHeading}>Counselling</Text>
+                  <Text style={styles.assistantHeading}>끝말잇기!!!</Text>
                   <ScrollView
                     ref={scrollViewRef}
                     bounces={false}
