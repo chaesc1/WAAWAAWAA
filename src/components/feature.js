@@ -63,5 +63,6 @@ const styles = StyleSheet.create({
     fontSize: wp(4.5),
     color: '#4B5563',
     fontWeight: 'normal',
+    alignSelf: 'center',
   },
 });

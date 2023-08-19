@@ -1,5 +1,6 @@
 import axios from 'axios';
 import config from '../../config/index'; // OpenAI API 키를 포함하는 파일
+import {AccessToken, sendConnectEndingText} from '../constants';
 const client = axios.create({
   headers: {
     Authorization: `Bearer ${config.OPENAI_API_KEY}`,
@@ -59,6 +60,17 @@ export const ConnectEndApi = async (prompt, messages) => {
 
     let answer = res.data?.choices[0]?.message?.content;
     messages.push({role: 'assistant', content: answer.trim()});
+
+    console.log('gpt 답!!!!!!!!!!!!!', res.data?.choices[0]?.message);
+
+    const body = {
+      content: res.data?.choices[0]?.message?.content,
+      sender: res.data?.choices[0]?.message?.role,
+      time: new Date(),
+    };
+
+    sendConnectEndingText(body, AccessToken);
+
     // console.log('got chat response', answer);
     return Promise.resolve({success: true, data: messages});
   } catch (err) {

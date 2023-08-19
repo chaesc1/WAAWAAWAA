@@ -1,5 +1,6 @@
 import React from 'react';
 import {useEffect, useState} from 'react';
+import axios from 'axios';
 import Orientation from 'react-native-orientation';
 import {
   StyleSheet,
@@ -21,6 +22,32 @@ import {
 
 export default function LoginPage({navigation}) {
   const [isLandscape, setIsLandscape] = useState(false);
+  const [userId, setUserId] = React.useState('');
+  const [userPassword, setUserPassword] = React.useState('');
+
+  const [accessToken, setAccessToken] = useState('');
+  const [refreshToken, setRefreshToken] = useState('');
+
+  // 유저 로그인 요청 api
+  const login = async () => {
+    try {
+      const res = await axios({
+        method: 'post',
+        url: `http://15.164.50.203:3000/signin`,
+        data: {
+          userId: userId,
+          password: userPassword,
+        },
+      });
+
+      setAccessToken(res.data.accessToken);
+      setRefreshToken(res.data.refreshToken);
+
+      navigation.navigate('MemberMainPage');
+    } catch (err) {
+      console.error(err.response.data.message);
+    }
+  };
   // 가로 모드일 때 레이아웃 스타일
   const landscapeStyles = StyleSheet.create({
     container: {
@@ -186,11 +213,10 @@ export default function LoginPage({navigation}) {
       Orientation.removeOrientationListener(handleOrientationChange);
     };
   }, []);
+
   const handleOrientationChange = orientation => {
     setIsLandscape(orientation === 'LANDSCAPE');
   };
-  const [userId, setUserId] = React.useState('');
-  const [userPassword, setUserPassword] = React.useState('');
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -227,7 +253,9 @@ export default function LoginPage({navigation}) {
             {/* 로그인 하면 회원이 접근가능한 page로 */}
             <TouchableOpacity
               style={styles.button}
-              onPress={() => navigation.navigate('MemberMainPage')}>
+              onPress={() => {
+                login();
+              }}>
               <Text style={styles.buttonText}>로그인</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -249,11 +277,6 @@ export default function LoginPage({navigation}) {
               <Text style={styles.buttonText}>구글 로그인</Text>
             </TouchableOpacity>
           </View>
-          {/* <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.navigate("")}>
-                <Text style={styles.buttonText}>체험해보기</Text>
-              </TouchableOpacity> */}
         </View>
       </View>
     </TouchableWithoutFeedback>

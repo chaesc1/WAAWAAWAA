@@ -1,4 +1,3 @@
-// 끝말잇기 페이지
 import {
   Alert,
   Image,
@@ -9,17 +8,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import axios from 'axios';
 import React, {useState, useEffect, useRef} from 'react';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import Features from '../components/ConnectFeature';
+import Features from '../components/feature';
+import {dummyMessages} from '../constants';
 import Voice from '@react-native-voice/voice';
-import {ConnectEndApi} from '../api/OpenAI';
+import {apiCall} from '../api/OpenAI';
 import Tts from 'react-native-tts';
-import {AccessToken, sendConnectEndingText} from '../constants';
 Tts.requestInstallData();
 
 export default CounsellingRe = () => {
@@ -28,52 +26,31 @@ export default CounsellingRe = () => {
   const [recording, setRecording] = useState(recording);
   const [loading, setLoading] = useState(false);
   const [speaking, setSpeaking] = useState(false);
-  const [gptLastLetter, setGptLastLetter] = useState('');
   const scrollViewRef = useRef();
 
   const fetchResponse = () => {
     if (result.trim().length > 0) {
       let newMessages = [...messages];
-      if (result.trim().slice(0, 1) !== gptLastLetter && messages.length != 0) {
-        Alert.alert('틀렸어!', '다시해!!', [
-          {text: '응', onPress: () => setMessages([])},
-        ]);
-      } else {
-        newMessages.push({role: 'user', content: result.trim()});
-        console.log('newMessage입니다.', newMessages);
+      newMessages.push({role: 'user', content: result.trim()});
+      setMessages([...newMessages]);
+      updateScrollView();
+      setLoading(true);
 
-        if (newMessages.length > 0) {
-          const body = {
-            sender: newMessages[newMessages.length - 1].role,
-            content: newMessages[newMessages.length - 1].content,
-            time: new Date(),
-          };
+      // fetching response from chatGPT with our prompt and old messages
+      apiCall(result.trim(), newMessages).then(res => {
+        console.log('got api data');
+        setLoading(false);
+        if (res.success) {
+          setMessages([...res.data]);
+          setResult('');
+          updateScrollView();
 
-          sendConnectEndingText(body, AccessToken);
+          // now play the response to user
+          startTextToSpeech(res.data[res.data.length - 1]);
+        } else {
+          Alert.alert('Error', res.msg);
         }
-
-        setMessages([...newMessages]);
-        updateScrollView();
-        setLoading(true);
-
-        // fetching response from chatGPT with our prompt and old messages
-        ConnectEndApi(result.trim(), newMessages).then(res => {
-          console.log('got api data');
-          setLoading(false);
-          if (res.success) {
-            setMessages([...res.data]);
-            setGptLastLetter(res.data[res.data.length - 1].content.slice(-1));
-
-            setResult('');
-            updateScrollView();
-
-            // now play the response to user
-            startTextToSpeech(res.data[res.data.length - 1]);
-          } else {
-            Alert.alert('Error', res.msg);
-          }
-        });
-      }
+      });
     }
   };
   const startTextToSpeech = message => {
@@ -96,6 +73,7 @@ export default CounsellingRe = () => {
   const clear = () => {
     setMessages([]);
     setLoading(false);
+    setSpeaking(false);
     Voice.stop();
     Tts.stop();
   };
@@ -126,7 +104,7 @@ export default CounsellingRe = () => {
     try {
       await Voice.start('ko-KR');
     } catch (error) {
-      console.log('err:', error);
+      console.log('errpr:', error);
     }
   };
 
@@ -139,29 +117,10 @@ export default CounsellingRe = () => {
       //fetch Response
       fetchResponse();
     } catch (error) {
-      console.log('err:', error);
+      console.log('errpr:', error);
     }
   };
-
   useEffect(() => {
-    console.log('리렌더링!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-    // 유저생성 요청 api
-
-    axios
-      .get('http://15.164.50.203:3000/word-chain', {
-        headers: {
-          Authorization: `Bearer ${AccessToken}`, // 헤더에 AccessToken 추가
-          'Content-Type': 'application/json', // 원하는 헤더 값 추가
-        },
-      })
-      .then(response => {
-        console.log('API Response:', response.data);
-        setMessages(response.data);
-      })
-      .catch(error => {
-        console.error('API Error:', error.response.data);
-      });
-
     // voice handler events
     Voice.onSpeechStart = speechStartHandler;
     Voice.onSpeechEnd = speechEndHandler;
@@ -185,6 +144,7 @@ export default CounsellingRe = () => {
     };
   }, []);
 
+  // console.log('result', result);
   return (
     <View style={styles.container}>
       <SafeAreaView style={{flex: 1}}>
@@ -207,14 +167,14 @@ export default CounsellingRe = () => {
               }}>
               {messages.length > 0 ? (
                 <View style={{flex: 1, marginVertical: 1}}>
-                  <Text style={styles.assistantHeading}>끝말잇기!!!</Text>
+                  <Text style={styles.assistantHeading}>Counselling</Text>
                   <ScrollView
                     ref={scrollViewRef}
                     bounces={false}
                     style={styles.scrollView}
                     showsVerticalScrollIndicator={false}>
                     {messages.map((message, index) => {
-                      if (message.sender == 'assistant') {
+                      if (message.role == 'assistant') {
                         //text gpt 대답 부분
                         return (
                           <View

@@ -20,7 +20,7 @@ export default function Features() {
           <Text style={styles.featureTitleText}>끝말잇기!!</Text>
         </View>
         <Text style={styles.featureDescription}>
-          끝말잇기 하고 싶다!! 라고 말해봐!
+          끝말잇기 하자!! 아무 단어나 말해봐!
         </Text>
       </View>
     </ScrollView>
@@ -63,5 +63,6 @@ const styles = StyleSheet.create({
     fontSize: wp(4.5),
     color: '#4B5563',
     fontWeight: 'normal',
+    alignSelf: 'center',
   },
 });
