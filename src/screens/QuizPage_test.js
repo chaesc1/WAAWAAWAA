@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Image,
@@ -8,121 +8,300 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  ScrollView,
   Alert,
 } from 'react-native';
 import Voice from '@react-native-voice/voice';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import QuizPage from './QuizPage';
+import Features from '../components/QuizFeature'; //첫 초기화면 굳이 넣어햐하나?
+import {QuizGenerate, apiCall} from '../api/OpenAI'; //퀴즈 생성 api 호출
+import Tts from 'react-native-tts'; //TTS Library
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
 const QuizPage_test = ({navigation}) => {
-  const [result, setResult] = useState('');
-  const [isLoading, setLoading] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
-  const [recording, setRecording] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [result, setResult] = useState();
+  const [recording, setRecording] = useState(recording);
+  const [loading, setLoading] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
+  const scrollViewRef = useRef();
 
-  useEffect(() => {
-    Voice.onSpeechStart = onSpeechStartHandler;
-    Voice.onSpeechEnd = onSpeechEndHandler;
-    Voice.onSpeechResults = onSpeechResultsHandler;
+  const fetchResponse = () => {
+    if (result.trim().length > 0) {
+      //처음에는 quizGenerate를 호출해야하고
+      let newMessages = [...messages];
+      newMessages.push({role: 'user', content: result.trim()});
+      setMessages([...newMessages]);
+      updateScrollView();
+      setLoading(true);
 
-    return () => {
-      Voice.destroy().then(Voice.removeAllListeners);
-    };
-  }, []);
+      // fetching response from chatGPT with our prompt and old messages
+      QuizGenerate(result.trim(), newMessages).then(res => {
+        console.log('got api data');
+        setLoading(false);
+        if (res.success) {
+          setMessages([...res.data]);
+          setResult('');
+          updateScrollView();
 
-  const onSpeechStartHandler = e => {
-    // setLoading(true);
-    console.log('start handler==>>>', e);
+          // now play the response to user
+          startTextToSpeech(res.data[res.data.length - 1]);
+        } else {
+          Alert.alert('Error', res.msg);
+        }
+      });
+    }
   };
-  const onSpeechEndHandler = e => {
-    // setLoading(false);
-    console.log('stop handler', e);
+  const startTextToSpeech = message => {
+    Tts.getInitStatus().then(() => {
+      Tts.speak(message.content, {
+        iosVoiceId: 'com.apple.ttsbundle.Samantha-compact',
+        rate: 0.6,
+      });
+    });
   };
 
-  const onSpeechResultsHandler = e => {
-    let text = e.value[0];
+  const updateScrollView = () => {
+    setTimeout(() => {
+      scrollViewRef?.current?.scrollToEnd({animated: true});
+    }, 200);
+  };
+
+  const clear = () => {
+    setMessages([]);
+    setLoading(false);
+    setSpeaking(false);
+    Voice.stop();
+    Tts.stop();
+  };
+  const stopSpeaking = () => {
+    Tts.stop();
+    setSpeaking(false);
+  };
+  const speechStartHandler = e => {
+    console.log('speech start event', e);
+  };
+  const speechEndHandler = e => {
+    setRecording(false);
+    console.log('speech stop event', e);
+  };
+  const speechResultsHandler = e => {
+    console.log('speech event: ', e);
+    const text = e.value[0];
     setResult(text);
-    console.log('speech result handler', e);
+  };
+
+  const speechErrorHandler = e => {
+    console.log('speech error: ', e);
   };
 
   const startRecording = async () => {
-    setLoading(true);
+    setRecording(true);
+    Tts.stop();
     try {
       await Voice.start('ko-KR');
     } catch (error) {
-      console.log('error raised', error);
+      console.log('errpr:', error);
     }
   };
 
   const stopRecording = async () => {
+    setRecording(true);
+    Tts.stop();
     try {
       await Voice.stop();
-      setLoading(false);
-      console.log('음성인식 종료');
+      setRecording(false);
+      //fetch Response
+      fetchResponse();
     } catch (error) {
-      console.log('error raised', error);
+      console.log('errpr:', error);
     }
   };
+  useEffect(() => {
+    // voice handler events
+    Voice.onSpeechStart = speechStartHandler;
+    Voice.onSpeechEnd = speechEndHandler;
+    Voice.onSpeechResults = speechResultsHandler;
+    Voice.onSpeechError = speechErrorHandler;
 
-  const onPressConfirm = () => {
-    if (result.trim() === '') {
-      setShowAlert(true);
-      Alert.alert('경고', '입력값을 입력하세요.', [{text: '확인'}]);
-      setShowAlert(false);
-    } else {
-      setShowAlert(false);
-      navigation.navigate('QuizStart', {inputValue: result});
-    }
-  };
+    // text to speech events
+    // TTS 초기화
+    Tts.setDefaultLanguage('ko-KR'); // 한국어 설정
+    Tts.setDefaultRate(0.3); // 음성 속도 설정
+
+    Tts.addEventListener('tts-start', event => console.log('start', event));
+    Tts.addEventListener('tts-finish', event => {
+      console.log('finish', event);
+      setSpeaking(false);
+    });
+    Tts.addEventListener('tts-cancel', event => console.log('cancel', event));
+    return () => {
+      // destroy the voice instance after component unmounts
+      Voice.destroy().then(Voice.removeAllListeners);
+    };
+  }, []);
+
+  // //확인 버튼 누를때 inputvalue 가 없으면
+  // const onPressConfirm = () => {
+  //   if (result.trim() === '') {
+  //     setShowAlert(true);
+  //     Alert.alert('경고', '입력값을 입력하세요.', [{text: '확인'}]);
+  //     setShowAlert(false);
+  //   } else {
+  //     setShowAlert(false);
+  //     navigation.navigate('QuizStart', {inputValue: result});
+  //   }
+  // };
 
   return (
+    // <View style={styles.container}>
+    //   <SafeAreaView>
+    //     <Text style={styles.headingText}>Select Topic</Text>
+    //     <Image
+    //       source={require('../../assets/images/bot.png')}
+    //       style={styles.headingImg}
+    //     />
+    //     <View style={styles.textInputStyle}>
+    //       <TextInput
+    //         value={result}
+    //         placeholder="your text"
+    //         style={{flex: 1}}
+    //         onChangeText={text => setResult(text)}
+    //       />
+    //     </View>
+    //     {/* 녹음, 정지 ,확인  뷰 */}
+    //     <View style={styles.buttonView}>
+    //       {isLoading ? (
+    //         <TouchableOpacity onPress={stopRecording}>
+    //           {/* Recording Stop Button */}
+    //           <Image
+    //             source={require('../../assets/images/voiceLoading-unscreen.gif')}
+    //             style={{width: wp(14), height: hp(7)}}
+    //           />
+    //         </TouchableOpacity>
+    //       ) : (
+    //         <TouchableOpacity onPress={startRecording}>
+    //           {/* Recording Start Button */}
+    //           <Image
+    //             source={require('../../assets/images/recordingIcon.png')}
+    //             style={{width: wp(14), height: hp(8)}}
+    //           />
+    //         </TouchableOpacity>
+    //       )}
+    //       <View style={styles.coloredBox}>
+    //         <TouchableOpacity style={{backgroundColor: 'gray-400'}}>
+    //           <Text
+    //             style={{color: 'white', fontWeight: 'bold'}}
+    //             onPress={() => onPressConfirm()}>
+    //             확인
+    //           </Text>
+    //         </TouchableOpacity>
+    //       </View>
+    //     </View>
+    //   </SafeAreaView>
+    // </View>
     <View style={styles.container}>
-      <SafeAreaView>
-        <Text style={styles.headingText}>Select Topic</Text>
-        <Image
-          source={require('../../assets/images/bot.png')}
-          style={styles.headingImg}
-        />
-        <View style={styles.textInputStyle}>
-          <TextInput
-            value={result}
-            placeholder="your text"
-            style={{flex: 1}}
-            onChangeText={text => setResult(text)}
+      <SafeAreaView style={{flex: 1}}>
+        {/* Icon */}
+        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          <Image
+            source={require('../../assets/images/bot.png')}
+            style={{height: hp(15), width: hp(15)}}
           />
         </View>
-        {/* 녹음, 정지 ,확인  뷰 */}
-        <View style={styles.buttonView}>
-          {isLoading ? (
-            <TouchableOpacity onPress={stopRecording}>
+        {/* feature,message */}
+        {messages.length > 0 ? (
+          <View style={{flex: 1.5, marginVertical: 10}}>
+            <View
+              style={{
+                height: hp(55),
+                backgroundColor: '#CBD5E0',
+                borderRadius: 20,
+                padding: 16,
+              }}>
+              {messages.length > 0 ? (
+                <View style={{flex: 1, marginVertical: 1}}>
+                  <Text style={styles.assistantHeading}>Quiz</Text>
+                  <ScrollView
+                    ref={scrollViewRef}
+                    bounces={false}
+                    style={styles.scrollView}
+                    showsVerticalScrollIndicator={false}>
+                    {messages.map((message, index) => {
+                      if (message.role == 'assistant') {
+                        //text gpt 대답 부분
+                        return (
+                          <View
+                            key={index}
+                            style={styles.assistantMessageContainer}>
+                            <Text style={styles.assistantMessage}>
+                              {message.content}
+                            </Text>
+                          </View>
+                        );
+                      } else {
+                        //user input
+                        return (
+                          <View key={index} style={styles.userMessageContainer}>
+                            <View style={styles.userMessageContent}>
+                              <Text style={styles.userMessageText}>
+                                {message.content}
+                              </Text>
+                            </View>
+                          </View>
+                        );
+                      }
+                    })}
+                  </ScrollView>
+                </View>
+              ) : (
+                <Features />
+              )}
+            </View>
+          </View>
+        ) : (
+          <Features />
+        )}
+        {/* 녹음 , clear, 정지 버튼 */}
+        <View style={styles.buttonsContainer}>
+          {loading ? (
+            <Image
+              source={require('../../assets/images/loading.gif')}
+              style={styles.buttonImage}
+            />
+          ) : recording ? (
+            <TouchableOpacity style={styles.button} onPress={stopRecording}>
               {/* Recording Stop Button */}
               <Image
                 source={require('../../assets/images/voiceLoading-unscreen.gif')}
-                style={{width: wp(14), height: hp(7)}}
+                style={styles.buttonImage}
               />
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity onPress={startRecording}>
-              {/* Recording Start Button */}
+            <TouchableOpacity style={styles.button} onPress={startRecording}>
+              {/* Recording start Button */}
               <Image
                 source={require('../../assets/images/recordingIcon.png')}
-                style={{width: wp(14), height: hp(8)}}
+                style={styles.buttonImage}
               />
             </TouchableOpacity>
           )}
-          <View style={styles.coloredBox}>
-            <TouchableOpacity style={{backgroundColor: 'gray-400'}}>
-              <Text
-                style={{color: 'white', fontWeight: 'bold'}}
-                onPress={() => onPressConfirm()}>
-                확인
-              </Text>
+          {/* right side */}
+          {messages.length > 0 && (
+            <TouchableOpacity style={styles.clearButton} onPress={clear}>
+              <Text style={styles.buttonText}>Clear</Text>
             </TouchableOpacity>
-          </View>
+          )}
+          {/* left side */}
+          {speaking > 0 && (
+            <TouchableOpacity style={styles.stopButton} onPress={stopSpeaking}>
+              <Text style={styles.buttonText}>Stop</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </SafeAreaView>
     </View>
@@ -132,61 +311,86 @@ const QuizPage_test = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center', // 화면 수직 중앙 정렬
-    alignItems: 'center', // 화면 수평 중앙 정렬
-    padding: 20,
-    backgroundColor: '#F3E99F',
-  },
-  headingImg: {
-    width: wp(50),
-    height: hp(30),
-    alignSelf: 'center',
-  },
-  headingText: {
-    marginBottom: 26,
-    fontWeight: 'bold',
-    fontSize: 26,
-    alignSelf: 'center',
-  },
-  textInputStyle: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     backgroundColor: 'white',
-    height: hp('7%'),
-    width: wp('75%'),
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    shadowOffset: {width: 0, height: 1},
-    shadowRadius: 2,
-    elevation: 2,
-    shadowOpacity: 0.4,
+    paddingBottom: 10,
   },
-  confirmButton: {
-    marginTop: 24,
-    backgroundColor: 'purple',
+  scrollView: {
+    height: hp(60),
+    backgroundColor: '#F4F4F4',
+    borderRadius: 10,
     padding: 8,
-    borderRadius: 4,
+  },
+  assistantHeading: {
+    fontSize: wp(5),
+    fontWeight: 'bold',
+    color: '#374151',
+    marginLeft: 8,
+  },
+  assistantMessageContainer: {
+    width: wp(75),
+    backgroundColor: '#D1FAE5',
+    padding: 8,
+    borderRadius: 20,
+    borderTopLeftRadius: 0,
+    marginBottom: 10,
+  },
+  assistantMessage: {
+    fontSize: wp(4),
+    color: '#374151',
+  },
+  userMessageContainer: {
+    width: wp(75),
+    backgroundColor: 'white',
+    padding: 8,
+    borderRadius: 20,
+    borderTopRightRadius: 0,
+    alignSelf: 'flex-end',
+    marginBottom: 10, // 조정된 값
+  },
+  userMessageContent: {
+    flex: 0,
+    justifyContent: 'center',
+  },
+  userMessageText: {
+    fontSize: wp(4),
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 15, // Add margin top for spacing
+  },
+  button: {
+    width: hp(10),
+    height: hp(10),
+    borderRadius: hp(5),
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 16, // Add margin right for spacing
+  },
+  buttonImage: {
+    width: hp(10),
+    height: hp(10),
+  },
+  clearButton: {
+    backgroundColor: '#6B7280',
+    borderRadius: 20,
+    padding: 8,
+    position: 'absolute',
+    right: 10,
+    bottom: 10,
+  },
+  stopButton: {
+    backgroundColor: '#EF4444',
+    borderRadius: 20,
+    padding: 8,
+    position: 'absolute',
+    left: 10,
+    bottom: 10,
   },
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
-  },
-  buttonView: {
-    flex: 0.6,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  confirmText: {
-    color: 'white',
-    fontWeight: 'bold',
-    backgroundColor: '#111010',
-  },
-  coloredBox: {
-    backgroundColor: '#CBD5E0', // bg-neutral-400와 같은 색상
-    borderRadius: 16, // rounded-3xl와 같은 라운드 값
-    padding: 10, // p-2와 같은 패딩 값
-    position: 'relative',
   },
 });
 

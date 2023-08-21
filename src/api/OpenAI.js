@@ -87,8 +87,7 @@ export const QuizGenerate = async (prompt, messages) => {
       messages: [
         {
           role: 'system',
-          content:
-            '끝말잇기는 단어를 말하면 그 단어의 맨 끝 글자에 이어서 말하는 놀이이다. 전에 말한 단어 금지 국어사전에 등재되지 않은 단어는 금지 등 여러 규칙들이 있다 명사인 단어만 가능하고 고유명사는 안되며, 지명은 예외이다.',
+          content: '영유아를 대상으로 한 무작위 퀴즈를 내줘 1개씩',
         },
         {
           role: 'user',
@@ -99,6 +98,7 @@ export const QuizGenerate = async (prompt, messages) => {
     });
 
     let answer = res.data?.choices[0]?.message?.content;
+    console.log(res.data);
     messages.push({role: 'assistant', content: answer.trim()});
     // console.log('got chat response', answer);
     return Promise.resolve({success: true, data: messages});
