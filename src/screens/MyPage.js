@@ -15,7 +15,7 @@ const MyPage = ({navigation}) => {
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [age, setAge] = useState('');
+  const [age, setAge] = useState(null);
   const [nickname, setNickname] = useState('');
 
   const toggleAccordion = menuIndex => {
@@ -37,40 +37,37 @@ const MyPage = ({navigation}) => {
 
   // 나이 변경
   const handleAgeChange = async () => {
-    console.log("나이 변경 시도:", age);
+    console.log('나이 변경 시도:', age);
 
     try {
-      const res = await authClient({
-        method: "put",
-        url: "/users/age",
+      await authClient({
+        method: 'put',
+        url: '/users/age',
         data: {
-          age: age,
-        }
+          age: Number(age),
+        },
       });
-      console.log("서버 응답:", res);
+      Alert.alert('나이가 변경되었습니다.');
     } catch (error) {
       console.log(error.response.data);
     }
-    
-    Alert.alert('나이가 변경되었습니다.');
   };
 
   // 닉네임 변경
   const handleNickChange = async () => {
-    console.log("닉네임 변경 시도:", nickname);
+    console.log('닉네임 변경 시도:', nickname);
     try {
       const res = await authClient({
-        method: "put",
-        url: "/users/username",
+        method: 'put',
+        url: '/users/username',
         data: {
           username: nickname, // 닉네임 값을 요청 데이터에 포함
         },
       });
-      
-    } catch (error){
+    } catch (error) {
       console.log(error);
     }
-    
+
     //navigation.navigate('Mypage');
     Alert.alert('닉네임이 변경되었습니다.');
   };
@@ -79,14 +76,14 @@ const MyPage = ({navigation}) => {
   const checkUser = async () => {
     try {
       const res = await authClient({
-        method: "get",
-        url: "/users",
+        method: 'get',
+        url: '/users',
       });
       console.log(res.data);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -148,9 +145,8 @@ const MyPage = ({navigation}) => {
             <TextInput
               style={styles.input}
               placeholder="변경하고 싶으신 나이를 입력해주세요."
-              value={age}
+              value={age?.toString()}
               onChangeText={setAge}
-              
             />
             <TouchableOpacity
               onPress={handleAgeChange}
@@ -174,7 +170,6 @@ const MyPage = ({navigation}) => {
               placeholder="변경하고 싶으신 닉네임을 입력해주세요."
               value={nickname}
               onChangeText={setNickname}
-              
             />
             <TouchableOpacity
               onPress={handleNickChange}
@@ -182,11 +177,9 @@ const MyPage = ({navigation}) => {
               <Text style={styles.confirmButtonText}>변경하기</Text>
             </TouchableOpacity>
             {/* 추가: 비밀번호 변경 시 사용자 정보 조회 */}
-          <TouchableOpacity
-            onPress={checkUser}
-            style={styles.confirmButton}>
-            <Text style={styles.confirmButtonText}>사용자 정보 조회</Text>
-          </TouchableOpacity>
+            <TouchableOpacity onPress={checkUser} style={styles.confirmButton}>
+              <Text style={styles.confirmButtonText}>사용자 정보 조회</Text>
+            </TouchableOpacity>
           </View>
         )}
       </View>
