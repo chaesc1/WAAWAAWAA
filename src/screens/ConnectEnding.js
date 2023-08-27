@@ -70,6 +70,7 @@ export default CounsellingRe = () => {
             text: '응',
             onPress: () => {
               clearMessage();
+              setLoading(true);
             },
           },
         ]);
@@ -256,8 +257,7 @@ export default CounsellingRe = () => {
                     style={styles.scrollView}
                     showsVerticalScrollIndicator={false}>
                     {messages.map((message, index) => {
-                      console.log('asdadsa:', message);
-                      if (message.role == 'assistant') {
+                      if (message.sender == 'assistant') {
                         //text gpt 대답 부분
                         return (
                           <View
