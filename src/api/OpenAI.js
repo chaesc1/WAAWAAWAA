@@ -63,13 +63,13 @@ export const ConnectEndApi = async (prompt, messages) => {
 
     console.log('gpt 답!!!!!!!!!!!!!', res.data?.choices[0]?.message);
 
-    const body = {
-      content: res.data?.choices[0]?.message?.content,
-      sender: res.data?.choices[0]?.message?.role,
-      time: new Date(),
-    };
+    // const body = {
+    //   content: res.data?.choices[0]?.message?.content,
+    //   sender: res.data?.choices[0]?.message?.role,
+    //   time: new Date(),
+    // };
 
-    sendConnectEndingText(body, AccessToken);
+    // sendConnectEndingText(body, AccessToken);
 
     // console.log('got chat response', answer);
     return Promise.resolve({success: true, data: messages});

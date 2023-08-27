@@ -31,38 +31,90 @@ export default CounsellingRe = () => {
   const [gptLastLetter, setGptLastLetter] = useState('');
   const scrollViewRef = useRef();
 
+  const getMessage = () => {
+    axios
+      .get('http://15.164.50.203:3000/word-chain', {
+        headers: {
+          Authorization: `Bearer ${AccessToken}`,
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(response => {
+        setMessages(response.data);
+      })
+      .catch(error => {});
+  };
+
+  const clearMessage = async () => {
+    axios
+      .delete('http://15.164.50.203:3000/word-chain', {
+        headers: {
+          Authorization: `Bearer ${AccessToken}`, // 헤더에 AccessToken 추가
+          'Content-Type': 'application/json', // 원하는 헤더 값 추가
+        },
+      })
+      .then(response => {
+        Alert.alert('다시 시작해볼까?');
+        getMessage();
+      })
+      .catch(error => {});
+  };
+
   const fetchResponse = () => {
     if (result.trim().length > 0) {
       let newMessages = [...messages];
       if (result.trim().slice(0, 1) !== gptLastLetter && messages.length != 0) {
         Alert.alert('틀렸어!', '다시해!!', [
-          {text: '응', onPress: () => setMessages([])},
+          {text: '응', onPress: () => clearMessage()},
         ]);
       } else {
         newMessages.push({role: 'user', content: result.trim()});
-        console.log('newMessage입니다.', newMessages);
 
-        if (newMessages.length > 0) {
-          const body = {
-            sender: newMessages[newMessages.length - 1].role,
-            content: newMessages[newMessages.length - 1].content,
-            time: new Date(),
-          };
+        const body = {
+          sender: newMessages[newMessages.length - 1].role,
+          content: newMessages[newMessages.length - 1].content,
+          time: new Date(),
+        };
 
-          sendConnectEndingText(body, AccessToken);
-        }
+        axios
+          .post('http://15.164.50.203:3000/word-chain', body, {
+            headers: {
+              Authorization: `Bearer ${AccessToken}`, // 헤더에 AccessToken 추가
+              'Content-Type': 'application/json', // 원하는 헤더 값 추가
+            },
+          })
+          .then(response => {
+            getMessage();
+          })
+          .catch(error => {});
 
-        setMessages([...newMessages]);
         updateScrollView();
         setLoading(true);
 
-        // fetching response from chatGPT with our prompt and old messages
         ConnectEndApi(result.trim(), newMessages).then(res => {
-          console.log('got api data');
           setLoading(false);
           if (res.success) {
-            setMessages([...res.data]);
             setGptLastLetter(res.data[res.data.length - 1].content.slice(-1));
+
+            const gptAnswer = res.data[res.data.length - 1];
+
+            const gptBody = {
+              content: gptAnswer?.content,
+              sender: gptAnswer?.role,
+              time: new Date(),
+            };
+
+            axios
+              .post('http://15.164.50.203:3000/word-chain', gptBody, {
+                headers: {
+                  Authorization: `Bearer ${AccessToken}`, // 헤더에 AccessToken 추가
+                  'Content-Type': 'application/json', // 원하는 헤더 값 추가
+                },
+              })
+              .then(response => {
+                getMessage();
+              })
+              .catch(error => {});
 
             setResult('');
             updateScrollView();
@@ -94,7 +146,7 @@ export default CounsellingRe = () => {
   };
 
   const clear = () => {
-    setMessages([]);
+    clearMessage();
     setLoading(false);
     Voice.stop();
     Tts.stop();
@@ -144,23 +196,7 @@ export default CounsellingRe = () => {
   };
 
   useEffect(() => {
-    console.log('리렌더링!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-    // 유저생성 요청 api
-
-    axios
-      .get('http://15.164.50.203:3000/word-chain', {
-        headers: {
-          Authorization: `Bearer ${AccessToken}`, // 헤더에 AccessToken 추가
-          'Content-Type': 'application/json', // 원하는 헤더 값 추가
-        },
-      })
-      .then(response => {
-        console.log('API Response:', response.data);
-        setMessages(response.data);
-      })
-      .catch(error => {
-        console.error('API Error:', error.response.data);
-      });
+    getMessage();
 
     // voice handler events
     Voice.onSpeechStart = speechStartHandler;
