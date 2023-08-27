@@ -1,7 +1,6 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
-import {Cookies} from 'react-cookie';
-import settingCookie from '../utils/settingCookie';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const authClient = axios.create({
   baseURL: 'http://15.164.50.203:3000',
@@ -12,21 +11,21 @@ const authClient = axios.create({
 
 // 새 토큰 발급
 const getNewToken = async () => {
-  const access = settingCookie('get-access');
-  const refresh = settingCookie('get-refresh');
-  const cookie = new Cookies();
+  const access = await AsyncStorage.getItem('accessToken');
+  const refresh = await AsyncStorage.getItem('refreshToken');
   try {
     const res = await axios({
       method: 'post',
-      url: `http://141.164.49.27/auth/${userId}`,
+      url: `http://15.164.50.203:3000/signin/refresh`,
       data: {
-        accessToken: accessToken,
-        refreshToken: refreshToken,
+        refreshToken: refresh,
       },
     });
-    settingCookie('remove');
-    cookie.set('accessToken', res.data.accessToken);
-    cookie.set('refreshToken', res.data.refreshToken);
+    // response data가 accessToken만 날라옴
+    await AsyncStorage.removeItem('accessToken');
+    //await AsyncStorage.removeItem('refreshToken');
+    await AsyncStorage.setItem('accessToken', res.data.accessToken);
+    //await AsyncStorage.setItem('refreshToken', res.data.refreshToken);
     console.log(res.data);
     return res.data.accessToken;
   } catch (error) {
@@ -35,9 +34,9 @@ const getNewToken = async () => {
 };
 
 // axios 요청 전 수행할 작업
-authClient.interceptors.request.use(function (config) {
+authClient.interceptors.request.use(async function (config) {
   // 현재 토큰 가져오기
-  let token = settingCookie('get-access');
+  let token = await AsyncStorage.getItem('accessToken');
   const exp = jwtDecode(token);
   // 토큰 만료여부 확인
   if (Date.now() / 1000 > exp.exp) {
