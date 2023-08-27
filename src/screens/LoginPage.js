@@ -2,6 +2,8 @@ import React from 'react';
 import {useEffect, useState} from 'react';
 import axios from 'axios';
 import Orientation from 'react-native-orientation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import {
   StyleSheet,
   View,
@@ -19,33 +21,45 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import noAuthClient from '../apis/noAuthClient';
 
 export default function LoginPage({navigation}) {
   const [isLandscape, setIsLandscape] = useState(false);
-  const [userId, setUserId] = React.useState('');
-  const [userPassword, setUserPassword] = React.useState('');
+  const [userId, setUserId] = useState('');
+  const [userPassword, setUserPassword] = useState('');
 
-  const [accessToken, setAccessToken] = useState('');
-  const [refreshToken, setRefreshToken] = useState('');
+  // const [accessToken, setAccessToken] = useState('');
+  // const [refreshToken, setRefreshToken] = useState('');
 
   // 유저 로그인 요청 api
   const login = async () => {
     try {
-      const res = await axios({
+      const res = await noAuthClient({
         method: 'post',
-        url: `http://15.164.50.203:3000/signin`,
+        url: `/signin`,
         data: {
           userId: userId,
           password: userPassword,
         },
       });
 
-      setAccessToken(res.data.accessToken);
-      setRefreshToken(res.data.refreshToken);
+      //setRefreshToken(res.data.refreshToken);
+      
+      navigation.navigate('MyPage');
 
-      navigation.navigate('MemberMainPage');
+      await AsyncStorage.setItem("accessToken", res.data.accessToken);
+      await AsyncStorage.setItem("refreshToken", res.data.refreshToken);
+
+      const storedAccessToken = await AsyncStorage.getItem('accessToken');
+      const storedRefreshToken = await AsyncStorage.getItem('refreshToken');
+      
+      console.log('Stored access token:', storedAccessToken);
+      console.log('Stored refresh token:', storedRefreshToken);
+
+      
+      
     } catch (err) {
-      console.error(err.response.data.message);
+      console.error(err);
     }
   };
   // 가로 모드일 때 레이아웃 스타일
@@ -229,11 +243,12 @@ export default function LoginPage({navigation}) {
               style={styles.textFormTop}
               placeholder={'아이디'}
               value={userId}
-              onChangeText={text => setUserId(text)}
+              onChangeText={setUserId}
               autoCapitalize="none"
               returnKeyType="next"
               underlineColorAndroid="#f000"
               blurOnSubmit={false}
+              
             />
             {/* <MyButton text="ddd" /> */}
             <TextInput
@@ -241,7 +256,7 @@ export default function LoginPage({navigation}) {
               placeholder={'비밀번호'}
               value={userPassword}
               secureTextEntry={true} // 비밀번호 타입으로 변경
-              onChangeText={text => setUserPassword(text)}
+              onChangeText={setUserPassword}
               autoCapitalize="none"
               returnKeyType="next"
               underlineColorAndroid="#f000"
@@ -254,6 +269,7 @@ export default function LoginPage({navigation}) {
             <TouchableOpacity
               style={styles.button}
               onPress={() => {
+                //navigation.navigate('MyPage')
                 login();
               }}>
               <Text style={styles.buttonText}>로그인</Text>

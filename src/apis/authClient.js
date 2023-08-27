@@ -14,39 +14,33 @@ const getNewToken = async () => {
   const access = await AsyncStorage.getItem('accessToken');
   const refresh = await AsyncStorage.getItem('refreshToken');
   try {
-    const res = await axios({
-      method: 'post',
-      url: `http://15.164.50.203:3000/signin/refresh`,
-      data: {
-        refreshToken: refresh,
-      },
+    const res = await authClient.post('/signin/refresh', {
+      accessToken: access,
+      refreshToken: refresh,
     });
-    // response data가 accessToken만 날라옴
     await AsyncStorage.removeItem('accessToken');
-    //await AsyncStorage.removeItem('refreshToken');
     await AsyncStorage.setItem('accessToken', res.data.accessToken);
-    //await AsyncStorage.setItem('refreshToken', res.data.refreshToken);
-    console.log(res.data);
     return res.data.accessToken;
   } catch (error) {
     console.log(error);
+    throw error; 
   }
 };
 
-// axios 요청 전 수행할 작업
 authClient.interceptors.request.use(async function (config) {
-  // 현재 토큰 가져오기
   let token = await AsyncStorage.getItem('accessToken');
   const exp = jwtDecode(token);
-  // 토큰 만료여부 확인
+
   if (Date.now() / 1000 > exp.exp) {
-    //console.log("만료된 토큰", token);
-    getNewToken().then(newToken => {
-      //console.log("새 토큰", newToken);
+    try {
+      const newToken = await getNewToken();
       config.headers['Authorization'] = `Bearer ${newToken}`;
-    });
+    } catch (error) {
+      
+      console.log("Token refresh failed:", error);
+      
+    }
   } else {
-    //console.log("토큰이 아직 만료 안됐어요!");
     config.headers['Authorization'] = `Bearer ${token}`;
   }
   return config;
