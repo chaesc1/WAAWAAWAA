@@ -1,6 +1,10 @@
 import axios from 'axios';
 import config from '../../config/index'; // OpenAI API 키를 포함하는 파일
-import {AccessToken, sendConnectEndingText} from '../constants';
+import {
+  AccessToken,
+  sendConnectEndingText,
+  addCounsellingLog,
+} from '../constants';
 const client = axios.create({
   headers: {
     Authorization: `Bearer ${config.OPENAI_API_KEY}`,
@@ -31,6 +35,16 @@ export const apiCall = async (prompt, messages) => {
 
     let answer = res.data?.choices[0]?.message?.content;
     messages.push({role: 'assistant', content: answer.trim()});
+
+    console.log('gpt 답!!!!!!!!!!!!!', res.data?.choices[0]?.message);
+    const body = {
+      content: res.data?.choices[0]?.message?.content,
+      sender: res.data?.choices[0]?.message?.role,
+      time: new Date(),
+    };
+
+    // addCounsellingLog(body, AccessToken); //post -> get
+
     // console.log('got chat response', answer);
     return Promise.resolve({success: true, data: messages});
   } catch (err) {
@@ -79,7 +93,11 @@ export const ConnectEndApi = async (prompt, messages) => {
   }
 };
 // 퀴즈
+// prompt : user 가 말한 주제  - fixed value
+// messages :
+// userAnswer : user - non_fixed value
 export const QuizGenerate = async (prompt, messages) => {
+  console.log('get Prompt', prompt, 'Message', messages);
   try {
     const res = await client.post(chatGptUrl, {
       model: 'gpt-3.5-turbo',
@@ -87,18 +105,42 @@ export const QuizGenerate = async (prompt, messages) => {
       messages: [
         {
           role: 'system',
-          content: '영유아를 대상으로 한 무작위 퀴즈를 내줘 1개씩',
+          content: '넌 애기들의 언어발달을 위해 생성된 ai이에요',
         },
+      ],
+      temperature: 0.1,
+      top_p: 0.8,
+      frequency_penalty: 0,
+      presence_penalty: 0,
+    });
+    console.log(res.data.choices[0]);
+    let answer = res.data?.choices[0]?.message?.content;
+    messages.push({role: 'assistant', content: answer.trim()});
+    // console.log('got chat response', answer);
+    return Promise.resolve({success: true, data: messages});
+  } catch (err) {
+    console.log('error: ', err);
+    return Promise.resolve({success: false, msg: err.message});
+  }
+};
+
+// 스무고개 api
+export const TwentyAPI = async (prompt, messages) => {
+  console.log('get Prompt', prompt, 'Message', messages);
+  try {
+    const res = await client.post(chatGptUrl, {
+      model: 'gpt-3.5-turbo',
+      // messages,
+      messages: [
         {
           role: 'user',
-          content: prompt,
+          content: `이 메시지가 '나먼저' 이면? ${prompt} . 그러면 너는 내가 생각하는 것을 질문을 통해 맞춰야해`,
         },
       ],
       temperature: 0.2,
     });
-
+    console.log(res.data.choices[0]);
     let answer = res.data?.choices[0]?.message?.content;
-    console.log(res.data);
     messages.push({role: 'assistant', content: answer.trim()});
     // console.log('got chat response', answer);
     return Promise.resolve({success: true, data: messages});

@@ -40,5 +40,41 @@ export const sendConnectEndingText = (body, AccessToken) => {
     });
 };
 
+export const addCounsellingLog = (body, AccessToken) => {
+  console.log(body, AccessToken);
+  axios
+    .post('http://15.164.50.203:3000/counseling', body, {
+      headers: {
+        Authorization: `Bearer ${AccessToken}`, // 헤더에 AccessToken 추가
+        'Content-Type': 'application/json', // 원하는 헤더 값 추가
+      },
+    })
+    .then(response => {
+      console.log('API Response:', response.data);
+    })
+    .catch(error => {
+      console.error('Post API Error:', error.response.data);
+    });
+};
+//setMessage
+
+//GET 함수
+const getMessage = () => {
+  axios
+    .get('http://15.164.50.203:3000/counseling', {
+      headers: {
+        Authorization: `Bearer ${AccessToken}`, // 헤더에 AccessToken 추가
+        'Content-Type': 'application/json', // 원하는 헤더 값 추가
+      },
+    })
+    .then(response => {
+      console.log('API Response:', response.data);
+      setMessages(response.data);
+    })
+    .catch(error => {
+      console.error('API Error:', error.response.data);
+    });
+};
+
 export const AccessToken =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJxd2VyIiwiaWF0IjoxNjkyNDM0MzYyLCJleHAiOjE2OTI0MzQ2NjJ9.0gtNGHwd6kqNAyHlY4ZsFz7UQD0wplYvXKsgrg1FRlY';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjaGFlc2MxMjIzIiwiaWF0IjoxNjkzMTE3MTMwLCJleHAiOjMwMDE2OTMxMTcxMzB9.OkiXWY8kCh9jPvB5jVNa8scZy8lpsEbwz-RyI7ys9GE';

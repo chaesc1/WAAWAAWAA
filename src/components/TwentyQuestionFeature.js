@@ -1,5 +1,12 @@
 import React from 'react';
-import {View, Text, ScrollView, Image, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -21,6 +28,22 @@ export default function Features() {
         </View>
         <Text style={styles.featureDescription}>dummy message</Text>
       </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.featureTitleContainer}>
+          <Image
+            source={require('../../assets/images/bot.png')}
+            style={styles.featureTitleIcon}
+          />
+          <Text style={styles.featureTitleText}>너 먼저!</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.featureTitleContainer}>
+          <Image
+            source={require('../../assets/images/chatgptIcon.png')}
+            style={styles.featureTitleIcon}
+          />
+          <Text style={styles.featureTitleText}>나 먼저!</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 }
@@ -29,6 +52,12 @@ const styles = StyleSheet.create({
   container: {
     alignContent: 'center',
     height: hp(80),
+  },
+  buttonContainer: {
+    flexDirection: 'row', // 좌우로 배치
+    justifyContent: 'space-between', // 요소 사이의 간격을 최대한 활용
+    paddingHorizontal: wp(15), // 가로 여백
+    marginTop: hp(30), // 위쪽 여백
   },
   heading: {
     fontSize: wp(6.5),

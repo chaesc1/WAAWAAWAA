@@ -38,7 +38,8 @@ export default function MemberMainPage({navigation}) {
       </View>
       <View style={styles.row}>
         <View style={styles.column}>
-          <TouchableOpacity onPress={() => navigation.navigate('Quiz')}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('TwentyQuestion')}>
             <View style={styles.Button}>
               <Text style={styles.Text}>스무고개</Text>
             </View>

@@ -8,6 +8,7 @@ import QuizPage from './src/screens/QuizPage_test'; //퀴즈 페이지
 import QuizMainPage from './src/screens/QuizMainPage'; //퀴즈 메인 화면
 import RegisterPage from './src/screens/RegisterPage'; //회원가입
 import ConnectEndingPage from './src/screens/ConnectEnding'; //끝말잇기
+import TwentyQuestionPage from './src/screens/TwentyQuestion'; // 스무고개 페이지
 import MyPage from './src/screens/MyPage';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -111,6 +112,18 @@ const App = () => {
             }}
           />
           {/* 스무고개 페이지 */}
+          <Stack.Screen
+            name="TwentyQuestion"
+            component={TwentyQuestionPage}
+            options={{
+              title: '',
+              headerBackTitleVisible: false,
+              headerBackImage: 'BackBtn',
+              headerStyle: {
+                backgroundColor: '#f3e99f',
+              },
+            }}
+          />
           {/* 끝말잇기 페에지 */}
           {/*마이 페이지*/}
           <Stack.Screen name="MyPage" component={MyPage} />

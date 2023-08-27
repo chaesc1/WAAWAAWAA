@@ -80,7 +80,7 @@ export default CounsellingRe = () => {
     if (!message.content.includes('https')) {
       Tts.getInitStatus().then(() => {
         Tts.speak(message.content, {
-          iosVoiceId: 'com.apple.ttsbundle.Samantha-compact',
+          iosVoiceId: 'com.apple.ttsbundle.Yuna-compact',
           rate: 0.6,
         });
       });
@@ -171,7 +171,7 @@ export default CounsellingRe = () => {
     // text to speech events
     // TTS 초기화
     Tts.setDefaultLanguage('ko-KR'); // 한국어 설정
-    Tts.setDefaultRate(0.3); // 음성 속도 설정
+    Tts.setDefaultRate(0.8); // 음성 속도 설정
 
     Tts.addEventListener('tts-start', event => console.log('start', event));
     Tts.addEventListener('tts-finish', event => {
@@ -214,7 +214,8 @@ export default CounsellingRe = () => {
                     style={styles.scrollView}
                     showsVerticalScrollIndicator={false}>
                     {messages.map((message, index) => {
-                      if (message.sender == 'assistant') {
+                      console.log('asdadsa:', message);
+                      if (message.role == 'assistant') {
                         //text gpt 대답 부분
                         return (
                           <View

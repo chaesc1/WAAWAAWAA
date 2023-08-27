@@ -24,14 +24,16 @@ import {
 
 const QuizPage_test = ({navigation}) => {
   const [messages, setMessages] = useState([]);
-  const [result, setResult] = useState();
   const [recording, setRecording] = useState(recording);
   const [loading, setLoading] = useState(false);
   const [speaking, setSpeaking] = useState(false);
+  const [topic, setTopic] = useState(''); //처음 주제 설정
+  const [result, setResult] = useState(''); //이후 말하는 text 설정
   const scrollViewRef = useRef();
 
   const fetchResponse = () => {
-    if (result.trim().length > 0) {
+    if (topic.trim().length > 0 && result.trim().length > 0) {
+      //주제 값이 있으면
       //처음에는 quizGenerate를 호출해야하고
       let newMessages = [...messages];
       newMessages.push({role: 'user', content: result.trim()});
@@ -39,7 +41,33 @@ const QuizPage_test = ({navigation}) => {
       updateScrollView();
       setLoading(true);
 
+      // console.log('topic', topic);
+      // console.log('newMessage', newMessages);
+      // console.log('result.trim', result.trim());
+
       // fetching response from chatGPT with our prompt and old messages
+      QuizGenerate(result.trim(), newMessages).then(res => {
+        console.log('got api data');
+        setLoading(false);
+        if (res.success) {
+          setMessages([...res.data]);
+          setResult('');
+          updateScrollView();
+
+          // now play the response to user
+          // startTextToSpeech(res.data[res.data.length - 1]);
+        } else {
+          Alert.alert('Error', res.msg);
+        }
+      });
+    } else {
+      setTopic(result.trim());
+      let newMessages = [...messages];
+      newMessages.push({role: 'user', content: result.trim()});
+      setMessages([...newMessages]);
+      updateScrollView();
+      setLoading(true);
+
       QuizGenerate(result.trim(), newMessages).then(res => {
         console.log('got api data');
         setLoading(false);
@@ -59,7 +87,7 @@ const QuizPage_test = ({navigation}) => {
   const startTextToSpeech = message => {
     Tts.getInitStatus().then(() => {
       Tts.speak(message.content, {
-        iosVoiceId: 'com.apple.ttsbundle.Samantha-compact',
+        iosVoiceId: 'com.apple.ttsbundle.Yuna-compact',
         rate: 0.6,
       });
     });
@@ -72,8 +100,9 @@ const QuizPage_test = ({navigation}) => {
   };
 
   const clear = () => {
-    setMessages([]);
+    setTopic('');
     setLoading(false);
+    setMessages([]);
     setSpeaking(false);
     Voice.stop();
     Tts.stop();
@@ -83,20 +112,22 @@ const QuizPage_test = ({navigation}) => {
     setSpeaking(false);
   };
   const speechStartHandler = e => {
-    console.log('speech start event', e);
+    // console.log('speech start event', e);
   };
   const speechEndHandler = e => {
     setRecording(false);
-    console.log('speech stop event', e);
+    // console.log('speech stop event', e);
   };
   const speechResultsHandler = e => {
     console.log('speech event: ', e);
     const text = e.value[0];
+    // console.log('Topic : ', topic);
+
     setResult(text);
   };
 
   const speechErrorHandler = e => {
-    console.log('speech error: ', e);
+    // console.log('speech error: ', e);
   };
 
   const startRecording = async () => {
@@ -131,11 +162,11 @@ const QuizPage_test = ({navigation}) => {
     // text to speech events
     // TTS 초기화
     Tts.setDefaultLanguage('ko-KR'); // 한국어 설정
-    Tts.setDefaultRate(0.3); // 음성 속도 설정
+    Tts.setDefaultRate(0.4); // 음성 속도 설정
 
     Tts.addEventListener('tts-start', event => console.log('start', event));
     Tts.addEventListener('tts-finish', event => {
-      console.log('finish', event);
+      // console.log('finish', event);
       setSpeaking(false);
     });
     Tts.addEventListener('tts-cancel', event => console.log('cancel', event));

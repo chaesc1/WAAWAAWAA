@@ -25,9 +25,9 @@ export default function Features() {
             source={require('../../assets/images/chatgptIcon.png')}
             style={styles.featureTitleIcon}
           />
-          <Text style={styles.featureTitleText}>퀴즈 주제를 말해봐!</Text>
+          <Text style={styles.featureTitleText}>퀴즈page</Text>
         </View>
-        <Text style={styles.featureDescription}>퀴즈 놀이 하자!!!</Text>
+        <Text style={styles.featureDescription}>주제를 말해봐!</Text>
       </View>
     </ScrollView>
   );
@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
   container: {
     alignContent: 'center',
     height: hp(80),
+    marginTop: hp(5),
   },
   heading: {
     fontSize: wp(6.5),
