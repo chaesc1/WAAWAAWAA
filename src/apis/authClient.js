@@ -1,7 +1,6 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
-import {Cookies} from 'react-cookie';
-import settingCookie from '../utils/settingCookie';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const authClient = axios.create({
   baseURL: 'http://15.164.50.203:3000',
@@ -12,42 +11,34 @@ const authClient = axios.create({
 
 // 새 토큰 발급
 const getNewToken = async () => {
-  const access = settingCookie('get-access');
-  const refresh = settingCookie('get-refresh');
-  const cookie = new Cookies();
+  const access = await AsyncStorage.getItem('accessToken');
+  const refresh = await AsyncStorage.getItem('refreshToken');
   try {
-    const res = await axios({
-      method: 'post',
-      url: `http://141.164.49.27/auth/${userId}`,
-      data: {
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-      },
+    const res = await authClient.post('/signin/refresh', {
+      accessToken: access,
+      refreshToken: refresh,
     });
-    settingCookie('remove');
-    cookie.set('accessToken', res.data.accessToken);
-    cookie.set('refreshToken', res.data.refreshToken);
-    console.log(res.data);
+    await AsyncStorage.removeItem('accessToken');
+    await AsyncStorage.setItem('accessToken', res.data.accessToken);
     return res.data.accessToken;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 
-// axios 요청 전 수행할 작업
-authClient.interceptors.request.use(function (config) {
-  // 현재 토큰 가져오기
-  let token = settingCookie('get-access');
+authClient.interceptors.request.use(async function (config) {
+  let token = await AsyncStorage.getItem('accessToken');
   const exp = jwtDecode(token);
-  // 토큰 만료여부 확인
+
   if (Date.now() / 1000 > exp.exp) {
-    //console.log("만료된 토큰", token);
-    getNewToken().then(newToken => {
-      //console.log("새 토큰", newToken);
+    try {
+      const newToken = await getNewToken();
       config.headers['Authorization'] = `Bearer ${newToken}`;
-    });
+    } catch (error) {
+      console.log('Token refresh failed:', error);
+    }
   } else {
-    //console.log("토큰이 아직 만료 안됐어요!");
     config.headers['Authorization'] = `Bearer ${token}`;
   }
   return config;
