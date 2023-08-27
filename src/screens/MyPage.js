@@ -15,7 +15,7 @@ const MyPage = ({navigation}) => {
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [age, setAge] = useState(0);
+  const [age, setAge] = useState(null);
   const [nickname, setNickname] = useState('');
 
   const toggleAccordion = menuIndex => {
@@ -40,19 +40,17 @@ const MyPage = ({navigation}) => {
     console.log('나이 변경 시도:', age);
 
     try {
-      const res = await authClient({
+      await authClient({
         method: 'put',
         url: '/users/age',
         data: {
           age: Number(age),
         },
       });
-      console.log('서버 응답:', res);
+      Alert.alert('나이가 변경되었습니다.');
     } catch (error) {
       console.log(error.response.data);
     }
-
-    Alert.alert('나이가 변경되었습니다.');
   };
 
   // 닉네임 변경
@@ -147,7 +145,7 @@ const MyPage = ({navigation}) => {
             <TextInput
               style={styles.input}
               placeholder="변경하고 싶으신 나이를 입력해주세요."
-              value={age.toString()}
+              value={age?.toString()}
               onChangeText={setAge}
             />
             <TouchableOpacity
