@@ -13,10 +13,10 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import Features from '../components/feature';
+import Features from '../components/TwentyQuestionFeature';
 import {dummyMessages} from '../constants';
 import Voice from '@react-native-voice/voice';
-import {apiCall} from '../api/OpenAI';
+import {TwentyAPI} from '../api/OpenAI';
 import Tts from 'react-native-tts';
 Tts.requestInstallData();
 
@@ -37,7 +37,7 @@ export default CounsellingRe = () => {
       setLoading(true);
 
       // fetching response from chatGPT with our prompt and old messages
-      apiCall(result.trim(), newMessages).then(res => {
+      TwentyAPI(result.trim(), newMessages).then(res => {
         console.log('got api data');
         setLoading(false);
         if (res.success) {
@@ -57,7 +57,7 @@ export default CounsellingRe = () => {
     if (!message.content.includes('https')) {
       Tts.getInitStatus().then(() => {
         Tts.speak(message.content, {
-          iosVoiceId: 'com.apple.ttsbundle.Samantha-compact',
+          iosVoiceId: 'com.apple.ttsbundle.Yuna-compact',
           rate: 0.6,
         });
       });
@@ -167,7 +167,7 @@ export default CounsellingRe = () => {
               }}>
               {messages.length > 0 ? (
                 <View style={{flex: 1, marginVertical: 1}}>
-                  <Text style={styles.assistantHeading}>Counselling</Text>
+                  <Text style={styles.assistantHeading}>스무고개</Text>
                   <ScrollView
                     ref={scrollViewRef}
                     bounces={false}
