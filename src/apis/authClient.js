@@ -23,7 +23,7 @@ const getNewToken = async () => {
     return res.data.accessToken;
   } catch (error) {
     console.log(error);
-    throw error; 
+    throw error;
   }
 };
 
@@ -36,9 +36,7 @@ authClient.interceptors.request.use(async function (config) {
       const newToken = await getNewToken();
       config.headers['Authorization'] = `Bearer ${newToken}`;
     } catch (error) {
-      
-      console.log("Token refresh failed:", error);
-      
+      console.log('Token refresh failed:', error);
     }
   } else {
     config.headers['Authorization'] = `Bearer ${token}`;
