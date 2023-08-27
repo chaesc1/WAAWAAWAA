@@ -55,6 +55,7 @@ export default CounsellingRe = () => {
       })
       .then(response => {
         Alert.alert('다시 시작해볼까?');
+        setLoading(false);
         getMessage();
       })
       .catch(error => {});
@@ -65,7 +66,12 @@ export default CounsellingRe = () => {
       let newMessages = [...messages];
       if (result.trim().slice(0, 1) !== gptLastLetter && messages.length != 0) {
         Alert.alert('틀렸어!', '다시해!!', [
-          {text: '응', onPress: () => clearMessage()},
+          {
+            text: '응',
+            onPress: () => {
+              clearMessage();
+            },
+          },
         ]);
       } else {
         newMessages.push({role: 'user', content: result.trim()});
@@ -147,7 +153,7 @@ export default CounsellingRe = () => {
 
   const clear = () => {
     clearMessage();
-    setLoading(false);
+    setLoading(true);
     Voice.stop();
     Tts.stop();
   };
