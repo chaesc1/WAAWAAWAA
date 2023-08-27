@@ -9,6 +9,7 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
+import authClient from '../apis/authClient';
 
 const MyPage = ({navigation}) => {
   const [selectedMenu, setSelectedMenu] = useState(null);
@@ -34,15 +35,58 @@ const MyPage = ({navigation}) => {
     }
   };
 
-  const handleAgeChange = () => {
-    navigation.navigate('MyPage');
+  // 나이 변경
+  const handleAgeChange = async () => {
+    console.log("나이 변경 시도:", age);
+
+    try {
+      const res = await authClient({
+        method: "put",
+        url: "/users/age",
+        data: {
+          age: age,
+        }
+      });
+      console.log("서버 응답:", res);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+    
     Alert.alert('나이가 변경되었습니다.');
   };
 
-  const handleNickChange = () => {
-    navigation.navigate('Mypage');
+  // 닉네임 변경
+  const handleNickChange = async () => {
+    console.log("닉네임 변경 시도:", nickname);
+    try {
+      const res = await authClient({
+        method: "put",
+        url: "/users/username",
+        data: {
+          username: nickname, // 닉네임 값을 요청 데이터에 포함
+        },
+      });
+      
+    } catch (error){
+      console.log(error);
+    }
+    
+    //navigation.navigate('Mypage');
     Alert.alert('닉네임이 변경되었습니다.');
   };
+
+  // user 조회
+  const checkUser = async () => {
+    try {
+      const res = await authClient({
+        method: "get",
+        url: "/users",
+      });
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -104,8 +148,9 @@ const MyPage = ({navigation}) => {
             <TextInput
               style={styles.input}
               placeholder="변경하고 싶으신 나이를 입력해주세요."
-              onChangeText={text => setAge(text)}
               value={age}
+              onChangeText={setAge}
+              
             />
             <TouchableOpacity
               onPress={handleAgeChange}
@@ -127,14 +172,21 @@ const MyPage = ({navigation}) => {
             <TextInput
               style={styles.input}
               placeholder="변경하고 싶으신 닉네임을 입력해주세요."
-              onChangeText={text => setNickname(text)}
               value={nickname}
+              onChangeText={setNickname}
+              
             />
             <TouchableOpacity
               onPress={handleNickChange}
               style={styles.confirmButton}>
               <Text style={styles.confirmButtonText}>변경하기</Text>
             </TouchableOpacity>
+            {/* 추가: 비밀번호 변경 시 사용자 정보 조회 */}
+          <TouchableOpacity
+            onPress={checkUser}
+            style={styles.confirmButton}>
+            <Text style={styles.confirmButtonText}>사용자 정보 조회</Text>
+          </TouchableOpacity>
           </View>
         )}
       </View>
