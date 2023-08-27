@@ -136,12 +136,13 @@ export default CounsellingRe = () => {
       '그 날부터 수연이는 미루지 않고 꼬박꼬박 물고기를 잡으러 갔답니다',
     ],
     [
+      '옛날에 채연이라는 꼬마 펭귄이 살았어요',
       '꼬마 펭귄 채연이는 저녁 밥으로 물고기를 먹고있었어요',
-      '마침 채연이의 집을 지나가던 선우는 군침을 삼켰어요',
+      '마침 채연이의 집을 지나가던 예림이는 군침을 삼켰어요',
       '와 맛있겠다',
       '나 혼자 먹기에 많은데 조금 나눠줄까',
       '정말 고마워',
-      '채연이는 선우에게 물고기를 나눠주고 다시 식사를 시작했어요',
+      '채연이는 예림이에게 물고기를 나눠주고 다시 식사를 시작했어요',
       '그 때 창 밖에서 꼬르륵 소리가 들렸어요',
       '거기 누구야',
       '나 수연이야 너무 배고파',
@@ -149,7 +150,7 @@ export default CounsellingRe = () => {
       '와 맛있겠다 고마워',
       '채연이는 수연이에게도 물고기를 나눠주고 다시 식사를 시작했어요',
       '킁킁 어디서 물고기 냄새가 나는데',
-      '준성아 안녕 물고기 먹고싶니',
+      '정훈아 안녕 물고기 먹고싶니',
       '응 같이 먹어도 돼?',
       '물론',
       '다음 날 채연이는 머리가 아파서 물고기를 잡으러 갈 수 없었어요',
@@ -171,6 +172,71 @@ export default CounsellingRe = () => {
             style={{height: hp(15), width: hp(15)}}
           />
         </View>
+        {/* feature,message */}
+        <View>
+          <View
+            style={{
+              height: hp(38),
+              backgroundColor: book === 1 ? '#CBD5E0' : '#FFCDD6',
+              borderRadius: 20,
+              padding: 16,
+            }}>
+            <View style={{flex: 1, marginVertical: 1, marginLeft: 8}}>
+              <Text style={styles.assistantHeading}>
+                이야기를 따라해봐~!!!!
+              </Text>
+              <Text
+                style={{
+                  fontSize: wp(4),
+                  fontWeight: 'bold',
+                  color: '#374151',
+                  marginTop: 5,
+                }}>
+                {storyMessage[book][count]}
+              </Text>
+              <Text style={{marginTop: 5}}>{result}</Text>
+            </View>
+            {storyMessage[book].slice(0, count).map(story => {
+              return <Text>{story}</Text>;
+            })}
+
+            {/* 녹음 , clear, 정지 버튼 */}
+            <View style={styles.buttonsContainer}>
+              {loading ? (
+                <Image
+                  source={require('../../assets/images/loading.gif')}
+                  style={styles.buttonImage}
+                />
+              ) : recording ? (
+                <TouchableOpacity style={styles.button} onPress={stopRecording}>
+                  {/* Recording Stop Button */}
+                  <Image
+                    source={require('../../assets/images/voiceLoading-unscreen.gif')}
+                    style={styles.buttonImage}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={startRecording}>
+                  {/* Recording start Button */}
+                  <Image
+                    source={require('../../assets/images/recordingIcon.png')}
+                    style={styles.buttonImage}
+                  />
+                </TouchableOpacity>
+              )}
+              {/* left side */}
+              {speaking > 0 && (
+                <TouchableOpacity
+                  style={styles.stopButton}
+                  onPress={stopSpeaking}>
+                  <Text style={styles.buttonText}>Stop</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        </View>
         {/* 책 선택창 */}
         <View
           style={{
@@ -178,111 +244,68 @@ export default CounsellingRe = () => {
             flexDirection: 'row',
             justifyContent: 'space-between',
           }}>
-          <TouchableOpacity onPress={() => setBook(0)}>
+          <TouchableOpacity
+            style={{display: 'flex', alignItems: 'center'}}
+            onPress={() => setBook(0)}>
+            {book === 0 ? (
+              <Image
+                source={require('../../assets/images/su_hand_penguin.png')}
+                style={{height: hp(15), width: hp(10)}}
+              />
+            ) : (
+              <Image
+                source={require('../../assets/images/su_penguin.png')}
+                style={{height: hp(15), width: hp(10)}}
+              />
+            )}
             <Text>게으른 꼬마 펭귄</Text>
           </TouchableOpacity>
+          {count > 0 && (
+            <TouchableOpacity
+              style={{marginRight: 8}}
+              onPress={() => {
+                setCount(count - 1);
+              }}>
+              <Text>이전</Text>
+            </TouchableOpacity>
+          )}
+          {count < storyMessage[book].length - 1 && (
+            <TouchableOpacity
+              onPress={() => {
+                if (
+                  storyMessage[book][count].replace(/(\s*)/g, '') ===
+                  result?.replace(/(\s*)/g, '')
+                ) {
+                  setCount(count + 1);
+                  Alert.alert('잘했어요!');
+                  setResult('');
+                } else {
+                  Alert.alert('조금 더 정확하게 말해볼까요?');
+                }
+              }}>
+              <Text>다음</Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
+            style={{display: 'flex', alignItems: 'center'}}
             onPress={() => {
               setCount(0);
               setResult('');
               setBook(1);
             }}>
-            <Text>부지런한 꼬마 펭귄</Text>
+            {book === 1 ? (
+              <Image
+                source={require('../../assets/images/chae_hand_penguin.png')}
+                style={{height: hp(15), width: hp(10)}}
+              />
+            ) : (
+              <Image
+                source={require('../../assets/images/chae_penguin.png')}
+                style={{height: hp(15), width: hp(10)}}
+              />
+            )}
+            <Text>마음씨 고운 꼬마 펭귄</Text>
           </TouchableOpacity>
-        </View>
-        {/* feature,message */}
-        <View style={{flex: 1.5, marginVertical: 10}}>
-          <View
-            style={{
-              height: hp(55),
-              backgroundColor: '#CBD5E0',
-              borderRadius: 20,
-              padding: 16,
-            }}>
-            <View style={{flex: 1, marginVertical: 1}}>
-              <Text style={styles.assistantHeading}>
-                이야기를 따라해봐~!!!!
-              </Text>
-              <Text>{storyMessage[book][count]}</Text>
-              <Text>{result}</Text>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                }}>
-                {count > 0 && (
-                  <TouchableOpacity
-                    style={{marginRight: 8}}
-                    onPress={() => {
-                      setCount(count - 1);
-                    }}>
-                    <Text>이전</Text>
-                  </TouchableOpacity>
-                )}
-                {count < storyMessage[book].length - 1 && (
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (
-                        storyMessage[book][count].replace(/(\s*)/g, '') ===
-                        result.replace(/(\s*)/g, '')
-                      ) {
-                        setCount(count + 1);
-                        Alert.alert('잘했어요!');
-                        setResult('');
-                      } else {
-                        console.log(
-                          storyMessage[book][count].replace(/(\s*)/g, ''),
-                        );
-                        console.log(result.replace(/(\s*)/g, ''));
-                        Alert.alert('조금 더 정확하게 말해볼까요?');
-                      }
-                    }}>
-                    <Text>다음</Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-            </View>
-            {storyMessage[book].slice(0, count).map(story => {
-              return <Text>{story}</Text>;
-            })}
-          </View>
-        </View>
-        {/* 녹음 , clear, 정지 버튼 */}
-        <View style={styles.buttonsContainer}>
-          {loading ? (
-            <Image
-              source={require('../../assets/images/loading.gif')}
-              style={styles.buttonImage}
-            />
-          ) : recording ? (
-            <TouchableOpacity style={styles.button} onPress={stopRecording}>
-              {/* Recording Stop Button */}
-              <Image
-                source={require('../../assets/images/voiceLoading-unscreen.gif')}
-                style={styles.buttonImage}
-              />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.button} onPress={startRecording}>
-              {/* Recording start Button */}
-              <Image
-                source={require('../../assets/images/recordingIcon.png')}
-                style={styles.buttonImage}
-              />
-            </TouchableOpacity>
-          )}
-          {/* right side */}
-          {messages.length > 0 && (
-            <TouchableOpacity style={styles.clearButton} onPress={clear}>
-              <Text style={styles.buttonText}>Clear</Text>
-            </TouchableOpacity>
-          )}
-          {/* left side */}
-          {speaking > 0 && (
-            <TouchableOpacity style={styles.stopButton} onPress={stopSpeaking}>
-              <Text style={styles.buttonText}>Stop</Text>
-            </TouchableOpacity>
-          )}
         </View>
       </SafeAreaView>
     </View>
@@ -293,7 +316,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    paddingBottom: 10,
+    padding: 10,
+    paddingTop: 5,
   },
   scrollView: {
     height: hp(60),
@@ -305,7 +329,6 @@ const styles = StyleSheet.create({
     fontSize: wp(5),
     fontWeight: 'bold',
     color: '#374151',
-    marginLeft: 8,
   },
   assistantMessageContainer: {
     width: wp(75),
