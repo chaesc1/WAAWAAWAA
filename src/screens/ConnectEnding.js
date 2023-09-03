@@ -20,6 +20,8 @@ import Voice from '@react-native-voice/voice';
 import {ConnectEndApi} from '../api/OpenAI';
 import Tts from 'react-native-tts';
 import {AccessToken, sendConnectEndingText} from '../constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import authClient from '../apis/authClient';
 Tts.requestInstallData();
 
 export default CounsellingRe = () => {
@@ -31,34 +33,31 @@ export default CounsellingRe = () => {
   const [gptLastLetter, setGptLastLetter] = useState('');
   const scrollViewRef = useRef();
 
-  const getMessage = () => {
-    axios
-      .get('http://15.164.50.203:3000/word-chain', {
-        headers: {
-          Authorization: `Bearer ${AccessToken}`,
-          'Content-Type': 'application/json',
-        },
-      })
-      .then(response => {
-        setMessages(response.data);
-      })
-      .catch(error => {});
+  const getMessage = async () => {
+    try {
+      const res = await authClient({
+        method: 'get',
+        url: '/word-chain',
+      });
+      setMessages(res.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const clearMessage = async () => {
-    axios
-      .delete('http://15.164.50.203:3000/word-chain', {
-        headers: {
-          Authorization: `Bearer ${AccessToken}`, // 헤더에 AccessToken 추가
-          'Content-Type': 'application/json', // 원하는 헤더 값 추가
-        },
-      })
-      .then(response => {
-        Alert.alert('다시 시작해볼까?');
-        setLoading(false);
-        getMessage();
-      })
-      .catch(error => {});
+    try {
+      const res = await authClient({
+        method: 'delete',
+        url: '/word-chain',
+      });
+      console.log(res.data);
+      Alert.alert('다시 시작해볼까?');
+      setLoading(false);
+      getMessage();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const fetchResponse = () => {
@@ -83,17 +82,16 @@ export default CounsellingRe = () => {
           time: new Date(),
         };
 
-        axios
-          .post('http://15.164.50.203:3000/word-chain', body, {
-            headers: {
-              Authorization: `Bearer ${AccessToken}`, // 헤더에 AccessToken 추가
-              'Content-Type': 'application/json', // 원하는 헤더 값 추가
-            },
-          })
-          .then(response => {
-            getMessage();
-          })
-          .catch(error => {});
+        try {
+          authClient({
+            method: 'post',
+            url: '/word-chain',
+            data: body,
+          });
+          getMessage();
+        } catch (error) {
+          console.log(error);
+        }
 
         updateScrollView();
         setLoading(true);
@@ -111,17 +109,16 @@ export default CounsellingRe = () => {
               time: new Date(),
             };
 
-            axios
-              .post('http://15.164.50.203:3000/word-chain', gptBody, {
-                headers: {
-                  Authorization: `Bearer ${AccessToken}`, // 헤더에 AccessToken 추가
-                  'Content-Type': 'application/json', // 원하는 헤더 값 추가
-                },
-              })
-              .then(response => {
-                getMessage();
-              })
-              .catch(error => {});
+            try {
+              authClient({
+                method: 'post',
+                url: '/word-chain',
+                data: gptBody,
+              });
+              getMessage();
+            } catch (error) {
+              console.error(error);
+            }
 
             setResult('');
             updateScrollView();
