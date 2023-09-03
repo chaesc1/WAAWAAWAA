@@ -45,6 +45,7 @@ export default function LoginPage({navigation}) {
 
       //setRefreshToken(res.data.refreshToken);
 
+
       navigation.navigate('MemberMainPage');
 
 

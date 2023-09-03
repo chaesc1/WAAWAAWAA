@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   View,
   Text,
@@ -17,6 +18,11 @@ const MyPage = ({navigation}) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [age, setAge] = useState(null);
   const [nickname, setNickname] = useState('');
+  const [user, setUser] = useState(null); // 유저 정보 상태
+
+  useEffect(() => {
+    checkUser();
+  }, []);
 
   const toggleAccordion = menuIndex => {
     if (selectedMenu === menuIndex) {
@@ -26,14 +32,29 @@ const MyPage = ({navigation}) => {
     }
   };
 
-  const handlePasswordChange = () => {
+  
+
+  // 비밀번호 변경
+  const handlePasswordChange = async () => {
+    console.log('비밀번호 변경 시도:', password);
     if (password === confirmPassword) {
-      // Perform password change logic here
-      navigation.navigate('LandingPage');
+      try {
+        await authClient({
+          method: 'put',
+          url: '/users/password',
+          data: {
+            password: password,
+          }
+        });
+      } catch (error) {
+        console.log(error.response.data);
+      }
+      
     } else {
-      // Show an error message or handle mismatched passwords
+      Alert.alert('비밀번호를 다시 확인해주세요.');
     }
   };
+
 
   // 나이 변경
   const handleAgeChange = async () => {
@@ -80,17 +101,49 @@ const MyPage = ({navigation}) => {
         url: '/users',
       });
       console.log(res.data);
+      const userData = res.data;
+      setUser(userData);
     } catch (error) {
       console.log(error);
     }
   };
 
+  // logout 
+  const logout = async () => {
+    try {
+      // AsyncStorage를 clear
+      await AsyncStorage.clear();
+
+      // LandingPage로 navigate
+      navigation.navigate('LandingPage');
+      console.log('로그아웃 되었음!');
+      
+    } catch (error) {
+      console.error('로그아웃 오류:', error);
+    }
+  };
+
+  // 회원탈퇴
+  const handleWithdraw = async () => {
+    try {
+      const res = await authClient({
+        method: 'delete',
+        url:'/users',
+      })
+      // LandingPage로 navigate
+      navigation.navigate('LandingPage');
+      Alert.alert('회원탈퇴 되었습니다.');
+    } catch (error) {
+      console.log('회원탈퇴 실패', error);
+    }
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.profileContainer}>
-        {/* <Image source={require('../assets/gold.png')} style={styles.avatar} /> */}
-        <Text style={styles.username}>시후</Text>
-        <Text style={styles.age}>나이: 7</Text>
+        <Image source={require('../../assets/gold.png')} style={styles.avatar} />
+        <Text style={styles.username}>{user ? user.username : '이름'}</Text>
+        <Text style={styles.age}>{user ? `나이: ${user.age}살` : '나이: ?'}</Text>
       </View>
       {/* <ScrollView contentContainerStyle={styles.scrollContent}> */}
       <View style={styles.menuContainer}>
@@ -177,11 +230,15 @@ const MyPage = ({navigation}) => {
               <Text style={styles.confirmButtonText}>변경하기</Text>
             </TouchableOpacity>
             {/* 추가: 비밀번호 변경 시 사용자 정보 조회 */}
-            <TouchableOpacity onPress={checkUser} style={styles.confirmButton}>
-              <Text style={styles.confirmButtonText}>사용자 정보 조회</Text>
-            </TouchableOpacity>
+            
           </View>
         )}
+        
+        <TouchableOpacity
+            style={styles.button}
+            onPress={handleWithdraw}>
+          <Text style={styles.buttonText}>회원탈퇴</Text>
+        </TouchableOpacity>
       </View>
       {/* </ScrollView> */}
     </View>
@@ -189,6 +246,17 @@ const MyPage = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+
+  button: {
+    backgroundColor: '#FDFBEC',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  buttonText: {
+    fontSize: 18,
+  },
   container: {
     flex: 1,
     alignItems: 'center',

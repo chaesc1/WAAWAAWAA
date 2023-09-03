@@ -15,7 +15,7 @@ const getNewToken = async () => {
   const refresh = await AsyncStorage.getItem('refreshToken');
   try {
     const res = await authClient.post('/signin/refresh', {
-      accessToken: access,
+      //accessToken: access,
       refreshToken: refresh,
     });
     await AsyncStorage.removeItem('accessToken');
