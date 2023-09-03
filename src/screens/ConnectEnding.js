@@ -19,8 +19,6 @@ import Features from '../components/ConnectFeature';
 import Voice from '@react-native-voice/voice';
 import {ConnectEndApi} from '../api/OpenAI';
 import Tts from 'react-native-tts';
-import {AccessToken, sendConnectEndingText} from '../constants';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import authClient from '../apis/authClient';
 Tts.requestInstallData();
 
