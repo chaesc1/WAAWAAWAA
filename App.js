@@ -12,11 +12,16 @@ import MyPage from './src/screens/MyPage';
 import Footer from './src/components/footer'; // 하단바 
 
 import isTokenAvailable from './src/utils/isTokenAvailable';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 // import sttsPage from './src/STTS';
 //import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+import StoryPage from './src/screens/StoryPage';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+
+const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 //const Tab = createBottomTabNavigator();
 
@@ -92,6 +97,19 @@ const App = () => {
           <Stack.Screen
             name="CounsellingPage"
             component={CounsellingPage}
+            options={{
+              title: '',
+              headerBackTitleVisible: false,
+              headerBackImage: 'BackBtn',
+              headerStyle: {
+                backgroundColor: '#f3e99f',
+              },
+            }}
+          />
+          {/* 이야기 페이지 */}
+          <Stack.Screen
+            name="StoryPage"
+            component={StoryPage}
             options={{
               title: '',
               headerBackTitleVisible: false,

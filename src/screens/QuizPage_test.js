@@ -55,7 +55,7 @@ const QuizPage_test = ({navigation}) => {
           updateScrollView();
 
           // now play the response to user
-          // startTextToSpeech(res.data[res.data.length - 1]);
+          startTextToSpeech(res.data[res.data.length - 1]);
         } else {
           Alert.alert('Error', res.msg);
         }
@@ -85,12 +85,15 @@ const QuizPage_test = ({navigation}) => {
     }
   };
   const startTextToSpeech = message => {
-    Tts.getInitStatus().then(() => {
-      Tts.speak(message.content, {
-        iosVoiceId: 'com.apple.ttsbundle.Yuna-compact',
-        rate: 0.6,
+    setSpeaking(true);
+    if (!message.content.includes('https')) {
+      Tts.getInitStatus().then(() => {
+        Tts.speak(message.content, {
+          iosVoiceId: 'com.apple.ttsbundle.Yuna-compact',
+          rate: 0.5,
+        });
       });
-    });
+    }
   };
 
   const updateScrollView = () => {
@@ -162,7 +165,7 @@ const QuizPage_test = ({navigation}) => {
     // text to speech events
     // TTS 초기화
     Tts.setDefaultLanguage('ko-KR'); // 한국어 설정
-    Tts.setDefaultRate(0.4); // 음성 속도 설정
+    Tts.setDefaultRate(0.6); // 음성 속도 설정
 
     Tts.addEventListener('tts-start', event => console.log('start', event));
     Tts.addEventListener('tts-finish', event => {

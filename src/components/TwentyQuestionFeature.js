@@ -24,24 +24,26 @@ export default function Features() {
             source={require('../../assets/images/chatgptIcon.png')}
             style={styles.featureTitleIcon}
           />
-          <Text style={styles.featureTitleText}>스무고개 하자!!</Text>
+          <Text style={styles.featureTitleText}>이야기 놀이하자!</Text>
         </View>
-        <Text style={styles.featureDescription}>dummy message</Text>
+        <Text style={styles.featureDescription}>
+          아무말 해봐! 이야기 지어줄게
+        </Text>
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.featureTitleContainer}>
-          <Image
+          {/* <Image
             source={require('../../assets/images/bot.png')}
             style={styles.featureTitleIcon}
-          />
-          <Text style={styles.featureTitleText}>너 먼저!</Text>
+          /> */}
+          {/* <Text style={styles.featureTitleText}>너 먼저!</Text> */}
         </TouchableOpacity>
         <TouchableOpacity style={styles.featureTitleContainer}>
-          <Image
+          {/* <Image
             source={require('../../assets/images/chatgptIcon.png')}
             style={styles.featureTitleIcon}
-          />
-          <Text style={styles.featureTitleText}>나 먼저!</Text>
+          /> */}
+          {/* <Text style={styles.featureTitleText}>나 먼저!</Text> */}
         </TouchableOpacity>
       </View>
     </ScrollView>

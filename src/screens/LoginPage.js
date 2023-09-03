@@ -44,20 +44,19 @@ export default function LoginPage({navigation}) {
       });
 
       //setRefreshToken(res.data.refreshToken);
-      
+
+
       navigation.navigate('MemberMainPage');
 
-      await AsyncStorage.setItem("accessToken", res.data.accessToken);
-      await AsyncStorage.setItem("refreshToken", res.data.refreshToken);
+
+      await AsyncStorage.setItem('accessToken', res.data.accessToken);
+      await AsyncStorage.setItem('refreshToken', res.data.refreshToken);
 
       const storedAccessToken = await AsyncStorage.getItem('accessToken');
       const storedRefreshToken = await AsyncStorage.getItem('refreshToken');
-      
+
       console.log('Stored access token:', storedAccessToken);
       console.log('Stored refresh token:', storedRefreshToken);
-
-      
-      
     } catch (err) {
       console.error(err);
     }
@@ -248,7 +247,6 @@ export default function LoginPage({navigation}) {
               returnKeyType="next"
               underlineColorAndroid="#f000"
               blurOnSubmit={false}
-              
             />
             {/* <MyButton text="ddd" /> */}
             <TextInput

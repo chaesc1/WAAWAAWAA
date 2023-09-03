@@ -94,10 +94,10 @@ export const QuizGenerate = async (prompt, messages) => {
       messages: [
         {
           role: 'system',
-          content: '넌 애기들의 언어발달을 위해 생성된 ai이에요',
+          content: `유저와 수다떠는 용도고 ${prompt}와 관련된 대답을 하면 되는거야`,
         },
       ],
-      temperature: 0.1,
+      temperature: 0.5,
       top_p: 0.8,
       frequency_penalty: 0,
       presence_penalty: 0,

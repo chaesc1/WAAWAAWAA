@@ -8,18 +8,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import axios from 'axios';
 import React, {useState, useEffect, useRef} from 'react';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import Features from '../components/feature';
-import {dummyMessages} from '../constants';
-import {AccessToken, addCounsellingLog} from '../constants';
 import Voice from '@react-native-voice/voice';
 import {apiCall} from '../api/OpenAI';
 import Tts from 'react-native-tts';
+import authClient from '../apis/authClient';
 Tts.requestInstallData();
 
 export default CounsellingRe = () => {
@@ -30,21 +28,16 @@ export default CounsellingRe = () => {
   const [speaking, setSpeaking] = useState(false);
   const scrollViewRef = useRef();
 
-  const getMessage = () => {
-    axios
-      .get('http://15.164.50.203:3000/counseling', {
-        headers: {
-          Authorization: `Bearer ${AccessToken}`, // 헤더에 AccessToken 추가
-          'Content-Type': 'application/json', // 원하는 헤더 값 추가
-        },
-      })
-      .then(response => {
-        console.log('API Response:', response.data);
-        setMessages(response.data);
-      })
-      .catch(error => {
-        console.error('API Error:', error.response.data);
+  const getMessage = async () => {
+    try {
+      const res = await authClient({
+        method: 'get',
+        url: '/counseling',
       });
+      setMessages(res.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const fetchResponse = () => {
@@ -55,27 +48,22 @@ export default CounsellingRe = () => {
       setLoading(true);
 
       if (newMessages.length > 0) {
-        // console.log(error.response.data);
         const body = {
           sender: newMessages[newMessages.length - 1].role,
           content: newMessages[newMessages.length - 1].content,
           time: new Date(),
         };
 
-        axios
-          .post('http://15.164.50.203:3000/counseling', body, {
-            headers: {
-              Authorization: `Bearer ${AccessToken}`, // 헤더에 AccessToken 추가
-              'Content-Type': 'application/json', // 원하는 헤더 값 추가
-            },
-          })
-          .then(response => {
-            getMessage();
-            console.log('API Response:', response.data);
-          })
-          .catch(error => {
-            console.error('Post API Error:', error.response.data);
+        try {
+          authClient({
+            method: 'post',
+            url: '/counseling',
+            data: body,
           });
+          getMessage();
+        } catch (error) {
+          console.log(error);
+        }
       }
 
       // fetching response from chatGPT with our prompt and old messages
@@ -91,20 +79,17 @@ export default CounsellingRe = () => {
             sender: res.data[res.data.length - 1].role,
             time: new Date(),
           };
-          axios
-            .post('http://15.164.50.203:3000/counseling', body, {
-              headers: {
-                Authorization: `Bearer ${AccessToken}`, // 헤더에 AccessToken 추가
-                'Content-Type': 'application/json', // 원하는 헤더 값 추가
-              },
-            })
-            .then(response => {
-              getMessage();
-              console.log('API Response:', response.data);
-            })
-            .catch(error => {
-              console.error('Post API Error:', error.response.data);
+
+          try {
+            authClient({
+              method: 'post',
+              url: '/counseling',
+              data: body,
             });
+            getMessage();
+          } catch (error) {
+            console.error(error);
+          }
 
           // now play the response to user
           startTextToSpeech(res.data[res.data.length - 1]);
@@ -132,23 +117,20 @@ export default CounsellingRe = () => {
     }, 200);
   };
 
-  const clear = () => {
-    axios
-      .delete('http://15.164.50.203:3000/counseling', {
-        headers: {
-          Authorization: `Bearer ${AccessToken}`, // 헤더에 AccessToken 추가
-          'Content-Type': 'application/json', // 원하는 헤더 값 추가
-        },
-      })
-      .then(response => {
-        Alert.alert('메세지 삭제 성공!');
-        setLoading(false);
-        console.log('API Response:', response.data);
-        getMessage();
-      })
-      .catch(error => {
-        console.error('API Error:', error.response.data);
+  const clear = async () => {
+    try {
+      const res = await authClient({
+        method: 'delete',
+        url: '/counseling',
       });
+      console.log(res.data);
+      Alert.alert('다시 시작해볼까?');
+      setLoading(false);
+      getMessage();
+    } catch (error) {
+      console.log(error);
+    }
+
     setLoading(true);
     setSpeaking(false);
     Voice.stop();
