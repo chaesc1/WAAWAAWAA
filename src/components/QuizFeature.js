@@ -25,9 +25,9 @@ export default function Features() {
             source={require('../../assets/images/chatgptIcon.png')}
             style={styles.featureTitleIcon}
           />
-          <Text style={styles.featureTitleText}>퀴즈page</Text>
+          <Text style={styles.featureTitleText}>수다떨기</Text>
         </View>
-        <Text style={styles.featureDescription}>주제를 말해봐!</Text>
+        <Text style={styles.featureDescription}>아무말이나 해봐!!</Text>
       </View>
     </ScrollView>
   );

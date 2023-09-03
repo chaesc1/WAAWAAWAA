@@ -41,7 +41,7 @@ export default function MemberMainPage({navigation}) {
           <TouchableOpacity
             onPress={() => navigation.navigate('TwentyQuestion')}>
             <View style={styles.Button}>
-              <Text style={styles.Text}>스무고개</Text>
+              <Text style={styles.Text}>이야기놀이</Text>
             </View>
           </TouchableOpacity>
         </View>

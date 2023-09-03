@@ -12,8 +12,9 @@ import TwentyQuestionPage from './src/screens/TwentyQuestion'; // 스무고개 �
 import MyPage from './src/screens/MyPage';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-// import sttsPage from './src/STTS';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
+const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 const App = () => {
   return (
