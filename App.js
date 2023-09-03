@@ -1,5 +1,4 @@
-import React from 'react';
-
+import React, { useEffect, useState }from 'react';
 import LandingPage from './src/screens/LandingPage';
 import LoginPage from './src/screens/LoginPage';
 import MemberMainPage from './src/screens/MemberMainPage'; //로그인시 메인페이지
@@ -10,15 +9,32 @@ import RegisterPage from './src/screens/RegisterPage'; //회원가입
 import ConnectEndingPage from './src/screens/ConnectEnding'; //끝말잇기
 import TwentyQuestionPage from './src/screens/TwentyQuestion'; // 스무고개 페이지
 import MyPage from './src/screens/MyPage';
+import Footer from './src/components/footer'; // 하단바 
+
+import isTokenAvailable from './src/utils/isTokenAvailable';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-// import sttsPage from './src/STTS';
 
+// import sttsPage from './src/STTS';
+//import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 const Stack = createNativeStackNavigator();
+//const Tab = createBottomTabNavigator();
+
+
 const App = () => {
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      const result = await isTokenAvailable();
+      setLoggedIn(result);
+    };
+
+    checkLoginStatus();
+  }, []);
+
   return (
     <NavigationContainer>
-      {
         <Stack.Navigator>
           {/* 초기화면 */}
           <Stack.Screen
@@ -140,7 +156,7 @@ const App = () => {
             }}
           />
         </Stack.Navigator>
-      }
+        {loggedIn ? <Footer /> : null }
     </NavigationContainer>
   );
 };
