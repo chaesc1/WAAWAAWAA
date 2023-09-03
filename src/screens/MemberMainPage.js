@@ -40,7 +40,9 @@ export default function MemberMainPage({navigation}) {
         <View style={styles.column}>
           <TouchableOpacity onPress={() => navigation.navigate('StoryPage')}>
             <View style={styles.Button}>
+
               <Text style={styles.Text}>이야기 말하기</Text>
+
             </View>
           </TouchableOpacity>
         </View>

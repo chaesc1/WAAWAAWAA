@@ -46,8 +46,7 @@ export default function LoginPage({navigation}) {
       //setRefreshToken(res.data.refreshToken);
 
       navigation.navigate('MemberMainPage');
-      // navigation.navigate('MyPage');
-      console.log(res.data);
+
 
       await AsyncStorage.setItem('accessToken', res.data.accessToken);
       await AsyncStorage.setItem('refreshToken', res.data.refreshToken);

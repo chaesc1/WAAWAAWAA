@@ -13,8 +13,9 @@ import MyPage from './src/screens/MyPage';
 import StoryPage from './src/screens/StoryPage';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-// import sttsPage from './src/STTS';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
+const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 const App = () => {
   return (
