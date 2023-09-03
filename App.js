@@ -10,6 +10,7 @@ import RegisterPage from './src/screens/RegisterPage'; //회원가입
 import ConnectEndingPage from './src/screens/ConnectEnding'; //끝말잇기
 import TwentyQuestionPage from './src/screens/TwentyQuestion'; // 스무고개 페이지
 import MyPage from './src/screens/MyPage';
+import StoryPage from './src/screens/StoryPage';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 // import sttsPage from './src/STTS';
@@ -76,6 +77,19 @@ const App = () => {
           <Stack.Screen
             name="CounsellingPage"
             component={CounsellingPage}
+            options={{
+              title: '',
+              headerBackTitleVisible: false,
+              headerBackImage: 'BackBtn',
+              headerStyle: {
+                backgroundColor: '#f3e99f',
+              },
+            }}
+          />
+          {/* 이야기 페이지 */}
+          <Stack.Screen
+            name="StoryPage"
+            component={StoryPage}
             options={{
               title: '',
               headerBackTitleVisible: false,
