@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import axios from 'axios';
 import React, {useState, useEffect, useRef} from 'react';
 import {
   widthPercentageToDP as wp,

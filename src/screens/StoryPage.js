@@ -3,23 +3,20 @@ import {
   Alert,
   Image,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
+  ScrollView,
+  TextInput,
 } from 'react-native';
-import axios from 'axios';
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import Features from '../components/ConnectFeature';
 import Voice from '@react-native-voice/voice';
-import {ConnectEndApi} from '../api/OpenAI';
 import Tts from 'react-native-tts';
-import {AccessToken, sendConnectEndingText} from '../constants';
 Tts.requestInstallData();
 
 export default CounsellingRe = () => {
@@ -28,7 +25,7 @@ export default CounsellingRe = () => {
   const [recording, setRecording] = useState(recording);
   const [loading, setLoading] = useState(false);
   const [speaking, setSpeaking] = useState(false);
-  const [count, setCount] = useState(0);
+  const [answerCount, setAnswerCount] = useState(0);
   const [book, setBook] = useState(0);
 
   const fetchResponse = () => {
@@ -88,7 +85,7 @@ export default CounsellingRe = () => {
   };
 
   useEffect(() => {
-    setCount(0);
+    setAnswerCount(0);
     // voice handler events
     Voice.onSpeechStart = speechStartHandler;
     Voice.onSpeechEnd = speechEndHandler;
@@ -176,10 +173,11 @@ export default CounsellingRe = () => {
         <View>
           <View
             style={{
-              height: hp(38),
+              height: hp(50),
               backgroundColor: book === 1 ? '#CBD5E0' : '#FFCDD6',
               borderRadius: 20,
               padding: 16,
+              marginBottom: 16,
             }}>
             <View style={{flex: 1, marginVertical: 1, marginLeft: 8}}>
               <Text style={styles.assistantHeading}>
@@ -192,46 +190,99 @@ export default CounsellingRe = () => {
                   color: '#374151',
                   marginTop: 5,
                 }}>
-                {storyMessage[book][count]}
+                {storyMessage[book][answerCount]}
               </Text>
-              <Text style={{marginTop: 5}}>{result}</Text>
+              <TextInput
+                style={{
+                  marginTop: 8,
+                  borderBottomWidth: 1, // borderBottom의 두께를 1로 설정
+                  borderBottomColor: 'black',
+                }}
+                value={result}
+                editable={false} // TextInput을 읽기 전용으로 설정
+              />
             </View>
-            {storyMessage[book].slice(0, count).map(story => {
-              return <Text>{story}</Text>;
-            })}
-
-            {/* 녹음 , clear, 정지 버튼 */}
-            <View style={styles.buttonsContainer}>
-              {loading ? (
-                <Image
-                  source={require('../../assets/images/loading.gif')}
-                  style={styles.buttonImage}
-                />
-              ) : recording ? (
-                <TouchableOpacity style={styles.button} onPress={stopRecording}>
-                  {/* Recording Stop Button */}
-                  <Image
-                    source={require('../../assets/images/voiceLoading-unscreen.gif')}
-                    style={styles.buttonImage}
-                  />
-                </TouchableOpacity>
-              ) : (
+            <ScrollView
+              style={{
+                padding: 8,
+                borderRadius: 10,
+                backgroundColor: book === 1 ? 'lightblue' : 'lightpink',
+                overflow: 'scroll',
+                height: hp(5),
+              }}>
+              {storyMessage[book].slice(0, answerCount).map((story, i) => {
+                return <Text key={i}>{story}</Text>;
+              })}
+            </ScrollView>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              {answerCount > 0 && (
                 <TouchableOpacity
-                  style={styles.button}
-                  onPress={startRecording}>
-                  {/* Recording start Button */}
-                  <Image
-                    source={require('../../assets/images/recordingIcon.png')}
-                    style={styles.buttonImage}
-                  />
+                  style={{marginRight: 8}}
+                  onPress={() => {
+                    setAnswerCount(answerCount - 1);
+                  }}>
+                  <Text>이전</Text>
                 </TouchableOpacity>
               )}
-              {/* left side */}
-              {speaking > 0 && (
+              {/* 녹음 , clear, 정지 버튼 */}
+              <View style={styles.buttonsContainer}>
+                {loading ? (
+                  <Image
+                    source={require('../../assets/images/loading.gif')}
+                    style={styles.buttonImage}
+                  />
+                ) : recording ? (
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={stopRecording}>
+                    {/* Recording Stop Button */}
+                    <Image
+                      source={require('../../assets/images/voiceLoading-unscreen.gif')}
+                      style={styles.buttonImage}
+                    />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={startRecording}>
+                    {/* Recording start Button */}
+                    <Image
+                      source={require('../../assets/images/recordingIcon.png')}
+                      style={styles.buttonImage}
+                    />
+                  </TouchableOpacity>
+                )}
+                {/* left side */}
+                {speaking > 0 && (
+                  <TouchableOpacity
+                    style={styles.stopButton}
+                    onPress={stopSpeaking}>
+                    <Text style={styles.buttonText}>Stop</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+
+              {answerCount < storyMessage[book].length - 1 && (
                 <TouchableOpacity
-                  style={styles.stopButton}
-                  onPress={stopSpeaking}>
-                  <Text style={styles.buttonText}>Stop</Text>
+                  onPress={() => {
+                    if (
+                      storyMessage[book][answerCount].replace(/(\s*)/g, '') ===
+                      result?.replace(/(\s*)/g, '')
+                    ) {
+                      setAnswerCount(answerCount + 1);
+                      Alert.alert('잘했어요!');
+                      setResult('');
+                    } else {
+                      Alert.alert('조금 더 정확하게 말해볼까요?');
+                    }
+                  }}>
+                  <Text>다음</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -260,36 +311,11 @@ export default CounsellingRe = () => {
             )}
             <Text>게으른 꼬마 펭귄</Text>
           </TouchableOpacity>
-          {count > 0 && (
-            <TouchableOpacity
-              style={{marginRight: 8}}
-              onPress={() => {
-                setCount(count - 1);
-              }}>
-              <Text>이전</Text>
-            </TouchableOpacity>
-          )}
-          {count < storyMessage[book].length - 1 && (
-            <TouchableOpacity
-              onPress={() => {
-                if (
-                  storyMessage[book][count].replace(/(\s*)/g, '') ===
-                  result?.replace(/(\s*)/g, '')
-                ) {
-                  setCount(count + 1);
-                  Alert.alert('잘했어요!');
-                  setResult('');
-                } else {
-                  Alert.alert('조금 더 정확하게 말해볼까요?');
-                }
-              }}>
-              <Text>다음</Text>
-            </TouchableOpacity>
-          )}
+
           <TouchableOpacity
             style={{display: 'flex', alignItems: 'center'}}
             onPress={() => {
-              setCount(0);
+              setAnswerCount(0);
               setResult('');
               setBook(1);
             }}>
