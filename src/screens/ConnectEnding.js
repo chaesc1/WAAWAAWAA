@@ -386,7 +386,6 @@ const styles = StyleSheet.create({
     borderRadius: hp(5),
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 16, // Add margin right for spacing
   },
   buttonImage: {
     width: hp(10),
@@ -397,7 +396,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 8,
     position: 'absolute',
-    right: 10,
+    right: wp(5),
     bottom: 10,
   },
   stopButton: {
@@ -405,7 +404,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 8,
     position: 'absolute',
-    left: 10,
+    left: wp(5),
     bottom: 10,
   },
   buttonText: {
