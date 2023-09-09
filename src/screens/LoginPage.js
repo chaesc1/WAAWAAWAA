@@ -51,12 +51,15 @@ export default function LoginPage({navigation}) {
 
       await AsyncStorage.setItem('accessToken', res.data.accessToken);
       await AsyncStorage.setItem('refreshToken', res.data.refreshToken);
+      await AsyncStorage.setItem('userId', res.data.userId);
 
       const storedAccessToken = await AsyncStorage.getItem('accessToken');
       const storedRefreshToken = await AsyncStorage.getItem('refreshToken');
+      const storedUserId = await AsyncStorage.getItem('userId');
 
       console.log('Stored access token:', storedAccessToken);
       console.log('Stored refresh token:', storedRefreshToken);
+      console.log('Stored userId:', storedUserId);
     } catch (err) {
       console.error(err);
     }

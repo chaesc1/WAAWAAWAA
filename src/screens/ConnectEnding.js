@@ -20,6 +20,7 @@ import Voice from '@react-native-voice/voice';
 import {ConnectEndApi} from '../api/OpenAI';
 import Tts from 'react-native-tts';
 import authClient from '../apis/authClient';
+import Footer from '../components/footer';
 Tts.requestInstallData();
 
 export default CounsellingRe = () => {
@@ -324,6 +325,7 @@ export default CounsellingRe = () => {
           )}
         </View>
       </SafeAreaView>
+      <Footer />
     </View>
   );
 };
@@ -332,7 +334,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    paddingBottom: 10,
+    paddingBottom: 0,
   },
   scrollView: {
     height: hp(60),
