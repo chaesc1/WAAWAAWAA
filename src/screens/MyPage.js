@@ -10,6 +10,7 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
+import Footer from '../components/footer';
 import authClient from '../apis/authClient';
 
 const MyPage = ({navigation}) => {
@@ -240,8 +241,11 @@ const MyPage = ({navigation}) => {
           <Text style={styles.buttonText}>회원탈퇴</Text>
         </TouchableOpacity>
       </View>
+      
       {/* </ScrollView> */}
+      
     </View>
+    
   );
 };
 

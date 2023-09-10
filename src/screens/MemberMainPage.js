@@ -11,6 +11,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import Footer from '../components/footer';
 
 export default function MemberMainPage({navigation}) {
   return (
@@ -52,7 +53,9 @@ export default function MemberMainPage({navigation}) {
           </TouchableOpacity>
         </View>
       </View>
+      <Footer/>
     </View>
+    
   );
 }
 

@@ -10,9 +10,11 @@ const Footer = ({}) => {
   const [tokenAvailable, setTokenAvailable] = useState(false); // 토큰 존재 여부를 상태로 관리.
 
   const handleLogout = async () => {
+    const userId =  AsyncStorage.getItem('userId');
     // 로그아웃
     await AsyncStorage.clear();
-    setTokenAvailable(false); // 로그아웃 시 토큰 상태를 false로 설정
+    // console.log("로그아웃 후:"+userId);
+    //setTokenAvailable(false); // 로그아웃 시 토큰 상태를 false로 설정
     navigation.navigate('LandingPage'); // 로그인 화면으로 이동
   };
 
@@ -23,11 +25,11 @@ const Footer = ({}) => {
   // }, []);
 
 
-  if (!tokenAvailable) {
-    console.log("tokenavailable값:",tokenAvailable)
-    console.log('error!!!!!!!!!!')
-    return null;
-  }
+  // if (!tokenAvailable) {
+  //   console.log("tokenavailable값:",tokenAvailable)
+  //   console.log('error!!!!!!!!!!')
+  //   return null;
+  // }
 
   return (
     <View style={styles.container}>
@@ -56,7 +58,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: 'lightgray', // 하단 탭 바 배경색
-    height: 50, // 하단 탭 바 높이
+    height: 60, // 하단 탭 바 높이
+    width: '100%',
   },
   tabBarButton: {
     fontSize: 18,

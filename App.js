@@ -20,6 +20,7 @@ import StoryPage from './src/screens/StoryPage';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -27,16 +28,26 @@ const Stack = createNativeStackNavigator();
 
 
 const App = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
+  // const [loggedIn, setLoggedIn] = useState(false);
+  // const userId =  AsyncStorage.getItem('userId');
+  // console.log(userId);
+  // const checkLoginStatus = async () => {
+  //   try {
+  //     if (userId != null) {
+  //       setLoggedIn(true);
+  //     } else {
+  //       console.log('에러에러');
+  //       setLoggedIn(false);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error reading userId from AsyncStorage:', error);
+  //   }
+  // };
+  // console.log("현재 loggedIn 상태:"+loggedIn)
 
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      const result = await isTokenAvailable();
-      setLoggedIn(result);
-    };
-
-    checkLoginStatus();
-  }, []);
+  // useEffect(() => {
+  //   checkLoginStatus();
+  // }, [userId]);
 
   return (
     <NavigationContainer>
@@ -174,7 +185,7 @@ const App = () => {
             }}
           />
         </Stack.Navigator>
-        {loggedIn ? <Footer /> : null }
+        
     </NavigationContainer>
   );
 };
