@@ -92,16 +92,12 @@ export default function RegisterPage({navigation}) {
         navigation.navigate('LoginPage'); // 회원가입 성공 시 로그인 페이지로 이동
       } else {
         // 서버 응답이 실패인 경우
-        console.log(username, userId, password);
         Alert.alert('유저 생성 실패', '유저 생성에 실패했습니다.');
       }
     } catch (error) {
-      console.log(username, userId, password);
       console.log('Test Error:', error);
     }
   };
-
-  console.log(username, userId, password);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
