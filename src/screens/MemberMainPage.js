@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F3E99F',
+    backgroundColor: '#ffffff',
   },
   wrapping: {
     width: wp('30%'),
@@ -91,15 +91,15 @@ const styles = StyleSheet.create({
     height: hp('30%'),
     justifyContent: 'center', // 수평 방향으로 중앙 정렬
     alignItems: 'center', // 수직 방향으로 중앙 정렬
-    backgroundColor: '#FF6D60',
+    backgroundColor: '#10B981',
     borderRadius: 20,
     borderWidth: 30,
-    borderColor: '#FDFBEC',
+    borderColor: '#FDD8F8',
   },
   Text: {
     fontWeight: '600',
     color: 'white',
-    fontSize: 20,
+    fontSize: wp(5),
     borderRadius: 20,
   },
 });
