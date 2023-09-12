@@ -18,6 +18,7 @@ import Voice from '@react-native-voice/voice';
 import {apiCall} from '../api/OpenAI';
 import Tts from 'react-native-tts';
 import authClient from '../apis/authClient';
+import Footer from '../components/footer';
 Tts.requestInstallData();
 
 export default CounsellingRe = () => {
@@ -26,6 +27,7 @@ export default CounsellingRe = () => {
   const [recording, setRecording] = useState(recording);
   const [loading, setLoading] = useState(false);
   const [speaking, setSpeaking] = useState(false);
+  const [hideClearButton, setHideClearButton] = useState(false);
   const scrollViewRef = useRef();
 
   const getMessage = async () => {
@@ -35,6 +37,7 @@ export default CounsellingRe = () => {
         url: '/counseling',
       });
       setMessages(res.data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -61,17 +64,15 @@ export default CounsellingRe = () => {
             data: body,
           });
           getMessage();
+          setHideClearButton(false);
         } catch (error) {
           console.log(error);
         }
       }
 
-      // fetching response from chatGPT with our prompt and old messages
-      apiCall(result.trim(), newMessages).then(res => {
-        console.log('got api data');
+      apiCall(result.trim(), newMessages).then(async res => {
         setLoading(false);
         if (res.success) {
-          console.log('gpt 대답', res.data[res.data.length - 1]);
           setResult('');
           updateScrollView();
           const body = {
@@ -81,12 +82,13 @@ export default CounsellingRe = () => {
           };
 
           try {
-            authClient({
+            await authClient({
               method: 'post',
               url: '/counseling',
               data: body,
             });
-            getMessage();
+            await getMessage();
+            setHideClearButton(false);
           } catch (error) {
             console.error(error);
           }
@@ -139,18 +141,22 @@ export default CounsellingRe = () => {
   const stopSpeaking = () => {
     Tts.stop();
     setSpeaking(false);
+    setHideClearButton(true);
   };
   const speechStartHandler = e => {
     console.log('speech start event', e);
+    setHideClearButton(true);
   };
   const speechEndHandler = e => {
     setRecording(false);
     console.log('speech stop event', e);
+    setHideClearButton(true);
   };
   const speechResultsHandler = e => {
     console.log('speech event: ', e);
     const text = e.value[0];
     setResult(text);
+    setHideClearButton(true);
   };
 
   const speechErrorHandler = e => {
@@ -165,6 +171,7 @@ export default CounsellingRe = () => {
     } catch (error) {
       console.log('errpr:', error);
     }
+    setHideClearButton(true);
   };
 
   const stopRecording = async () => {
@@ -178,9 +185,11 @@ export default CounsellingRe = () => {
     } catch (error) {
       console.log('errpr:', error);
     }
+    setHideClearButton(true);
   };
   useEffect(() => {
     getMessage();
+    setLoading(true);
     // voice handler events
     Voice.onSpeechStart = speechStartHandler;
     Voice.onSpeechEnd = speechEndHandler;
@@ -205,7 +214,6 @@ export default CounsellingRe = () => {
     };
   }, []);
 
-  // console.log('result', result);
   return (
     <View style={styles.container}>
       <SafeAreaView style={{flex: 1}}>
@@ -235,7 +243,6 @@ export default CounsellingRe = () => {
                     style={styles.scrollView}
                     showsVerticalScrollIndicator={false}>
                     {messages.map((message, index) => {
-                      console.log(message);
                       if (message.sender == 'assistant') {
                         //text gpt 대답 부분
                         return (
@@ -248,7 +255,6 @@ export default CounsellingRe = () => {
                           </View>
                         );
                       } else {
-                        //user input
                         return (
                           <View key={index} style={styles.userMessageContainer}>
                             <View style={styles.userMessageContent}>
@@ -295,7 +301,7 @@ export default CounsellingRe = () => {
             </TouchableOpacity>
           )}
           {/* right side */}
-          {messages.length > 0 && (
+          {messages.length > 0 && !hideClearButton && (
             <TouchableOpacity style={styles.clearButton} onPress={clear}>
               <Text style={styles.buttonText}>Clear</Text>
             </TouchableOpacity>
@@ -308,6 +314,7 @@ export default CounsellingRe = () => {
           )}
         </View>
       </SafeAreaView>
+      <Footer />
     </View>
   );
 };
@@ -316,7 +323,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    paddingBottom: 10,
+    paddingBottom: 0,
   },
   scrollView: {
     height: hp(60),

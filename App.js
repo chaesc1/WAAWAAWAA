@@ -21,160 +21,170 @@ import StoryPage from './src/screens/StoryPage';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 //const Tab = createBottomTabNavigator();
 
 const App = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
+  // const [loggedIn, setLoggedIn] = useState(false);
+  // const userId =  AsyncStorage.getItem('userId');
+  // console.log(userId);
+  // const checkLoginStatus = async () => {
+  //   try {
+  //     if (userId != null) {
+  //       setLoggedIn(true);
+  //     } else {
+  //       console.log('에러에러');
+  //       setLoggedIn(false);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error reading userId from AsyncStorage:', error);
+  //   }
+  // };
+  // console.log("현재 loggedIn 상태:"+loggedIn)
 
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      const result = await isTokenAvailable();
-      setLoggedIn(result);
-    };
-
-    checkLoginStatus();
-  }, []);
+  // useEffect(() => {
+  //   checkLoginStatus();
+  // }, [userId]);
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        {/* 초기화면 */}
-        <Stack.Screen
-          name="LandingPage"
-          component={LandingPage}
-          options={{
-            title: '',
-            headerBackTitleVisible: false,
-            headerBackImage: 'BackBtn',
-            headerShown: false,
-          }}
-        />
-        {/* 로그인 화면 */}
-        <Stack.Screen
-          name="LoginPage"
-          component={LoginPage}
-          options={{
-            title: '',
-            headerBackTitleVisible: false,
-            headerBackImage: 'BackBtn',
-            headerShown: true,
-            headerStyle: {
-              backgroundColor: '#f3e99f',
-            },
-          }}
-        />
-        {/* 회원가입 페이지 */}
-        <Stack.Screen
-          name="Register"
-          component={RegisterPage}
-          options={{
-            title: '',
-            headerBackTitleVisible: false,
-            headerBackImage: 'BackBtn',
-            headerShown: true,
-            headerStyle: {
-              backgroundColor: '#f3e99f',
-            },
-          }}
-        />
-        {/* 로그인 시 멤버메인페이지 */}
-        <Stack.Screen
-          name="MemberMainPage"
-          component={MemberMainPage}
-          options={{
-            title: '',
-            headerBackTitleVisible: false,
-            headerBackImage: 'BackBtn',
-            headerStyle: {
-              backgroundColor: '#ffffff',
-            },
-          }}
-        />
-        {/* 상담페이지 */}
-        <Stack.Screen
-          name="CounsellingPage"
-          component={CounsellingPage}
-          options={{
-            title: '',
-            headerBackTitleVisible: false,
-            headerBackImage: 'BackBtn',
-            headerStyle: {
-              backgroundColor: '#ffffff',
-            },
-          }}
-        />
-        {/* 이야기 페이지 */}
-        <Stack.Screen
-          name="StoryPage"
-          component={StoryPage}
-          options={{
-            title: '',
-            headerBackTitleVisible: false,
-            headerBackImage: 'BackBtn',
-            headerStyle: {
-              backgroundColor: '#ffffff',
-            },
-          }}
-        />
-        {/* 퀴즈 첫 시작페이지 */}
-        <Stack.Screen
-          name="Quiz"
-          component={QuizPage}
-          options={{
-            title: '',
-            headerBackTitleVisible: false,
-            headerBackImage: 'BackBtn',
-            headerStyle: {
-              backgroundColor: '#ffffff',
-            },
-          }}
-        />
-        {/* 퀴즈 게임 화면 */}
-        <Stack.Screen
-          name="QuizStart"
-          component={QuizMainPage}
-          options={{
-            title: '',
-            headerBackTitleVisible: false,
-            headerBackImage: 'BackBtn',
-            headerStyle: {
-              backgroundColor: '#ffffff',
-            },
-          }}
-        />
-        {/* 스무고개 페이지 */}
-        <Stack.Screen
-          name="TwentyQuestion"
-          component={TwentyQuestionPage}
-          options={{
-            title: '',
-            headerBackTitleVisible: false,
-            headerBackImage: 'BackBtn',
-            headerStyle: {
-              backgroundColor: '#ffffff',
-            },
-          }}
-        />
-        {/* 끝말잇기 페에지 */}
-        <Stack.Screen
-          name="ConnectStart"
-          component={ConnectEndingPage}
-          options={{
-            title: '',
-            headerBackTitleVisible: false,
-            headerBackImage: 'BackBtn',
-            headerStyle: {
-              backgroundColor: '#ffffff',
-            },
-          }}
-        />
-        {/*마이 페이지*/}
-        <Stack.Screen name="MyPage" component={MyPage} />
-      </Stack.Navigator>
-      {loggedIn ? <Footer /> : null}
+        <Stack.Navigator>
+          {/* 초기화면 */}
+          <Stack.Screen
+            name="LandingPage"
+            component={LandingPage}
+            options={{
+              title: '',
+              headerBackTitleVisible: false,
+              headerBackImage: 'BackBtn',
+              headerShown: false,
+            }}
+          />
+          {/* 로그인 화면 */}
+          <Stack.Screen
+            name="LoginPage"
+            component={LoginPage}
+            options={{
+              title: '',
+              headerBackTitleVisible: false,
+              headerBackImage: 'BackBtn',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: '#f3e99f',
+              },
+            }}
+          />
+          {/* 회원가입 페이지 */}
+          <Stack.Screen
+            name="Register"
+            component={RegisterPage}
+            options={{
+              title: '',
+              headerBackTitleVisible: false,
+              headerBackImage: 'BackBtn',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: '#f3e99f',
+              },
+            }}
+          />
+          {/* 로그인 시 멤버메인페이지 */}
+          <Stack.Screen
+            name="MemberMainPage"
+            component={MemberMainPage}
+            options={{
+              title: '',
+              headerBackTitleVisible: false,
+              headerBackImage: 'BackBtn',
+              headerStyle: {
+                backgroundColor: '#ffffff',
+              },
+            }}
+          />
+          {/* 상담페이지 */}
+          <Stack.Screen
+            name="CounsellingPage"
+            component={CounsellingPage}
+            options={{
+              title: '',
+              headerBackTitleVisible: false,
+              headerBackImage: 'BackBtn',
+              headerStyle: {
+                backgroundColor: '#f3e99f',
+              },
+            }}
+          />
+          {/* 이야기 페이지 */}
+          <Stack.Screen
+            name="StoryPage"
+            component={StoryPage}
+            options={{
+              title: '',
+              headerBackTitleVisible: false,
+              headerBackImage: 'BackBtn',
+              headerStyle: {
+                backgroundColor: '#f3e99f',
+              },
+            }}
+          />
+          {/* 퀴즈 첫 시작페이지 */}
+          <Stack.Screen
+            name="Quiz"
+            component={QuizPage}
+            options={{
+              title: '',
+              headerBackTitleVisible: false,
+              headerBackImage: 'BackBtn',
+              headerStyle: {
+                backgroundColor: '#f3e99f',
+              },
+            }}
+          />
+          {/* 퀴즈 게임 화면 */}
+          <Stack.Screen
+            name="QuizStart"
+            component={QuizMainPage}
+            options={{
+              title: '',
+              headerBackTitleVisible: false,
+              headerBackImage: 'BackBtn',
+              headerStyle: {
+                backgroundColor: '#f3e99f',
+              },
+            }}
+          />
+          {/* 스무고개 페이지 */}
+          <Stack.Screen
+            name="TwentyQuestion"
+            component={TwentyQuestionPage}
+            options={{
+              title: '',
+              headerBackTitleVisible: false,
+              headerBackImage: 'BackBtn',
+              headerStyle: {
+                backgroundColor: '#f3e99f',
+              },
+            }}
+          />
+          {/* 끝말잇기 페에지 */}
+          {/*마이 페이지*/}
+          <Stack.Screen name="MyPage" component={MyPage} />
+          <Stack.Screen
+            name="ConnectStart"
+            component={ConnectEndingPage}
+            options={{
+              title: '',
+              headerBackTitleVisible: false,
+              headerBackImage: 'BackBtn',
+              headerStyle: {
+                backgroundColor: '#f3e99f',
+              },
+            }}
+          />
+        </Stack.Navigator>
     </NavigationContainer>
   );
 };
