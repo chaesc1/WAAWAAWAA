@@ -81,7 +81,7 @@ export const ConnectEndApi = async (prompt, messages) => {
     return Promise.resolve({success: false, msg: err.message});
   }
 };
-// 퀴즈
+// 수다, 아키네이터
 // prompt : user 가 말한 주제  - fixed value
 // messages :
 // userAnswer : user - non_fixed value
@@ -94,7 +94,7 @@ export const QuizGenerate = async (prompt, messages) => {
       messages: [
         {
           role: 'system',
-          content: `유저와 수다떠는 용도고 ${prompt}와 관련된 대답을 하면 되는거야`,
+          content: `I’m considering character. You must query me, and I shall respond with a yes or no. Based on my response, you must determine the character I am thinking of. Begin with the first query.`,
         },
       ],
       temperature: 0.8,
