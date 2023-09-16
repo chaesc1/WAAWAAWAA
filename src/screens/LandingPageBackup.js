@@ -14,7 +14,6 @@ import {
 export default function LandingPage({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={{fontWeight: 'bold', fontSize: 20}}>Play With OPENAI</Text>
       <Image
         style={styles.goldPicture}
         source={require('../../assets/images/bot.png')}

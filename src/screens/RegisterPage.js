@@ -12,7 +12,6 @@ import {
   SafeAreaView,
   Platform,
 } from 'react-native';
-import {StatusBar} from 'expo-status-bar';
 import axios from 'axios';
 import {
   widthPercentageToDP as wp,
@@ -180,17 +179,17 @@ export default function RegisterPage({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3E99F',
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
   },
   smallContainer: {
-    backgroundColor: '#FDFBEC',
+    backgroundColor: '#E2F6CA',
     alignItems: 'center',
     justifyContent: 'center',
     width: wp('75%'), // 스크린 가로 크기 100%
     height: hp('70%'), // 스크린 세로 크기 70%
-    borderRadius: wp('2%'),
+    borderRadius: wp('6%'),
     padding: -10,
   },
   Text: {

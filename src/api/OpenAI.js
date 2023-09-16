@@ -69,7 +69,7 @@ export const ConnectEndApi = async (prompt, messages) => {
           content: prompt,
         },
       ],
-      temperature: 0.2,
+      temperature: 0.9,
     });
 
     let answer = res.data?.choices[0]?.message?.content;

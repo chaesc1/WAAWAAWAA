@@ -41,7 +41,7 @@ export default function MemberMainPage({navigation}) {
         <View style={styles.column}>
           <TouchableOpacity onPress={() => navigation.navigate('StoryPage')}>
             <View style={styles.Button}>
-              <Text style={styles.Text}>이야기 말하기</Text>
+              <Text style={styles.Text}>이야기 놀이</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -53,9 +53,8 @@ export default function MemberMainPage({navigation}) {
           </TouchableOpacity>
         </View>
       </View>
-      <Footer/>
+      <Footer />
     </View>
-    
   );
 }
 
@@ -92,9 +91,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // 수평 방향으로 중앙 정렬
     alignItems: 'center', // 수직 방향으로 중앙 정렬
     backgroundColor: '#10B981',
-    borderRadius: 20,
+    borderRadius: 30,
     borderWidth: 30,
-    borderColor: '#FDD8F8',
+    borderColor: '#C3EDC0',
   },
   Text: {
     fontWeight: '600',
