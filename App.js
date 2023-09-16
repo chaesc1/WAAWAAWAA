@@ -76,7 +76,7 @@ const App = () => {
             headerBackImage: 'BackBtn',
             headerShown: true,
             headerStyle: {
-              backgroundColor: '#FFFFFF',
+              backgroundColor: '#FAF1E4',
             },
           }}
         />
@@ -90,7 +90,7 @@ const App = () => {
             headerBackImage: 'BackBtn',
             headerShown: true,
             headerStyle: {
-              backgroundColor: '#FFFFFF',
+              backgroundColor: '#FAF1E4',
             },
           }}
         />
@@ -103,7 +103,7 @@ const App = () => {
             headerBackTitleVisible: false,
             headerBackImage: 'BackBtn',
             headerStyle: {
-              backgroundColor: '#ffffff',
+              backgroundColor: '#FAF1E4',
             },
           }}
         />
@@ -173,7 +173,6 @@ const App = () => {
           }}
         />
         {/* 끝말잇기 페에지 */}
-        {/*마이 페이지*/}
         <Stack.Screen name="MyPage" component={MyPage} />
         <Stack.Screen
           name="ConnectStart"
@@ -187,6 +186,7 @@ const App = () => {
             },
           }}
         />
+        {/*마이 페이지*/}
       </Stack.Navigator>
     </NavigationContainer>
   );

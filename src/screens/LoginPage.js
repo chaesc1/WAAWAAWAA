@@ -144,7 +144,7 @@ export default function LoginPage({navigation}) {
   const portraitStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#FFFFFF',
+      backgroundColor: '#FAF1E4',
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -162,7 +162,7 @@ export default function LoginPage({navigation}) {
       color: 'black',
       fontSize: hp('7%'),
       fontWeight: 'bold',
-      marginTop: hp('15%'),
+      marginTop: hp('20%'),
     },
     fixToInput: {
       flex: 1,

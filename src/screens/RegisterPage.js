@@ -179,7 +179,7 @@ export default function RegisterPage({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FAF1E4',
     alignItems: 'center',
     justifyContent: 'center',
   },

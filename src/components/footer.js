@@ -1,16 +1,21 @@
 // 하단바 컴포넌트
-import React, { useEffect, useState }from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import isTokenAvailable from '../utils/isTokenAvailable';
+
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 const Footer = ({}) => {
   const navigation = useNavigation();
   const [tokenAvailable, setTokenAvailable] = useState(false); // 토큰 존재 여부를 상태로 관리.
 
   const handleLogout = async () => {
-    const userId =  AsyncStorage.getItem('userId');
+    const userId = AsyncStorage.getItem('userId');
     // 로그아웃
     await AsyncStorage.clear();
     // console.log("로그아웃 후:"+userId);
@@ -24,7 +29,6 @@ const Footer = ({}) => {
   //   })
   // }, []);
 
-
   // if (!tokenAvailable) {
   //   console.log("tokenavailable값:",tokenAvailable)
   //   console.log('error!!!!!!!!!!')
@@ -33,20 +37,14 @@ const Footer = ({}) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-      onPress={() => navigation.navigate('MyPage')}
-      >
-        <Text style={styles.tabBarButton}>마이페이지</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('MyPage')}>
+        <Text style={styles.tabBarButton}>MyPage</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => navigation.navigate('MemberMainPage')}
-      >
+      <TouchableOpacity onPress={() => navigation.navigate('MemberMainPage')}>
         <Text style={styles.tabBarButton}>메인메뉴</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        onPress={handleLogout}
-      >
-        <Text style={styles.tabBarButton}>로그아웃</Text>
+      <TouchableOpacity onPress={handleLogout}>
+        <Text style={styles.tabBarButton}>LogOut</Text>
       </TouchableOpacity>
     </View>
   );
@@ -57,12 +55,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: 'lightgray', // 하단 탭 바 배경색
-    height: 60, // 하단 탭 바 높이
-    width: '100%',
+    backgroundColor: '#E4E4D0', // 하단 탭 바 배경색
+    height: hp('10%'), // 하단 탭 바 높이
+    width: wp('100%'),
   },
   tabBarButton: {
-    fontSize: 18,
+    alignSelf: 'center',
+    fontSize: wp('4%'),
     fontWeight: 'bold',
   },
 });
