@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import axios from 'axios';
 import React, {useState, useEffect, useRef} from 'react';
 import {
   widthPercentageToDP as wp,
@@ -20,6 +19,7 @@ import Voice from '@react-native-voice/voice';
 import {ConnectEndApi} from '../api/OpenAI';
 import Tts from 'react-native-tts';
 import authClient from '../apis/authClient';
+import Footer from '../components/footer';
 Tts.requestInstallData();
 
 export default CounsellingRe = () => {
@@ -29,6 +29,7 @@ export default CounsellingRe = () => {
   const [loading, setLoading] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const [gptLastLetter, setGptLastLetter] = useState('');
+  const [hideClearButton, setHideClearButton] = useState(false);
   const scrollViewRef = useRef();
 
   const getMessage = async () => {
@@ -38,6 +39,7 @@ export default CounsellingRe = () => {
         url: '/word-chain',
       });
       setMessages(res.data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -58,7 +60,7 @@ export default CounsellingRe = () => {
     }
   };
 
-  const fetchResponse = () => {
+  const fetchResponse = async () => {
     if (result.trim().length > 0) {
       let newMessages = [...messages];
       if (result.trim().slice(0, 1) !== gptLastLetter && messages.length != 0) {
@@ -81,12 +83,13 @@ export default CounsellingRe = () => {
         };
 
         try {
-          authClient({
+          await authClient({
             method: 'post',
             url: '/word-chain',
             data: body,
           });
           getMessage();
+          setHideClearButton(false);
         } catch (error) {
           console.log(error);
         }
@@ -94,8 +97,11 @@ export default CounsellingRe = () => {
         updateScrollView();
         setLoading(true);
 
-        ConnectEndApi(result.trim(), newMessages).then(res => {
+        try {
+          const res = await ConnectEndApi(result?.trim() ?? '', newMessages);
+
           setLoading(false);
+
           if (res.success) {
             setGptLastLetter(res.data[res.data.length - 1].content.slice(-1));
 
@@ -108,7 +114,7 @@ export default CounsellingRe = () => {
             };
 
             try {
-              authClient({
+              await authClient({
                 method: 'post',
                 url: '/word-chain',
                 data: gptBody,
@@ -117,16 +123,18 @@ export default CounsellingRe = () => {
             } catch (error) {
               console.error(error);
             }
+            getMessage();
 
             setResult('');
             updateScrollView();
 
-            // now play the response to user
             startTextToSpeech(res.data[res.data.length - 1]);
           } else {
             Alert.alert('Error', res.msg);
           }
-        });
+        } catch (error) {
+          console.error(error);
+        }
       }
     }
   };
@@ -153,21 +161,26 @@ export default CounsellingRe = () => {
     Voice.stop();
     Tts.stop();
   };
+
   const stopSpeaking = () => {
     Tts.stop();
     setSpeaking(false);
+    setHideClearButton(true);
   };
   const speechStartHandler = e => {
     console.log('speech start event', e);
+    setHideClearButton(true);
   };
   const speechEndHandler = e => {
     setRecording(false);
     console.log('speech stop event', e);
+    setHideClearButton(true);
   };
   const speechResultsHandler = e => {
     console.log('speech event: ', e);
     const text = e.value[0];
     setResult(text);
+    setHideClearButton(true);
   };
 
   const speechErrorHandler = e => {
@@ -182,6 +195,7 @@ export default CounsellingRe = () => {
     } catch (error) {
       console.log('err:', error);
     }
+    setHideClearButton(true);
   };
 
   const stopRecording = async () => {
@@ -195,9 +209,21 @@ export default CounsellingRe = () => {
     } catch (error) {
       console.log('err:', error);
     }
+    setHideClearButton(true);
   };
 
+  // 처음 들어왔을 때 서버에 값이 있다면 gptLastLetter에는 서버에서 받은 값을 설정
   useEffect(() => {
+    const receivedLastWordMessageFromServer =
+      messages &&
+      messages.length > 0 &&
+      messages[messages.length - 1].content.slice(-1);
+
+    !gptLastLetter && setGptLastLetter(receivedLastWordMessageFromServer);
+  }, [messages]);
+
+  useEffect(() => {
+    setLoading(true);
     getMessage();
 
     // voice handler events
@@ -311,7 +337,7 @@ export default CounsellingRe = () => {
             </TouchableOpacity>
           )}
           {/* right side */}
-          {messages.length > 0 && (
+          {messages.length > 0 && !hideClearButton && (
             <TouchableOpacity style={styles.clearButton} onPress={clear}>
               <Text style={styles.buttonText}>Clear</Text>
             </TouchableOpacity>
@@ -324,6 +350,7 @@ export default CounsellingRe = () => {
           )}
         </View>
       </SafeAreaView>
+      <Footer />
     </View>
   );
 };
@@ -332,7 +359,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    paddingBottom: 10,
+    paddingBottom: 0,
   },
   scrollView: {
     height: hp(60),
@@ -386,7 +413,6 @@ const styles = StyleSheet.create({
     borderRadius: hp(5),
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 16, // Add margin right for spacing
   },
   buttonImage: {
     width: hp(10),
@@ -397,7 +423,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 8,
     position: 'absolute',
-    right: 10,
+    right: wp(5),
     bottom: 10,
   },
   stopButton: {
@@ -405,7 +431,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 8,
     position: 'absolute',
-    left: 10,
+    left: wp(5),
     bottom: 10,
   },
   buttonText: {

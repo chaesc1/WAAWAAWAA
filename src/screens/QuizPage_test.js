@@ -14,7 +14,7 @@ import {
 import Voice from '@react-native-voice/voice';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Features from '../components/QuizFeature'; //첫 초기화면 굳이 넣어햐하나?
-import {QuizGenerate, apiCall} from '../api/OpenAI'; //퀴즈 생성 api 호출
+import {QuizGenerate} from '../api/OpenAI'; //퀴즈 생성 api 호출
 import Tts from 'react-native-tts'; //TTS Library
 
 import {
