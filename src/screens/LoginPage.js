@@ -15,6 +15,7 @@ import {
   Keyboard,
   TouchableOpacity,
   SafeAreaView,
+  Image,
 } from 'react-native';
 
 import {
@@ -22,14 +23,25 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import noAuthClient from '../apis/noAuthClient';
+import {useFocusEffect} from '@react-navigation/native';
 
 export default function LoginPage({navigation}) {
   const [isLandscape, setIsLandscape] = useState(false);
   const [userId, setUserId] = useState('');
   const [userPassword, setUserPassword] = useState('');
+  const [isStoredAccessToken, setIsStoredAccessToken] = useState(false);
 
-  // const [accessToken, setAccessToken] = useState('');
-  // const [refreshToken, setRefreshToken] = useState('');
+  const getAccessTokenData = async () => {
+    setIsStoredAccessToken(
+      (await AsyncStorage.getItem('accessToken')) ? true : false,
+    );
+  };
+
+  useFocusEffect(() => {
+    getAccessTokenData();
+
+    isStoredAccessToken && navigation.navigate('MemberMainPage');
+  });
 
   // 유저 로그인 요청 api
   const login = async () => {
@@ -235,52 +247,58 @@ export default function LoginPage({navigation}) {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <View style={styles.smallContainer}>
-          <Text style={styles.Text}>Let's Start</Text>
-          {/* 아이디 비밀번호 텍스트 박스 묶음 */}
-          <View style={styles.fixToInput}>
-            <TextInput
-              style={styles.textFormTop}
-              placeholder={'아이디'}
-              value={userId}
-              onChangeText={setUserId}
-              autoCapitalize="none"
-              returnKeyType="next"
-              underlineColorAndroid="#f000"
-              blurOnSubmit={false}
-            />
-            {/* <MyButton text="ddd" /> */}
-            <TextInput
-              style={styles.textFormTop}
-              placeholder={'비밀번호'}
-              value={userPassword}
-              secureTextEntry={true} // 비밀번호 타입으로 변경
-              onChangeText={setUserPassword}
-              autoCapitalize="none"
-              returnKeyType="next"
-              underlineColorAndroid="#f000"
-              blurOnSubmit={false}
-            />
-          </View>
+        {isStoredAccessToken ? (
+          <Image
+            source={require('../../assets/images/loading.gif')}
+            style={styles.buttonImage}
+          />
+        ) : (
+          <View style={styles.smallContainer}>
+            <Text style={styles.Text}>Let's Start</Text>
+            {/* 아이디 비밀번호 텍스트 박스 묶음 */}
+            <View style={styles.fixToInput}>
+              <TextInput
+                style={styles.textFormTop}
+                placeholder={'아이디'}
+                value={userId}
+                onChangeText={setUserId}
+                autoCapitalize="none"
+                returnKeyType="next"
+                underlineColorAndroid="#f000"
+                blurOnSubmit={false}
+              />
+              {/* <MyButton text="ddd" /> */}
+              <TextInput
+                style={styles.textFormTop}
+                placeholder={'비밀번호'}
+                value={userPassword}
+                secureTextEntry={true} // 비밀번호 타입으로 변경
+                onChangeText={setUserPassword}
+                autoCapitalize="none"
+                returnKeyType="next"
+                underlineColorAndroid="#f000"
+                blurOnSubmit={false}
+              />
+            </View>
 
-          <View style={styles.buttonContainer}>
-            {/* 로그인 하면 회원이 접근가능한 page로 */}
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                //navigation.navigate('MyPage')
-                login();
-              }}>
-              <Text style={styles.buttonText}>로그인</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => navigation.navigate('Register')}>
-              <Text style={styles.buttonText}>회원가입</Text>
-            </TouchableOpacity>
-            {/* 소셜 로그인 버튼 */}
-          </View>
-          {/* <View style={styles.socialLogin}>
+            <View style={styles.buttonContainer}>
+              {/* 로그인 하면 회원이 접근가능한 page로 */}
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  //navigation.navigate('MyPage')
+                  login();
+                }}>
+                <Text style={styles.buttonText}>로그인</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => navigation.navigate('Register')}>
+                <Text style={styles.buttonText}>회원가입</Text>
+              </TouchableOpacity>
+              {/* 소셜 로그인 버튼 */}
+            </View>
+            {/* <View style={styles.socialLogin}>
             <TouchableOpacity
               style={styles.social_button}
               onPress={() => navigation.navigate('Register')}>
@@ -292,7 +310,8 @@ export default function LoginPage({navigation}) {
               <Text style={styles.buttonText}>구글 로그인</Text>
             </TouchableOpacity>
           </View> */}
-        </View>
+          </View>
+        )}
       </View>
     </TouchableWithoutFeedback>
   );

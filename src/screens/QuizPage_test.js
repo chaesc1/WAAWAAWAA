@@ -14,7 +14,7 @@ import {
 import Voice from '@react-native-voice/voice';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Features from '../components/QuizFeature'; //첫 초기화면 굳이 넣어햐하나?
-import {QuizGenerate, apiCall} from '../api/OpenAI'; //퀴즈 생성 api 호출
+import {QuizGenerate} from '../api/OpenAI'; //퀴즈 생성 api 호출
 import Tts from 'react-native-tts'; //TTS Library
 
 import {
@@ -201,12 +201,12 @@ const QuizPage_test = ({navigation}) => {
     //       style={styles.headingImg}
     //     />
     //     <View style={styles.textInputStyle}>
-    //       <TextInput
-    //         value={result}
-    //         placeholder="your text"
-    //         style={{flex: 1}}
-    //         onChangeText={text => setResult(text)}
-    //       />
+    // <TextInput
+    //   value={result}
+    //   placeholder="your text"
+    //   style={{flex: 1}}
+    //   onChangeText={text => setResult(text)}
+    // />
     //     </View>
     //     {/* 녹음, 정지 ,확인  뷰 */}
     //     <View style={styles.buttonView}>

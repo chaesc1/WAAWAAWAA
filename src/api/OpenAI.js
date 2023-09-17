@@ -62,14 +62,14 @@ export const ConnectEndApi = async (prompt, messages) => {
         {
           role: 'system',
           content:
-            '끝말잇기는 단어를 말하면 그 단어의 맨 끝 글자에 이어서 말하는 놀이이다. 전에 말한 단어 금지 국어사전에 등재되지 않은 단어는 금지 등 여러 규칙들이 있다 명사인 단어만 가능하고 고유명사는 안되며, 지명은 예외이다.',
+            '끝말잇기는 단어를 말하면 그 단어의 맨 끝 글자에 이어서 말하는 놀이이다. 전에 말한 단어 금지 국어사전에 등재되지 않은 단어는 금지 등 여러 규칙들이 있다 명사인 단어만 가능하고 고유명사는 안되며, 지명은 예외이다. 또한 두음법칙을 사용하면 안 되고, 너가 틀린 단어를 말하면 졌어 라고 말해야해.',
         },
         {
           role: 'user',
           content: prompt,
         },
       ],
-      temperature: 0.9,
+      temperature: 0.1,
     });
 
     let answer = res.data?.choices[0]?.message?.content;

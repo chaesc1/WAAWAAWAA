@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -59,10 +60,17 @@ export default CounsellingRe = () => {
       console.log(error);
     }
   };
+  const clearTextField = async () => {
+    await setResult('');
+    await getMessage();
+
+    await updateScrollView();
+  };
 
   const fetchResponse = async () => {
     if (result.trim().length > 0) {
       let newMessages = [...messages];
+      console.log(gptLastLetter);
       if (result.trim().slice(0, 1) !== gptLastLetter && messages.length != 0) {
         Alert.alert('틀렸어!', '다시해!!', [
           {
@@ -70,6 +78,7 @@ export default CounsellingRe = () => {
             onPress: () => {
               clearMessage();
               setLoading(true);
+              setGptLastLetter('');
             },
           },
         ]);
@@ -99,13 +108,28 @@ export default CounsellingRe = () => {
 
         try {
           const res = await ConnectEndApi(result?.trim() ?? '', newMessages);
+          console.log(res, 'res');
+          const gptResponse = res.data[res.data?.length - 1].content;
+
+          if (gptResponse === '졌어' || gptResponse.slice(-1) === '.') {
+            Alert.alert('GPT가 졌어!', '너가 이겼다!!', [
+              {
+                text: '우와! 한 번 더?',
+                onPress: () => {
+                  clearMessage();
+                  setLoading(true);
+                  setGptLastLetter('');
+                },
+              },
+            ]);
+          }
 
           setLoading(false);
 
           if (res.success) {
-            setGptLastLetter(res.data[res.data.length - 1].content.slice(-1));
+            setGptLastLetter(gptResponse.slice(-1));
 
-            const gptAnswer = res.data[res.data.length - 1];
+            const gptAnswer = res.data?.[res.data?.length - 1];
 
             const gptBody = {
               content: gptAnswer?.content,
@@ -123,12 +147,9 @@ export default CounsellingRe = () => {
             } catch (error) {
               console.error(error);
             }
-            getMessage();
 
-            setResult('');
-            updateScrollView();
-
-            startTextToSpeech(res.data[res.data.length - 1]);
+            clearTextField();
+            startTextToSpeech(res.data?.[res.data?.length - 1]);
           } else {
             Alert.alert('Error', res.msg);
           }
@@ -314,6 +335,12 @@ export default CounsellingRe = () => {
         )}
         {/* 녹음 , clear, 정지 버튼 */}
         <View style={styles.buttonsContainer}>
+          <TextInput
+            value={result}
+            placeholder="your text"
+            style={{flex: 1}}
+            onChangeText={text => setResult(text)}
+          />
           {loading ? (
             <Image
               source={require('../../assets/images/loading.gif')}
@@ -336,21 +363,27 @@ export default CounsellingRe = () => {
               />
             </TouchableOpacity>
           )}
-          {/* right side */}
-          {messages.length > 0 && !hideClearButton && (
-            <TouchableOpacity style={styles.clearButton} onPress={clear}>
-              <Text style={styles.buttonText}>Clear</Text>
-            </TouchableOpacity>
-          )}
-          {/* left side */}
-          {speaking > 0 && (
-            <TouchableOpacity style={styles.stopButton} onPress={stopSpeaking}>
-              <Text style={styles.buttonText}>Stop</Text>
+
+          {!loading && (
+            <TouchableOpacity onPress={fetchResponse}>
+              <Text>전송</Text>
             </TouchableOpacity>
           )}
         </View>
       </SafeAreaView>
       <Footer />
+      {/* right side */}
+      {messages.length > 0 && !hideClearButton && (
+        <TouchableOpacity style={styles.clearButton} onPress={clear}>
+          <Text style={styles.buttonText}>Clear</Text>
+        </TouchableOpacity>
+      )}
+      {/* left side */}
+      {speaking > 0 && (
+        <TouchableOpacity style={styles.stopButton} onPress={stopSpeaking}>
+          <Text style={styles.buttonText}>Stop</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -405,6 +438,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    paddingLeft: 16,
+    paddingRight: 16,
     marginTop: 15, // Add margin top for spacing
   },
   button: {
@@ -424,7 +459,7 @@ const styles = StyleSheet.create({
     padding: 8,
     position: 'absolute',
     right: wp(5),
-    bottom: 10,
+    top: 10,
   },
   stopButton: {
     backgroundColor: '#EF4444',
@@ -432,7 +467,7 @@ const styles = StyleSheet.create({
     padding: 8,
     position: 'absolute',
     left: wp(5),
-    bottom: 10,
+    top: 10,
   },
   buttonText: {
     color: 'white',
