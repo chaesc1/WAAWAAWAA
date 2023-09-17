@@ -201,12 +201,12 @@ const QuizPage_test = ({navigation}) => {
     //       style={styles.headingImg}
     //     />
     //     <View style={styles.textInputStyle}>
-    //       <TextInput
-    //         value={result}
-    //         placeholder="your text"
-    //         style={{flex: 1}}
-    //         onChangeText={text => setResult(text)}
-    //       />
+    // <TextInput
+    //   value={result}
+    //   placeholder="your text"
+    //   style={{flex: 1}}
+    //   onChangeText={text => setResult(text)}
+    // />
     //     </View>
     //     {/* 녹음, 정지 ,확인  뷰 */}
     //     <View style={styles.buttonView}>

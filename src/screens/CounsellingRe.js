@@ -5,6 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -43,7 +44,7 @@ export default CounsellingRe = () => {
     }
   };
 
-  const fetchResponse = () => {
+  const fetchResponse = async () => {
     if (result.trim().length > 0) {
       let newMessages = [...messages];
       newMessages.push({role: 'user', content: result.trim()});
@@ -63,8 +64,9 @@ export default CounsellingRe = () => {
             url: '/counseling',
             data: body,
           });
-          getMessage();
+          await getMessage();
           setHideClearButton(false);
+          setResult('');
         } catch (error) {
           console.log(error);
         }
@@ -181,7 +183,7 @@ export default CounsellingRe = () => {
       await Voice.stop();
       setRecording(false);
       //fetch Response
-      fetchResponse();
+      // fetchResponse();
     } catch (error) {
       console.log('errpr:', error);
     }
@@ -277,7 +279,14 @@ export default CounsellingRe = () => {
           <Features />
         )}
         {/* 녹음 , clear, 정지 버튼 */}
+
         <View style={styles.buttonsContainer}>
+          <TextInput
+            value={result}
+            placeholder="your text"
+            style={{flex: 1}}
+            onChangeText={text => setResult(text)}
+          />
           {loading ? (
             <Image
               source={require('../../assets/images/loading.gif')}
@@ -300,21 +309,26 @@ export default CounsellingRe = () => {
               />
             </TouchableOpacity>
           )}
-          {/* right side */}
-          {messages.length > 0 && !hideClearButton && (
-            <TouchableOpacity style={styles.clearButton} onPress={clear}>
-              <Text style={styles.buttonText}>Clear</Text>
-            </TouchableOpacity>
-          )}
-          {/* left side */}
-          {speaking > 0 && (
-            <TouchableOpacity style={styles.stopButton} onPress={stopSpeaking}>
-              <Text style={styles.buttonText}>Stop</Text>
+          {!loading && (
+            <TouchableOpacity onPress={fetchResponse}>
+              <Text>전송</Text>
             </TouchableOpacity>
           )}
         </View>
       </SafeAreaView>
       <Footer />
+      {/* right side */}
+      {messages.length > 0 && !hideClearButton && (
+        <TouchableOpacity style={styles.clearButton} onPress={clear}>
+          <Text style={styles.buttonText}>Clear</Text>
+        </TouchableOpacity>
+      )}
+      {/* left side */}
+      {speaking > 0 && (
+        <TouchableOpacity style={styles.stopButton} onPress={stopSpeaking}>
+          <Text style={styles.buttonText}>Stop</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -369,7 +383,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 15, // Add margin top for spacing
+    paddingLeft: 16,
+    paddingRight: 16,
+    marginTop: 20, // Add margin top for spacing
   },
   button: {
     width: hp(10),
@@ -388,7 +404,7 @@ const styles = StyleSheet.create({
     padding: 8,
     position: 'absolute',
     right: wp(5),
-    bottom: 10,
+    top: 10,
   },
   stopButton: {
     backgroundColor: '#EF4444',
@@ -396,7 +412,7 @@ const styles = StyleSheet.create({
     padding: 8,
     position: 'absolute',
     left: wp(5),
-    bottom: 10,
+    top: 10,
   },
   buttonText: {
     color: 'white',
