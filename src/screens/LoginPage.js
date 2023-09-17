@@ -61,12 +61,15 @@ export default function LoginPage({navigation}) {
 
       await AsyncStorage.setItem('accessToken', res.data.accessToken);
       await AsyncStorage.setItem('refreshToken', res.data.refreshToken);
+      await AsyncStorage.setItem('userId', res.data.userId);
 
       const storedAccessToken = await AsyncStorage.getItem('accessToken');
       const storedRefreshToken = await AsyncStorage.getItem('refreshToken');
+      const storedUserId = await AsyncStorage.getItem('userId');
 
       console.log('Stored access token:', storedAccessToken);
       console.log('Stored refresh token:', storedRefreshToken);
+      console.log('Stored userId:', storedUserId);
     } catch (err) {
       console.error(err);
     }
@@ -86,7 +89,7 @@ export default function LoginPage({navigation}) {
       justifyContent: 'center',
       width: wp('100%'), // 스크린 가로 크기 70%
       height: hp('50%'), // 스크린 세로 크기 100%
-      borderRadius: wp('2%'),
+      borderRadius: wp('4%'),
     },
     Text: {
       flex: 1,
@@ -153,25 +156,25 @@ export default function LoginPage({navigation}) {
   const portraitStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#F3E99F',
+      backgroundColor: '#FAF1E4',
       alignItems: 'center',
       justifyContent: 'center',
     },
     smallContainer: {
-      backgroundColor: '#FDFBEC',
+      backgroundColor: '#E2F6CA',
       alignItems: 'center',
       justifyContent: 'center',
       width: wp('75%'), // 스크린 가로 크기 100%
       height: hp('70%'), // 스크린 세로 크기 70%
-      borderRadius: wp('2%'),
+      borderRadius: wp('6%'),
     },
     Text: {
       flex: 1,
       bottom: 100,
       color: 'black',
-      fontSize: hp('10%'),
+      fontSize: hp('7%'),
       fontWeight: 'bold',
-      marginTop: hp('15%'),
+      marginTop: hp('20%'),
     },
     fixToInput: {
       flex: 1,
@@ -242,77 +245,75 @@ export default function LoginPage({navigation}) {
   };
 
   return (
-    <>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}>
-          {isStoredAccessToken ? (
-            <Image
-              source={require('../../assets/images/loading.gif')}
-              style={styles.buttonImage}
-            />
-          ) : (
-            <View style={styles.smallContainer}>
-              <Text style={styles.Text}>UMM</Text>
-              {/* 아이디 비밀번호 텍스트 박스 묶음 */}
-              <View style={styles.fixToInput}>
-                <TextInput
-                  style={styles.textFormTop}
-                  placeholder={'아이디'}
-                  value={userId}
-                  onChangeText={setUserId}
-                  autoCapitalize="none"
-                  returnKeyType="next"
-                  underlineColorAndroid="#f000"
-                  blurOnSubmit={false}
-                />
-                {/* <MyButton text="ddd" /> */}
-                <TextInput
-                  style={styles.textFormTop}
-                  placeholder={'비밀번호'}
-                  value={userPassword}
-                  secureTextEntry={true} // 비밀번호 타입으로 변경
-                  onChangeText={setUserPassword}
-                  autoCapitalize="none"
-                  returnKeyType="next"
-                  underlineColorAndroid="#f000"
-                  blurOnSubmit={false}
-                />
-              </View>
-
-              <View style={styles.buttonContainer}>
-                {/* 로그인 하면 회원이 접근가능한 page로 */}
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() => {
-                    //navigation.navigate('MyPage')
-                    login();
-                  }}>
-                  <Text style={styles.buttonText}>로그인</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() => navigation.navigate('Register')}>
-                  <Text style={styles.buttonText}>회원가입</Text>
-                </TouchableOpacity>
-                {/* 소셜 로그인 버튼 */}
-              </View>
-              <View style={styles.socialLogin}>
-                <TouchableOpacity
-                  style={styles.social_button}
-                  onPress={() => navigation.navigate('Register')}>
-                  <Text style={styles.buttonText}>카카오 로그인</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.social_button}
-                  onPress={() => navigation.navigate('Register')}>
-                  <Text style={styles.buttonText}>구글 로그인</Text>
-                </TouchableOpacity>
-              </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        {isStoredAccessToken ? (
+          <Image
+            source={require('../../assets/images/loading.gif')}
+            style={styles.buttonImage}
+          />
+        ) : (
+          <View style={styles.smallContainer}>
+            <Text style={styles.Text}>Let's Start</Text>
+            {/* 아이디 비밀번호 텍스트 박스 묶음 */}
+            <View style={styles.fixToInput}>
+              <TextInput
+                style={styles.textFormTop}
+                placeholder={'아이디'}
+                value={userId}
+                onChangeText={setUserId}
+                autoCapitalize="none"
+                returnKeyType="next"
+                underlineColorAndroid="#f000"
+                blurOnSubmit={false}
+              />
+              {/* <MyButton text="ddd" /> */}
+              <TextInput
+                style={styles.textFormTop}
+                placeholder={'비밀번호'}
+                value={userPassword}
+                secureTextEntry={true} // 비밀번호 타입으로 변경
+                onChangeText={setUserPassword}
+                autoCapitalize="none"
+                returnKeyType="next"
+                underlineColorAndroid="#f000"
+                blurOnSubmit={false}
+              />
             </View>
-          )}
-        </View>
-      </TouchableWithoutFeedback>
-    </>
+
+            <View style={styles.buttonContainer}>
+              {/* 로그인 하면 회원이 접근가능한 page로 */}
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  //navigation.navigate('MyPage')
+                  login();
+                }}>
+                <Text style={styles.buttonText}>로그인</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => navigation.navigate('Register')}>
+                <Text style={styles.buttonText}>회원가입</Text>
+              </TouchableOpacity>
+              {/* 소셜 로그인 버튼 */}
+            </View>
+            {/* <View style={styles.socialLogin}>
+            <TouchableOpacity
+              style={styles.social_button}
+              onPress={() => navigation.navigate('Register')}>
+              <Text style={styles.buttonText}>카카오 로그인</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.social_button}
+              onPress={() => navigation.navigate('Register')}>
+              <Text style={styles.buttonText}>구글 로그인</Text>
+            </TouchableOpacity>
+          </View> */}
+          </View>
+        )}
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 

@@ -9,6 +9,7 @@ import {
   TextInput,
 } from 'react-native';
 import axios from 'axios';
+import Footer from '../components/footer';
 import config from '../../config/index'; // OpenAI API 키를 포함하는 파일
 
 const apiUrl = 'https://api.openai.com/v1/chat/completions';
@@ -100,6 +101,7 @@ const QuizMainPage = ({navigation, route}) => {
           />
         </View>
       </SafeAreaView>
+      <Footer/>
     </View>
   );
 };

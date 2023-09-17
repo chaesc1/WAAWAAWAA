@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
   container: {
     alignContent: 'center',
     height: hp(80),
-    marginTop: hp(5),
   },
   heading: {
     fontSize: wp(6.5),

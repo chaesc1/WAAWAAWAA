@@ -12,7 +12,6 @@ import {
   SafeAreaView,
   Platform,
 } from 'react-native';
-import {StatusBar} from 'expo-status-bar';
 import axios from 'axios';
 import {
   widthPercentageToDP as wp,
@@ -92,16 +91,12 @@ export default function RegisterPage({navigation}) {
         navigation.navigate('LoginPage'); // 회원가입 성공 시 로그인 페이지로 이동
       } else {
         // 서버 응답이 실패인 경우
-        console.log(username, userId, password);
         Alert.alert('유저 생성 실패', '유저 생성에 실패했습니다.');
       }
     } catch (error) {
-      console.log(username, userId, password);
       console.log('Test Error:', error);
     }
   };
-
-  console.log(username, userId, password);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -184,17 +179,17 @@ export default function RegisterPage({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3E99F',
+    backgroundColor: '#FAF1E4',
     alignItems: 'center',
     justifyContent: 'center',
   },
   smallContainer: {
-    backgroundColor: '#FDFBEC',
+    backgroundColor: '#E2F6CA',
     alignItems: 'center',
     justifyContent: 'center',
     width: wp('75%'), // 스크린 가로 크기 100%
     height: hp('70%'), // 스크린 세로 크기 70%
-    borderRadius: wp('2%'),
+    borderRadius: wp('6%'),
     padding: -10,
   },
   Text: {

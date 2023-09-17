@@ -11,6 +11,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import Footer from '../components/footer';
 
 export default function MemberMainPage({navigation}) {
   return (
@@ -22,7 +23,7 @@ export default function MemberMainPage({navigation}) {
           <TouchableOpacity onPress={() => navigation.navigate('Quiz')}>
             <View style={styles.additionalContent} />
             <View style={styles.Button}>
-              <Text style={styles.Text}>퀴즈</Text>
+              <Text style={styles.Text}>수다</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -40,9 +41,7 @@ export default function MemberMainPage({navigation}) {
         <View style={styles.column}>
           <TouchableOpacity onPress={() => navigation.navigate('StoryPage')}>
             <View style={styles.Button}>
-
-              <Text style={styles.Text}>이야기 말하기</Text>
-
+              <Text style={styles.Text}>이야기 놀이</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -54,6 +53,7 @@ export default function MemberMainPage({navigation}) {
           </TouchableOpacity>
         </View>
       </View>
+      <Footer />
     </View>
   );
 }
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F3E99F',
+    backgroundColor: '#FAF1E4',
   },
   wrapping: {
     width: wp('30%'),
@@ -90,15 +90,15 @@ const styles = StyleSheet.create({
     height: hp('30%'),
     justifyContent: 'center', // 수평 방향으로 중앙 정렬
     alignItems: 'center', // 수직 방향으로 중앙 정렬
-    backgroundColor: '#FF6D60',
-    borderRadius: 20,
+    backgroundColor: '#10B981',
+    borderRadius: 30,
     borderWidth: 30,
-    borderColor: '#FDFBEC',
+    borderColor: '#C3EDC0',
   },
   Text: {
     fontWeight: '600',
     color: 'white',
-    fontSize: 20,
+    fontSize: wp(5),
     borderRadius: 20,
   },
 });

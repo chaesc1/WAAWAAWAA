@@ -107,6 +107,7 @@ const QuizPage_test = ({navigation}) => {
     setLoading(false);
     setMessages([]);
     setSpeaking(false);
+    setRecording(false);
     Voice.stop();
     Tts.stop();
   };
@@ -130,7 +131,7 @@ const QuizPage_test = ({navigation}) => {
   };
 
   const speechErrorHandler = e => {
-    // console.log('speech error: ', e);
+    console.log('speech error: ', e);
   };
 
   const startRecording = async () => {
@@ -389,10 +390,11 @@ const styles = StyleSheet.create({
     fontSize: wp(4),
   },
   buttonsContainer: {
+    width: wp(100),
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 15, // Add margin top for spacing
+    marginTop: 12, // Add margin top for spacing
   },
   button: {
     width: hp(10),
@@ -400,18 +402,37 @@ const styles = StyleSheet.create({
     borderRadius: hp(5),
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 16, // Add margin right for spacing
+    // marginRight: 8, // Add margin right for spacing
+  },
+  inputText: {
+    width: wp(75),
+    height: hp(4),
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    alignItems: 'center',
   },
   buttonImage: {
     width: hp(10),
     height: hp(10),
+  },
+  buttonText: {
+    fontSize: 13,
+    fontWeight: 'bold',
+  },
+  confirmButton: {
+    backgroundColor: 'blue', // 원하는 배경색으로 변경
+    borderRadius: 20,
+    padding: 8,
+    marginLeft: 10, // 오른쪽 마진을 추가하여 TextInput과 버튼 사이에 간격을 조절
   },
   clearButton: {
     backgroundColor: '#6B7280',
     borderRadius: 20,
     padding: 8,
     position: 'absolute',
-    right: 10,
+    right: wp(5),
     bottom: 10,
   },
   stopButton: {
@@ -419,7 +440,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 8,
     position: 'absolute',
-    left: 10,
+    left: wp(5),
     bottom: 10,
   },
   buttonText: {
