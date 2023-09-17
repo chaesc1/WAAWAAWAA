@@ -14,7 +14,6 @@ import {
 export default function LandingPage({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={{fontWeight: 'bold', fontSize: 20}}>Play With OPENAI</Text>
       <Image
         style={styles.goldPicture}
         source={require('../../assets/images/bot.png')}
@@ -31,7 +30,7 @@ export default function LandingPage({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAF1E4',
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 24,

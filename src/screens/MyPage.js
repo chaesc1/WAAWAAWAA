@@ -1,4 +1,4 @@
-import React, {useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   View,
@@ -33,8 +33,6 @@ const MyPage = ({navigation}) => {
     }
   };
 
-  
-
   // 비밀번호 변경
   const handlePasswordChange = async () => {
     console.log('비밀번호 변경 시도:', password);
@@ -45,17 +43,15 @@ const MyPage = ({navigation}) => {
           url: '/users/password',
           data: {
             password: password,
-          }
+          },
         });
       } catch (error) {
         console.log(error.response.data);
       }
-      
     } else {
       Alert.alert('비밀번호를 다시 확인해주세요.');
     }
   };
-
 
   // 나이 변경
   const handleAgeChange = async () => {
@@ -109,7 +105,7 @@ const MyPage = ({navigation}) => {
     }
   };
 
-  // logout 
+  // logout
   const logout = async () => {
     try {
       // AsyncStorage를 clear
@@ -118,7 +114,6 @@ const MyPage = ({navigation}) => {
       // LandingPage로 navigate
       navigation.navigate('LandingPage');
       console.log('로그아웃 되었음!');
-      
     } catch (error) {
       console.error('로그아웃 오류:', error);
     }
@@ -129,22 +124,27 @@ const MyPage = ({navigation}) => {
     try {
       const res = await authClient({
         method: 'delete',
-        url:'/users',
-      })
+        url: '/users',
+      });
       // LandingPage로 navigate
       navigation.navigate('LandingPage');
       Alert.alert('회원탈퇴 되었습니다.');
     } catch (error) {
       console.log('회원탈퇴 실패', error);
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.profileContainer}>
-        <Image source={require('../../assets/gold.png')} style={styles.avatar} />
+        <Image
+          source={require('../../assets/gold.png')}
+          style={styles.avatar}
+        />
         <Text style={styles.username}>{user ? user.username : '이름'}</Text>
-        <Text style={styles.age}>{user ? `나이: ${user.age}살` : '나이: ?'}</Text>
+        <Text style={styles.age}>
+          {user ? `나이: ${user.age}살` : '나이: ?'}
+        </Text>
       </View>
       {/* <ScrollView contentContainerStyle={styles.scrollContent}> */}
       <View style={styles.menuContainer}>
@@ -231,32 +231,27 @@ const MyPage = ({navigation}) => {
               <Text style={styles.confirmButtonText}>변경하기</Text>
             </TouchableOpacity>
             {/* 추가: 비밀번호 변경 시 사용자 정보 조회 */}
-            
           </View>
         )}
-        
-        <TouchableOpacity
-            style={styles.button}
-            onPress={handleWithdraw}>
+
+        <TouchableOpacity style={styles.button} onPress={handleWithdraw}>
           <Text style={styles.buttonText}>회원탈퇴</Text>
         </TouchableOpacity>
       </View>
-      
+
       {/* </ScrollView> */}
-      
     </View>
-    
   );
 };
 
 const styles = StyleSheet.create({
-
   button: {
-    backgroundColor: '#FDFBEC',
+    backgroundColor: '#CBFFA9',
     paddingVertical: 10,
     paddingHorizontal: 20,
     alignItems: 'center',
     marginBottom: 10,
+    borderRadius: 14,
   },
   buttonText: {
     fontSize: 18,
@@ -266,7 +261,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start', // Align profile section to the top
     padding: 20,
-    backgroundColor: '#F3E99F',
+    backgroundColor: '#FFFFFF',
   },
   scrollContent: {
     flexGrow: 1, // Allow scrolling when content overflows
@@ -294,11 +289,12 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
   },
   menuItem: {
-    backgroundColor: '#FDFBEC',
+    backgroundColor: '#CBFFA9',
     paddingVertical: 10,
     paddingHorizontal: 20,
     alignItems: 'center',
     marginBottom: 10,
+    borderRadius: 14,
   },
   menuText: {
     fontSize: 18,
@@ -309,7 +305,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     marginBottom: 5,
-    backgroundColor: '#C8E4B2',
+    backgroundColor: '#B5C99A',
+    shadowOpacity: 0.3,
   },
   input: {
     borderWidth: 1,
@@ -318,7 +315,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   confirmButton: {
-    backgroundColor: '#7EAA92',
+    backgroundColor: '#BA704F',
     paddingVertical: 10,
     paddingHorizontal: 20,
 
