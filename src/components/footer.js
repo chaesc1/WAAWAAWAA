@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
     width: wp('100%'),
   },
   tabBarButton: {
-    alignSelf: 'center',
     fontSize: wp('4%'),
     fontWeight: 'bold',
   },
