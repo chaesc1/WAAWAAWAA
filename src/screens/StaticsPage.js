@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   View,
@@ -17,10 +17,54 @@ import Footer from '../components/footer';
 export default function StaticsPage({ navigation }) {
   const [showResult, setShowResult] = useState(false);
   const [resultContent, setResultContent] = useState('');
+  const [isLoading, setIsLoading] = useState(false) // API 요청 중인지 여부 판단 상태
 
   const toggleResult = (content) => {
     setShowResult(!showResult);
     setResultContent(content);
+
+    if (content === '자주 대화한 내용') {
+      fetchFrequentKeywords();
+    } else if (content === '위험 의심 내용') {
+      fetchDangerKeywords();
+    }
+      
+  };
+
+   // 자주 등장한 키워드
+   const fetchFrequentKeywords = async () => {
+    setIsLoading(true);
+    try {
+      const res = await authClient({
+        method: 'get',
+        url: '/counseling/most-frequent',
+      });
+      console.log(res.data);
+      const keywords = res.data;
+      setResultContent(keywords.join(', ')); // API 결과를 문자열로 변환하여 상태에 저장
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+   // 위험 의심 키워드
+   const fetchDangerKeywords = async () => {
+    setIsLoading(true);
+    try {
+      const res = await authClient({
+        method: 'get',
+        url: '/counseling/dangerous-keyword',
+      });
+      console.log(res.data);
+      const keywords = res.data;
+      setResultContent(keywords.join(', ')); // API 결과를 문자열로 변환하여 상태에 저장
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -48,7 +92,11 @@ export default function StaticsPage({ navigation }) {
 
       <View style={styles.resultBox}>
       {/* api 요청에 따른 결과를 노출시킬 공간입니다. */}
-        <Text>{resultContent}</Text>
+      {isLoading? (
+        <Text>Loading...</Text>
+      ) : (<Text>{resultContent}</Text>)}
+      
+        
         
       </View>
       <Footer />
