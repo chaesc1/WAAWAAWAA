@@ -12,10 +12,10 @@ import MyPage from './src/screens/MyPage';
 import Footer from './src/components/footer'; // 하단바
 import QuizPage2 from './src/screens/QuizPage';
 
-//tailwind
-import tw from 'twrnc';
-import {config, GluestackUIProvider, Text} from '@gluestack-ui/themed';
-import isTokenAvailable from './src/utils/isTokenAvailable';
+// //tailwind
+// import tw from 'twrnc';
+// import {config, GluestackUIProvider, Text} from '@gluestack-ui/themed';
+// import isTokenAvailable from './src/utils/isTokenAvailable';
 
 // import sttsPage from './src/STTS';
 //import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';

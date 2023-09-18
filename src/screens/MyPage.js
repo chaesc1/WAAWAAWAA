@@ -128,6 +128,7 @@ const MyPage = ({navigation}) => {
       });
       // LandingPage로 navigate
       navigation.navigate('LandingPage');
+      await AsyncStorage.clear();
       Alert.alert('회원탈퇴 되었습니다.');
     } catch (error) {
       console.log('회원탈퇴 실패', error);
