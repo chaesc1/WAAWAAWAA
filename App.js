@@ -8,14 +8,15 @@ import QuizMainPage from './src/screens/QuizMainPage'; //퀴즈 메인 화면
 import RegisterPage from './src/screens/RegisterPage'; //회원가입
 import ConnectEndingPage from './src/screens/ConnectEnding'; //끝말잇기
 import TwentyQuestionPage from './src/screens/TwentyQuestion'; // 스무고개 페이지
+import StaticsPage from './src/screens/StaticsPage'; // 통계 페이지
 import MyPage from './src/screens/MyPage';
 import Footer from './src/components/footer'; // 하단바
 import QuizPage2 from './src/screens/QuizPage';
 
-//tailwind
-import tw from 'twrnc';
-import {config, GluestackUIProvider, Text} from '@gluestack-ui/themed';
-import isTokenAvailable from './src/utils/isTokenAvailable';
+// //tailwind
+// import tw from 'twrnc';
+// import {config, GluestackUIProvider, Text} from '@gluestack-ui/themed';
+// import isTokenAvailable from './src/utils/isTokenAvailable';
 
 // import sttsPage from './src/STTS';
 //import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -186,6 +187,8 @@ const App = () => {
             },
           }}
         />
+        {/* 통계 페이지*/}
+        <Stack.Screen name="StaticsPage" component={StaticsPage} />
         {/*마이 페이지*/}
       </Stack.Navigator>
     </NavigationContainer>
