@@ -19,7 +19,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-
+import axios from 'axios';
 export default function SignUpScreen() {
   const navigation = useNavigation();
   const [username, setUsername] = useState('');
@@ -97,7 +97,6 @@ export default function SignUpScreen() {
           username: username,
           userId: userId,
           password: password,
-          age: age,
         },
       });
 
