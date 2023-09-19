@@ -102,7 +102,7 @@ export default function RegisterPage({navigation}) {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
         <View style={styles.smallContainer}>
-          <Text style={styles.Text}>회원가입</Text>
+          <Text style={styles.Text}>Let's Join!</Text>
           {/* 텍스트입력 */}
           <View style={styles.fixToInput}>
             <TextInput

@@ -173,7 +173,6 @@ const App = () => {
           }}
         />
         {/* 끝말잇기 페에지 */}
-        <Stack.Screen name="MyPage" component={MyPage} />
         <Stack.Screen
           name="ConnectStart"
           component={ConnectEndingPage}
@@ -187,6 +186,18 @@ const App = () => {
           }}
         />
         {/*마이 페이지*/}
+        <Stack.Screen
+          name="MyPage"
+          component={MyPage}
+          options={{
+            title: '',
+            headerBackTitleVisible: false,
+            headerBackImage: 'BackBtn',
+            headerStyle: {
+              backgroundColor: '#FAF1E4',
+            },
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

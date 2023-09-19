@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start', // Align profile section to the top
     padding: 20,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FAF1E4',
   },
   scrollContent: {
     flexGrow: 1, // Allow scrolling when content overflows
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#BA704F',
     paddingVertical: 10,
     paddingHorizontal: 20,
-
+    borderRadius: 10,
     alignItems: 'center',
   },
   confirmButtonText: {
