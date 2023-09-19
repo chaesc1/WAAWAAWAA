@@ -16,6 +16,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Image,
+  ActivityIndicator, //로딩 구현 import
 } from 'react-native';
 
 import {
@@ -248,10 +249,11 @@ export default function LoginPage({navigation}) {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         {isStoredAccessToken ? (
-          <Image
-            source={require('../../assets/images/loading.gif')}
-            style={styles.buttonImage}
-          />
+          // <Image
+          //   source={require('../../assets/images/loading.gif')}
+          //   style={styles.buttonImage}
+          // />
+          <ActivityIndicator size={'large'} />
         ) : (
           <View style={styles.smallContainer}>
             <Text style={styles.Text}>Let's Start</Text>

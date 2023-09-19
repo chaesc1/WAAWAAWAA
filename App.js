@@ -187,7 +187,18 @@ const App = () => {
           }}
         />
         {/* 통계 페이지*/}
-        <Stack.Screen name="StaticsPage" component={StaticsPage} />
+        <Stack.Screen
+          name="StaticsPage"
+          component={StaticsPage}
+          options={{
+            title: '',
+            headerBackTitleVisible: false,
+            headerBackImage: 'BackBtn',
+            headerStyle: {
+              backgroundColor: '#FAF1E4',
+            },
+          }}
+        />
         {/*마이 페이지*/}
         <Stack.Screen
           name="MyPage"

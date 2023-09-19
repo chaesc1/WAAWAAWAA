@@ -4,6 +4,7 @@ import {useNavigation} from '@react-navigation/native';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import isTokenAvailable from '../utils/isTokenAvailable';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import {
   widthPercentageToDP as wp,
@@ -38,13 +39,16 @@ const Footer = ({}) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.navigate('MyPage')}>
-        <Text style={styles.tabBarButton}>MyPage</Text>
+        {/* <Text style={styles.tabBarButton}>MyPage</Text> */}
+        <Icon name="person-circle-outline" size={wp('9%')} color="#000000" />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('MemberMainPage')}>
-        <Text style={styles.tabBarButton}>메인메뉴</Text>
+        {/* <Text style={styles.tabBarButton}>메인메뉴</Text> */}
+        <Icon name="grid-outline" size={wp('9%')} color="#000000" />
       </TouchableOpacity>
       <TouchableOpacity onPress={handleLogout}>
-        <Text style={styles.tabBarButton}>LogOut</Text>
+        {/* <Text style={styles.tabBarButton}>LogOut</Text> */}
+        <Icon name="log-out-outline" size={wp('9%')} color="#000000" />
       </TouchableOpacity>
     </View>
   );
@@ -56,7 +60,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: '#E4E4D0', // 하단 탭 바 배경색
-    height: hp('10%'), // 하단 탭 바 높이
+    height: hp('7%'), // 하단 탭 바 높이
     width: wp('100%'),
   },
   tabBarButton: {
