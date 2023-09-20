@@ -12,7 +12,8 @@ import StaticsPage from './src/screens/StaticsPage'; // 통계 페이지
 import MyPage from './src/screens/MyPage';
 import Footer from './src/components/footer'; // 하단바
 import QuizPage2 from './src/screens/QuizPage';
-
+import newLogin from './src/screens/newLoginPage';
+import newRegister from './src/screens/newRegister';
 // //tailwind
 // import tw from 'twrnc';
 // import {config, GluestackUIProvider, Text} from '@gluestack-ui/themed';
@@ -70,12 +71,12 @@ const App = () => {
         {/* 로그인 화면 */}
         <Stack.Screen
           name="LoginPage"
-          component={LoginPage}
+          component={newLogin}
           options={{
             title: '',
             headerBackTitleVisible: false,
             headerBackImage: 'BackBtn',
-            headerShown: true,
+            headerShown: false,
             headerStyle: {
               backgroundColor: '#FAF1E4',
             },
@@ -84,12 +85,12 @@ const App = () => {
         {/* 회원가입 페이지 */}
         <Stack.Screen
           name="Register"
-          component={RegisterPage}
+          component={newRegister}
           options={{
             title: '',
             headerBackTitleVisible: false,
             headerBackImage: 'BackBtn',
-            headerShown: true,
+            headerShown: false,
             headerStyle: {
               backgroundColor: '#FAF1E4',
             },
@@ -103,6 +104,7 @@ const App = () => {
             title: '',
             headerBackTitleVisible: false,
             headerBackImage: 'BackBtn',
+            headerShown: false,
             headerStyle: {
               backgroundColor: '#FAF1E4',
             },
@@ -174,7 +176,6 @@ const App = () => {
           }}
         />
         {/* 끝말잇기 페에지 */}
-        <Stack.Screen name="MyPage" component={MyPage} />
         <Stack.Screen
           name="ConnectStart"
           component={ConnectEndingPage}
@@ -188,8 +189,31 @@ const App = () => {
           }}
         />
         {/* 통계 페이지*/}
-        <Stack.Screen name="StaticsPage" component={StaticsPage} />
+        <Stack.Screen
+          name="StaticsPage"
+          component={StaticsPage}
+          options={{
+            title: '',
+            headerBackTitleVisible: false,
+            headerBackImage: 'BackBtn',
+            headerStyle: {
+              backgroundColor: '#FAF1E4',
+            },
+          }}
+        />
         {/*마이 페이지*/}
+        <Stack.Screen
+          name="MyPage"
+          component={MyPage}
+          options={{
+            title: '',
+            headerBackTitleVisible: false,
+            headerBackImage: 'BackBtn',
+            headerStyle: {
+              backgroundColor: '#FAF1E4',
+            },
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
