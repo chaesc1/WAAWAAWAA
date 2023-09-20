@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   },
   startButton: {
     width: wp(80),
-    height: hp('8%'),
+    height: 50,
     backgroundColor: '#1E2B22',
     justifyContent: 'center',
     alignItems: 'center',

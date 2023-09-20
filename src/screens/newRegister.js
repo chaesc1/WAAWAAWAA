@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     marginLeft: wp('2%'),
   },
   imageContainer: {
-    marginTop: hp(5),
+    marginBottom: hp('10.4%'),
     justifyContent: 'center',
     alignItems: 'center',
   },
