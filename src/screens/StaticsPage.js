@@ -95,9 +95,6 @@ export default function StaticsPage({ navigation }) {
       {isLoading? (
         <Text>Loading...</Text>
       ) : (<Text>{resultContent}</Text>)}
-      
-        
-        
       </View>
       <Footer />
     </SafeAreaView>
