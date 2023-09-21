@@ -16,7 +16,7 @@ import Footer from '../components/footer';
 
 export default function StaticsPage({ navigation }) {
   const [showFrequentResult, setShowFrequentResult] = useState(true);
-  const [showDangerResult, setShowDangerResult] = useState(true);
+  const [showDangerResult, setShowDangerResult] = useState(false);
   const [frequentKeywords, setFrequentKeywords] = useState([]);
   const [dangerKeywords, setDangerKeywords] = useState([]);
   const [isLoadingFrequent, setIsLoadingFrequent] = useState(false);
@@ -44,7 +44,7 @@ export default function StaticsPage({ navigation }) {
         url: '/counseling/most-frequent',
       });
       console.log(res.data);
-      const keywords = res.data.keywords || [];
+      const keywords = res.data;
       setFrequentKeywords(keywords);
     } catch (error) {
       console.log(error);
