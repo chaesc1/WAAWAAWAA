@@ -73,7 +73,7 @@ export default function StaticsPage({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={{ fontWeight: 'bold', fontSize: 20, paddingTop: 30 }}>
-        어떤 주제로 대화를 많이 했을까요?
+        대화했던 내용들의 통계를 볼 수 있어요!
       </Text>
 
       <View style={styles.buttonContainer}>
@@ -100,7 +100,7 @@ export default function StaticsPage({ navigation }) {
             <Text>Loading...</Text>
           ) : (
             frequentKeywords.map((item, index) => (
-              <View key={index} style={styles.keywordBox}>
+              <View key={index} style={styles.frequentKeywordBox}>
                 <Text>Count: {item.count}</Text>
                 <Text>Keyword: {item.keyword}</Text>
               </View>
@@ -116,7 +116,7 @@ export default function StaticsPage({ navigation }) {
             <Text>Loading...</Text>
           ) : (
             dangerKeywords.map((item, index) => (
-              <View key={index} style={styles.keywordBox}>
+              <View key={index} style={styles.dangerKeywordBox}>
                 <Text>{item}</Text>
               </View>
             ))
@@ -166,11 +166,21 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 10,
   },
-  keywordBox: {
-    backgroundColor: 'lightgray',
+  dangerKeywordBox: {
+    alignItems : 'center',
+    backgroundColor: '#B0D9B1',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    margin: 10,
+    borderRadius: 20,
+    width: '70%',
+    
+  },
+  frequentKeywordBox: {
+    backgroundColor: '#B0D9B1',
     paddingHorizontal: 10,
     paddingVertical: 5,
     margin: 5,
     borderRadius: 5,
-  },
+  }
 });
