@@ -15,25 +15,29 @@ import authClient from '../apis/authClient';
 import Footer from '../components/footer';
 
 export default function StaticsPage({ navigation }) {
-  const [showResult, setShowResult] = useState(false);
-  const [resultContent, setResultContent] = useState('');
-  const [isLoading, setIsLoading] = useState(false) // API 요청 중인지 여부 판단 상태
+  const [showFrequentResult, setShowFrequentResult] = useState(true);
+  const [showDangerResult, setShowDangerResult] = useState(false);
+  const [frequentKeywords, setFrequentKeywords] = useState([]);
+  const [dangerKeywords, setDangerKeywords] = useState([]);
+  const [isLoadingFrequent, setIsLoadingFrequent] = useState(false);
+  const [isLoadingDanger, setIsLoadingDanger] = useState(false);
 
   const toggleResult = (content) => {
-    setShowResult(!showResult);
-    setResultContent(content);
+    setShowFrequentResult(false);
+    setShowDangerResult(false);
 
     if (content === '자주 대화한 내용') {
       fetchFrequentKeywords();
+      setShowFrequentResult(true);
     } else if (content === '위험 의심 내용') {
       fetchDangerKeywords();
+      setShowDangerResult(true);
     }
-      
   };
 
-   // 자주 등장한 키워드
-   const fetchFrequentKeywords = async () => {
-    setIsLoading(true);
+  // 자주 등장한 키워드
+  const fetchFrequentKeywords = async () => {
+    setIsLoadingFrequent(true);
     try {
       const res = await authClient({
         method: 'get',
@@ -41,36 +45,35 @@ export default function StaticsPage({ navigation }) {
       });
       console.log(res.data);
       const keywords = res.data;
-      setResultContent(keywords.join(', ')); // API 결과를 문자열로 변환하여 상태에 저장
+      setFrequentKeywords(keywords);
     } catch (error) {
       console.log(error);
     } finally {
-      setIsLoading(false);
+      setIsLoadingFrequent(false);
     }
   };
 
-   // 위험 의심 키워드
-   const fetchDangerKeywords = async () => {
-    setIsLoading(true);
+  // 위험 의심 키워드
+  const fetchDangerKeywords = async () => {
+    setIsLoadingDanger(true);
     try {
       const res = await authClient({
         method: 'get',
         url: '/counseling/dangerous-keyword',
       });
-      console.log(res.data);
-      const keywords = res.data;
-      setResultContent(keywords.join(', ')); // API 결과를 문자열로 변환하여 상태에 저장
+      const keywords = res.data.dangerousContent || [];
+      setDangerKeywords(keywords);
     } catch (error) {
       console.log(error);
     } finally {
-      setIsLoading(false);
+      setIsLoadingDanger(false);
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={{ fontWeight: 'bold', fontSize: 20, paddingTop: 30 }}>
-        어떤 주제로 대화를 많이 했을까요?
+        대화했던 내용들의 통계를 볼 수 있어요!
       </Text>
 
       <View style={styles.buttonContainer}>
@@ -90,12 +93,36 @@ export default function StaticsPage({ navigation }) {
         </View>
       </View>
 
-      <View style={styles.resultBox}>
-      {/* api 요청에 따른 결과를 노출시킬 공간입니다. */}
-      {isLoading? (
-        <Text>Loading...</Text>
-      ) : (<Text>{resultContent}</Text>)}
-      </View>
+      {/* 자주 등장한 키워드 */}
+      {showFrequentResult && (
+        <ScrollView style={styles.resultBox}>
+          {isLoadingFrequent ? (
+            <Text>Loading...</Text>
+          ) : (
+            frequentKeywords.map((item, index) => (
+              <View key={index} style={styles.frequentKeywordBox}>
+                <Text>Count: {item.count}</Text>
+                <Text>Keyword: {item.keyword}</Text>
+              </View>
+            ))
+          )}
+        </ScrollView>
+      )}
+
+      {/* 위험 의심 키워드 */}
+      {showDangerResult && (
+        <ScrollView style={styles.resultBox}>
+          {isLoadingDanger ? (
+            <Text>Loading...</Text>
+          ) : (
+            dangerKeywords.map((item, index) => (
+              <View key={index} style={styles.dangerKeywordBox}>
+                <Text>{item}</Text>
+              </View>
+            ))
+          )}
+        </ScrollView>
+      )}
       <Footer />
     </SafeAreaView>
   );
@@ -132,12 +159,28 @@ const styles = StyleSheet.create({
   },
   resultBox: {
     backgroundColor: 'white',
-    flex: 1, // 화면의 남은 공간을 모두 차지하도록 함
-    width: '90%', // 화면 너비의 90%를 차지하도록 설정
+    flex: 1,
+    width: '90%',
     padding: 20,
     marginTop: 20,
     marginBottom: 20,
     borderRadius: 10,
-    alignItems: 'center',
   },
+  dangerKeywordBox: {
+    alignItems : 'center',
+    backgroundColor: '#B0D9B1',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    margin: 10,
+    borderRadius: 20,
+    width: '70%',
+    
+  },
+  frequentKeywordBox: {
+    backgroundColor: '#B0D9B1',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    margin: 5,
+    borderRadius: 5,
+  }
 });
