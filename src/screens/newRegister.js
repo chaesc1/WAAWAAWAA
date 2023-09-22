@@ -20,6 +20,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import axios from 'axios';
+import noAuthClient from '../apis/noAuthClient';
 export default function SignUpScreen() {
   const navigation = useNavigation();
   const [username, setUsername] = useState('');
@@ -89,14 +90,16 @@ export default function SignUpScreen() {
   }, []);
   // 유저생성 요청 api
   const register = async () => {
+    console.log(username, userId, password, age);
     try {
-      const res = await axios({
+      const res = await noAuthClient({
         method: 'post',
-        url: `http://15.164.50.203:3000/users`,
+        url: `/users`,
         data: {
           username: username,
           userId: userId,
           password: password,
+          age: Number(age),
         },
       });
 
@@ -108,7 +111,7 @@ export default function SignUpScreen() {
         Alert.alert('유저 생성 실패', '유저 생성에 실패했습니다.');
       }
     } catch (error) {
-      console.log('Test Error:', error);
+      console.log('Test Error:', error.response);
     }
   };
   return (
