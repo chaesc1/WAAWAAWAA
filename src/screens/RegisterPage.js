@@ -83,6 +83,7 @@ export default function RegisterPage({navigation}) {
           username: username,
           userId: userId,
           password: password,
+          age,
         },
       });
 
