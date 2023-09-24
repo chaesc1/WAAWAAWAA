@@ -19,6 +19,8 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import Lottie from 'lottie-react-native';
+
 import axios from 'axios';
 import noAuthClient from '../apis/noAuthClient';
 export default function SignUpScreen() {
@@ -126,9 +128,12 @@ export default function SignUpScreen() {
             </TouchableOpacity>
           </View>
           <View style={styles.imageContainer}>
-            <Image
-              source={require('../../assets/images/signup.png')}
+            <Lottie
+              source={require('../../assets/animations/Register.json')}
               style={styles.image}
+              loop
+              speed={0.8}
+              autoPlay
             />
           </View>
         </SafeAreaView>
@@ -230,9 +235,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    marginTop: hp(5),
     width: wp('45%'),
-    height: hp('15%'),
+    height: hp('35%'),
   },
   formContainer: {
     flex: 1,

@@ -4,6 +4,7 @@ import Orientation from 'react-native-orientation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import noAuthClient from '../apis/noAuthClient';
 import {useFocusEffect} from '@react-navigation/native';
+import Lottie from 'lottie-react-native';
 
 import {
   View,
@@ -86,9 +87,11 @@ export default function LoginScreen() {
             </TouchableOpacity>
           </View>
           <View style={styles.imageContainer}>
-            <Image
-              source={require('../../assets/images/bot.png')}
+            <Lottie
+              source={require('../../assets/animations/LoginAni.json')}
               style={styles.image}
+              autoPlay
+              loop
             />
           </View>
         </SafeAreaView>
@@ -169,8 +172,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: wp('45%'),
-    height: wp('45%'),
+    width: wp('50%'),
+    height: hp('40%'),
   },
   formContainer: {
     flex: 1,
