@@ -24,6 +24,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+
 export default function LoginScreen() {
   const navigation = useNavigation();
   const [isLandscape, setIsLandscape] = useState(false);

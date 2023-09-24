@@ -27,14 +27,12 @@ export default function MemberMainPage({navigation}) {
       id: 3,
       text: '이야기 따라 말하기',
       src: require('../../assets/images/Counselling.png'),
-
       screen: 'StoryPage',
     },
     {
       id: 4,
       text: '끝말잇기',
       src: require('../../assets/images/Counselling.png'),
-
       screen: 'ConnectStart',
     },
   ];
