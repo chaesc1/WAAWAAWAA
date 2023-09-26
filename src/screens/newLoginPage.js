@@ -89,7 +89,7 @@ export default function LoginScreen() {
           </View>
           <View style={styles.imageContainer}>
             <Lottie
-              source={require('../../assets/animations/LoginAni.json')}
+              source={require('../../assets/animations/newBear.json')}
               style={styles.image}
               autoPlay
               loop

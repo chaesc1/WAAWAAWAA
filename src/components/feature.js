@@ -4,7 +4,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-
+import Lottie from 'lottie-react-native';
 export default function Features() {
   return (
     <ScrollView
@@ -13,9 +13,12 @@ export default function Features() {
       showsVerticalScrollIndicator={false}>
       <View style={styles.featureContainer}>
         <View style={styles.featureTitleContainer}>
-          <Image
-            source={require('../../assets/images/chatgptIcon.png')}
+          <Lottie
+            source={require('../../assets/animations/Bear.json')}
             style={styles.featureTitleIcon}
+            loop
+            autoPlay
+            speed={0.9}
           />
           <Text style={styles.featureTitleText}>상담 ChatBOT</Text>
         </View>

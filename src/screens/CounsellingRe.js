@@ -8,6 +8,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ArrowLeftIcon,
 } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
 import {
@@ -20,6 +21,7 @@ import {apiCall} from '../api/OpenAI';
 import Tts from 'react-native-tts';
 import authClient from '../apis/authClient';
 import Footer from '../components/footer';
+import Lottie from 'lottie-react-native';
 Tts.requestInstallData();
 
 export default CounsellingRe = () => {
@@ -221,9 +223,12 @@ export default CounsellingRe = () => {
       <SafeAreaView style={{flex: 1}}>
         {/* Icon */}
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-          <Image
-            source={require('../../assets/images/bot.png')}
-            style={{height: hp(15), width: hp(15)}}
+          <Lottie
+            source={require('../../assets/animations/newBear.json')}
+            style={styles.featureTitleIcon}
+            loop
+            speed={0.2}
+            autoPlay
           />
         </View>
         {/* feature,message */}
@@ -288,9 +293,12 @@ export default CounsellingRe = () => {
             onChangeText={text => setResult(text)}
           />
           {loading ? (
-            <Image
-              source={require('../../assets/images/loading.gif')}
+            <Lottie
+              source={require('../../assets/animations/loading.json')}
               style={styles.buttonImage}
+              loop
+              autoPlay
+              speed={9}
             />
           ) : recording ? (
             <TouchableOpacity style={styles.button} onPress={stopRecording}>
@@ -336,7 +344,7 @@ export default CounsellingRe = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#FAF1E4',
     paddingBottom: 0,
   },
   scrollView: {
@@ -417,5 +425,23 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  featureTitleIcon: {
+    width: wp(30),
+    height: hp(20),
+    alignContent: 'center',
+    // marginTop: 1,
+    right: wp(1),
+  },
+  backButtonContainer: {
+    justifyContent: 'flex-start',
+    width: wp(10),
+  },
+  backButton: {
+    backgroundColor: '#1E2B22',
+    padding: wp('1%'),
+    borderTopRightRadius: wp('5%'),
+    borderBottomLeftRadius: wp('5%'),
+    marginLeft: wp('2%'),
   },
 });
