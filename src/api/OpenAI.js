@@ -94,17 +94,17 @@ export const QuizGenerate = async (prompt, messages) => {
       messages: [
         {
           role: 'system',
-          content: `I’m considering character. You must query me, and I shall respond with a yes or no. Based on my response, you must determine the character I am thinking of. Begin with the first query.`,
+          content: `한문제씩 랜덤 퀴즈 내줘`,
         },
       ],
-      temperature: 0.8,
+      temperature: 0.9,
       frequency_penalty: 0,
       presence_penalty: 0,
     });
     console.log(res.data.choices[0]);
     let answer = res.data?.choices[0]?.message?.content;
     messages.push({role: 'assistant', content: answer.trim()});
-    // console.log('got chat response', answer);
+    console.log('got chat response', answer);
     return Promise.resolve({success: true, data: messages});
   } catch (err) {
     console.log('error: ', err);

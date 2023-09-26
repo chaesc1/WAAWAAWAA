@@ -21,7 +21,6 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import Lottie from 'lottie-react-native';
-
 import axios from 'axios';
 import noAuthClient from '../apis/noAuthClient';
 export default function SignUpScreen() {
@@ -162,7 +161,7 @@ export default function SignUpScreen() {
           {/* 이미지 */}
           <View style={styles.imageContainer}>
             <Lottie
-              source={require('../../assets/animations/Register.json')}
+              source={require('../../assets/animations/Bear.json')}
               style={styles.image}
               loop
               speed={0.8}
