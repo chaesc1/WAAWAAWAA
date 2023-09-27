@@ -33,7 +33,7 @@ export default function HomeScreen() {
         {/* 상단 3단 메뉴바 제작 예정? */}
         <View style={styles.topButtonsContainer}>
           <View style={styles.iconContainer}>
-            {/* <Bars3CenterLeftIcon size={25} stroke={100} color="black" /> */}
+            <Bars3CenterLeftIcon size={25} stroke={100} color="black" />
           </View>
           <View style={styles.transparentBackground}></View>
         </View>
@@ -82,7 +82,7 @@ export default function HomeScreen() {
           ))}
         </ScrollView>
       </SafeAreaView>
-      <Footer />
+      {/* <Footer /> */}
     </View>
   );
 }
