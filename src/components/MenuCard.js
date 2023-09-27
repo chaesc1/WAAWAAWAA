@@ -51,8 +51,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   image: {
-    width: wp('35%'),
-    height: hp('30%'),
+    width: 150,
+    height: 200,
   },
   textContainer: {
     flex: 1,
