@@ -2,6 +2,34 @@ import key from '../../config/index';
 
 export const apiKey = key;
 
+export const categories = ['퀴즈', '이야기 말하기', '끝말잇기', '상담하기'];
+
+export const menuItems = [
+  {
+    name: '퀴즈',
+    desc: '퀴즈놀이 하자',
+    link: 'Quiz',
+    image: require('../../assets/animations/Bear.json'),
+  },
+  {
+    name: '상담하기',
+    desc: '고민을 말해봐..!',
+    link: 'CounsellingPage',
+    image: require('../../assets/animations/GreenBear.json'),
+  },
+  {
+    name: '이야기 말하기!',
+    desc: '이야기를 맞춰봐!!',
+    link: 'StoryPage',
+    image: require('../../assets/animations/BlueBear.json'),
+  },
+  {
+    name: '끝말잇기',
+    desc: '끝말잇기 하자!!!',
+    link: 'ConnectStart',
+    image: require('../../assets/animations/YellowBear.json'),
+  },
+];
 export const dummyMessages = [
   {
     role: 'user',
