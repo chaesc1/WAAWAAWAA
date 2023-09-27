@@ -26,7 +26,7 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <Image
         blurRadius={40}
-        source={require('../../assets/images/background.png')}
+        source={require('../../assets/images/Background_2.png')}
         style={styles.backgroundImage}
       />
       <SafeAreaView style={styles.flex1}>
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     marginHorizontal: wp(4),
   },
   iconContainer: {
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
     borderRadius: 100,
     padding: 0,
     right: wp(2),
