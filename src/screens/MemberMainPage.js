@@ -35,7 +35,6 @@ export default function HomeScreen() {
           <View style={styles.iconContainer}>
             <Bars3CenterLeftIcon size={25} stroke={100} color="black" />
           </View>
-          <View style={styles.transparentBackground}></View>
         </View>
 
         {/* 상단 카테고리 스크롤 뷰 */}
@@ -82,7 +81,7 @@ export default function HomeScreen() {
           ))}
         </ScrollView>
       </SafeAreaView>
-      {/* <Footer /> */}
+      <Footer />
     </View>
   );
 }
@@ -112,11 +111,6 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     padding: 0,
     right: wp(2),
-  },
-  transparentBackground: {
-    backgroundColor: 'rgba(255,255,255,0.7)',
-    padding: 3,
-    borderRadius: 20,
   },
   categoriesScroll: {
     marginTop: hp(3),

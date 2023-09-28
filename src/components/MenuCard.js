@@ -14,8 +14,9 @@ const MenuCard = ({item, index}) => {
 
   return (
     <Animatable.View
-      delay={index * 200}
-      animation="slideInRight"
+      delay={index * 300}
+      animation="slideInLeft"
+      duration={1000}
       style={styles.container}>
       <View style={styles.imageContainer}>
         <Lottie source={item.image} style={styles.image} loop autoPlay />

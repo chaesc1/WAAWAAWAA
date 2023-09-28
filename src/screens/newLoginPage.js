@@ -79,6 +79,11 @@ export default function LoginScreen() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
+        <Image
+          blurRadius={40}
+          source={require('../../assets/images/Background_2.png')}
+          style={styles.backgroundImage}
+        />
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.backButtonContainer}>
             <TouchableOpacity
@@ -151,7 +156,14 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: themeColors.bg,
+    // backgroundColor: themeColors.bg,
+    position: 'relative',
+  },
+  backgroundImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    zIndex: -1,
   },
   safeArea: {
     flex: 1,
