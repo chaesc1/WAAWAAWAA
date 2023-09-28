@@ -10,6 +10,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {Image} from 'react-native-svg';
 
 const Footer = ({}) => {
   const navigation = useNavigation();
@@ -59,9 +60,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#E4E4D0', // 하단 탭 바 배경색
+    // backgroundColor: '#E4E4D0', // 하단 탭 바 배경색
     height: hp('7%'), // 하단 탭 바 높이
     width: wp('100%'),
+    position: 'relative',
+  },
+  backgroundImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    zIndex: -1,
   },
   tabBarButton: {
     fontSize: wp('4%'),

@@ -150,6 +150,11 @@ export default function SignUpScreen() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
+        <Image
+          blurRadius={40}
+          source={require('../../assets/images/Background_2.png')}
+          style={styles.backgroundImage}
+        />
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.backButtonContainer}>
             <TouchableOpacity
@@ -310,6 +315,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: themeColors.bg,
+  },
+  backgroundImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    zIndex: -1,
   },
   safeArea: {
     flex: 1,
