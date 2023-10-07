@@ -208,17 +208,17 @@ const QuizPage_test = ({navigation}) => {
         </View>
       </SafeAreaView>
       {/* 녹음 , clear, 정지 버튼 */}
-      <TextInput
-        value={result}
-        placeholder="적어서도 보내봐!!"
-        style={styles.textContainer}
-        onChangeText={text => setResult(text)}
-      />
-      {!loading && (
+      <View>
+        <TextInput
+          value={result}
+          placeholder="적어서도 보내봐!!"
+          style={styles.textContainer}
+          onChangeText={text => setResult(text)}
+        />
         <TouchableOpacity style={styles.sendButton} onPress={fetchResponse}>
           <Text style={styles.buttonText}>전송</Text>
         </TouchableOpacity>
-      )}
+      </View>
       <View style={styles.buttonsContainer}>
         {loading ? (
           <Lottie
@@ -344,7 +344,6 @@ const styles = StyleSheet.create({
     padding: wp(2.3),
     position: 'absolute',
     right: wp(3),
-    marginTop: hp(70),
   },
   stopButton: {
     backgroundColor: '#EF4444',
