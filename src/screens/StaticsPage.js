@@ -61,6 +61,7 @@ export default function StaticsPage({ navigation }) {
         method: 'get',
         url: '/counseling/dangerous-keyword',
       });
+      console.log(res.data);
       const keywords = res.data.dangerousContent || [];
       setDangerKeywords(keywords);
     } catch (error) {
@@ -117,7 +118,9 @@ export default function StaticsPage({ navigation }) {
           ) : (
             dangerKeywords.map((item, index) => (
               <View key={index} style={styles.dangerKeywordBox}>
-                <Text>{item}</Text>
+                <Text>Keyword: {item.keyword}</Text>
+                <Text>Count: {item.count}</Text>
+                <Text>Content: {item.content.join(', ')}</Text>
               </View>
             ))
           )}
