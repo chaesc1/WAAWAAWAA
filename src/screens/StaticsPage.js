@@ -132,7 +132,6 @@ export default function StaticsPage({ navigation }) {
         </ScrollView>
       )}
 
-
       {/* 위험 의심 키워드 */}
       {showDangerResult && (
         <ScrollView style={styles.resultBox}>

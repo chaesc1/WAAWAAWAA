@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import Footer from '../components/footer';
 import authClient from '../apis/authClient';
+import Lottie from 'lottie-react-native';
 
 const MyPage = ({navigation}) => {
   const [selectedMenu, setSelectedMenu] = useState(null);
@@ -156,10 +157,12 @@ const MyPage = ({navigation}) => {
   return (
     <View style={styles.container}>
       <View style={styles.profileContainer}>
-        <Image
-          source={require('../../assets/gold.png')}
-          style={styles.avatar}
-        />
+      <Lottie
+      source={require('../../assets/animations/newBear.json')}
+      style={styles.image}
+      autoPlay
+      loop
+    />
         <Text style={styles.username}>{user ? user.username : '이름'}</Text>
         <Text style={styles.age}>
           {user ? `나이: ${user.age}살` : '나이: ?'}
@@ -343,6 +346,13 @@ const styles = StyleSheet.create({
   confirmButtonText: {
     color: 'white',
     fontSize: 18,
+  },
+  image: {
+    width: 100, // 이미지의 너비 설정
+    height: 100, // 이미지의 높이 설정
+    borderRadius: 75, // 반지름을 절반으로 설정하여 동그랗게 만듭니다.
+    backgroundColor: 'black',
+    marginBottom: 10,
   },
 });
 
