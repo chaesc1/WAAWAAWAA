@@ -16,9 +16,6 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import Features from '../components/QuizFeature'; //첫 초기화면 굳이 넣어햐하나?
 import {QuizGenerate} from '../api/OpenAI'; //퀴즈 생성 api 호출
 import Tts from 'react-native-tts'; //TTS Library
-import Footer from '../components/footer';
-import {ArrowLeftIcon} from 'react-native-heroicons/solid';
-import Lottie from 'lottie-react-native';
 
 import {
   widthPercentageToDP as wp,
@@ -183,85 +180,119 @@ const QuizPage_test = ({navigation}) => {
     };
   }, []);
 
+  // //확인 버튼 누를때 inputvalue 가 없으면
+  // const onPressConfirm = () => {
+  //   if (result.trim() === '') {
+  //     setShowAlert(true);
+  //     Alert.alert('경고', '입력값을 입력하세요.', [{text: '확인'}]);
+  //     setShowAlert(false);
+  //   } else {
+  //     setShowAlert(false);
+  //     navigation.navigate('QuizStart', {inputValue: result});
+  //   }
+  // };
+
   return (
     <View style={styles.container}>
-      <Image
-        blurRadius={40}
-        source={require('../../assets/images/Background_2.png')}
-        style={styles.backgroundImage}
-      />
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.backButtonContainer}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}>
-            <ArrowLeftIcon size={wp('6%')} color="white" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.imageContainer}>
-          <Lottie
-            source={require('../../assets/animations/BlueBear.json')}
-            style={styles.image}
-            loop
-            autoPlay
+      <SafeAreaView style={{flex: 1}}>
+        {/* Icon */}
+        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          <Image
+            source={require('../../assets/images/bot.png')}
+            style={{height: hp(15), width: hp(15)}}
           />
+        </View>
+        {/* feature,message */}
+        {messages.length > 0 ? (
+          <View style={{flex: 1.5, marginVertical: 10}}>
+            <View
+              style={{
+                height: hp(55),
+                backgroundColor: '#CBD5E0',
+                borderRadius: 20,
+                padding: 16,
+              }}>
+              {messages.length > 0 ? (
+                <View style={{flex: 1, marginVertical: 1}}>
+                  <Text style={styles.assistantHeading}>Quiz</Text>
+                  <ScrollView
+                    ref={scrollViewRef}
+                    bounces={false}
+                    style={styles.scrollView}
+                    showsVerticalScrollIndicator={false}>
+                    {messages.map((message, index) => {
+                      if (message.role == 'assistant') {
+                        //text gpt 대답 부분
+                        return (
+                          <View
+                            key={index}
+                            style={styles.assistantMessageContainer}>
+                            <Text style={styles.assistantMessage}>
+                              {message.content}
+                            </Text>
+                          </View>
+                        );
+                      } else {
+                        //user input
+                        return (
+                          <View key={index} style={styles.userMessageContainer}>
+                            <View style={styles.userMessageContent}>
+                              <Text style={styles.userMessageText}>
+                                {message.content}
+                              </Text>
+                            </View>
+                          </View>
+                        );
+                      }
+                    })}
+                  </ScrollView>
+                </View>
+              ) : (
+                <Features />
+              )}
+            </View>
+          </View>
+        ) : (
+          <Features />
+        )}
+        {/* 녹음 , clear, 정지 버튼 */}
+        <View style={styles.buttonsContainer}>
+          {loading ? (
+            <Image
+              source={require('../../assets/images/loading.gif')}
+              style={styles.buttonImage}
+            />
+          ) : recording ? (
+            <TouchableOpacity style={styles.button} onPress={stopRecording}>
+              {/* Recording Stop Button */}
+              <Image
+                source={require('../../assets/images/voiceLoading-unscreen.gif')}
+                style={styles.buttonImage}
+              />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.button} onPress={startRecording}>
+              {/* Recording start Button */}
+              <Image
+                source={require('../../assets/images/recordingIcon.png')}
+                style={styles.buttonImage}
+              />
+            </TouchableOpacity>
+          )}
+          {/* right side */}
+          {messages.length > 0 && (
+            <TouchableOpacity style={styles.clearButton} onPress={clear}>
+              <Text style={styles.buttonText}>Clear</Text>
+            </TouchableOpacity>
+          )}
+          {/* left side */}
+          {speaking > 0 && (
+            <TouchableOpacity style={styles.stopButton} onPress={stopSpeaking}>
+              <Text style={styles.buttonText}>Stop</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </SafeAreaView>
-      {/* 녹음 , clear, 정지 버튼 */}
-      <TextInput
-        value={result}
-        placeholder="적어서도 보내봐!!"
-        style={styles.textContainer}
-        onChangeText={text => setResult(text)}
-      />
-      {!loading && (
-        <TouchableOpacity style={styles.sendButton} onPress={fetchResponse}>
-          <Text style={styles.buttonText}>전송</Text>
-        </TouchableOpacity>
-      )}
-      <View style={styles.buttonsContainer}>
-        {loading ? (
-          <Lottie
-            source={require('../../assets/animations/loading.json')}
-            style={styles.loadingIcon}
-            loop
-            autoPlay
-          />
-        ) : recording ? (
-          <TouchableOpacity style={styles.button} onPress={stopRecording}>
-            {/* Recording Stop Button */}
-            <Lottie
-              source={require('../../assets/animations/micOnLoading.json')}
-              style={styles.buttonImage}
-              loop
-              autoPlay
-            />
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity style={styles.button} onPress={startRecording}>
-            {/* Recording start Button */}
-            <Lottie
-              source={require('../../assets/animations/ReadyRecord.json')}
-              style={styles.buttonImage}
-              loop
-              autoPlay
-              speed={1.2}
-            />
-          </TouchableOpacity>
-        )}
-        {/* right side */}
-        {messages.length > 0 && (
-          <TouchableOpacity style={styles.clearButton} onPress={clear}>
-            <Text style={styles.buttonText}>Clear</Text>
-          </TouchableOpacity>
-        )}
-        {/* left side */}
-        {speaking > 0 && (
-          <TouchableOpacity style={styles.stopButton} onPress={stopSpeaking}>
-            <Text style={styles.buttonText}>Stop</Text>
-          </TouchableOpacity>
-        )}
-      </View>
     </View>
   );
 };
@@ -269,47 +300,55 @@ const QuizPage_test = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: 'relative',
+    backgroundColor: 'white',
+    paddingBottom: 10,
   },
-  backgroundImage: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    zIndex: -1,
+  scrollView: {
+    height: hp(60),
+    backgroundColor: '#F4F4F4',
+    borderRadius: 10,
+    padding: 8,
   },
-  backButtonContainer: {
-    justifyContent: 'flex-start',
-    width: wp(10),
+  assistantHeading: {
+    fontSize: wp(5),
+    fontWeight: 'bold',
+    color: '#374151',
+    marginLeft: 8,
   },
-  backButton: {
-    backgroundColor: '#1E2B22',
-    padding: wp('1%'),
-    borderTopRightRadius: wp('5%'),
-    borderBottomLeftRadius: wp('5%'),
-    marginLeft: wp('2%'),
+  assistantMessageContainer: {
+    width: wp(75),
+    backgroundColor: '#D1FAE5',
+    padding: 8,
+    borderRadius: 20,
+    borderTopLeftRadius: 0,
+    marginBottom: 10,
   },
-  textContainer: {
-    backgroundColor: '#FFFFFF',
-    width: wp(80),
-    height: hp(4),
-    borderRadius: 30,
-    marginLeft: wp(3),
-    paddingLeft: wp(3),
+  assistantMessage: {
+    fontSize: wp(4),
+    color: '#374151',
   },
-  image: {
-    width: wp('50%'),
-    height: hp('40%'),
+  userMessageContainer: {
+    width: wp(75),
+    backgroundColor: 'white',
+    padding: 8,
+    borderRadius: 20,
+    borderTopRightRadius: 0,
+    alignSelf: 'flex-end',
+    marginBottom: 10, // 조정된 값
   },
-  imageContainer: {
-    marginTop: hp(20),
+  userMessageContent: {
+    flex: 0,
+    justifyContent: 'center',
+  },
+  userMessageText: {
+    fontSize: wp(4),
+  },
+  buttonsContainer: {
+    width: wp(100),
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  loadingIcon: {
-    width: hp(10),
-    height: hp(10),
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginTop: 12, // Add margin top for spacing
   },
   button: {
     width: hp(10),
@@ -319,16 +358,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     // marginRight: 8, // Add margin right for spacing
   },
-  buttonsContainer: {
-    width: wp(100),
-    flexDirection: 'row',
-    justifyContent: 'center',
+  inputText: {
+    width: wp(75),
+    height: hp(4),
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+    paddingHorizontal: 10,
     alignItems: 'center',
-    marginTop: hp(10.5), // Add margin top for spacing
   },
   buttonImage: {
-    width: hp(20),
-    height: hp(20),
+    width: hp(10),
+    height: hp(10),
+  },
+  buttonText: {
+    fontSize: 13,
+    fontWeight: 'bold',
+  },
+  confirmButton: {
+    backgroundColor: 'blue', // 원하는 배경색으로 변경
+    borderRadius: 20,
+    padding: 8,
+    marginLeft: 10, // 오른쪽 마진을 추가하여 TextInput과 버튼 사이에 간격을 조절
   },
   clearButton: {
     backgroundColor: '#6B7280',
@@ -338,21 +389,13 @@ const styles = StyleSheet.create({
     right: wp(5),
     bottom: 10,
   },
-  sendButton: {
-    backgroundColor: '#6B7280',
-    borderRadius: 20,
-    padding: wp(2.3),
-    position: 'absolute',
-    right: wp(3),
-    marginTop: hp(70),
-  },
   stopButton: {
     backgroundColor: '#EF4444',
     borderRadius: 20,
     padding: 8,
     position: 'absolute',
     left: wp(5),
-    top: 10,
+    bottom: 10,
   },
   buttonText: {
     color: 'white',

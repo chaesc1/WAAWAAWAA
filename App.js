@@ -4,7 +4,6 @@ import LoginPage from './src/screens/LoginPage';
 import MemberMainPage from './src/screens/MemberMainPage'; //로그인시 메인페이지
 import CounsellingPage from './src/screens/CounsellingRe'; //상담페이지
 import QuizPage from './src/screens/QuizPage_test'; //퀴즈 페이지
-import QuizMainPage from './src/screens/QuizMainPage'; //퀴즈 메인 화면
 import RegisterPage from './src/screens/RegisterPage'; //회원가입
 import ConnectEndingPage from './src/screens/ConnectEnding'; //끝말잇기
 import TwentyQuestionPage from './src/screens/TwentyQuestion'; // 스무고개 페이지
@@ -143,19 +142,7 @@ const App = () => {
           options={{
             title: '',
             headerBackTitleVisible: false,
-            headerBackImage: 'BackBtn',
-            headerStyle: {
-              backgroundColor: '#FFFFFF',
-            },
-          }}
-        />
-        {/* 퀴즈 게임 화면 */}
-        <Stack.Screen
-          name="QuizStart"
-          component={QuizMainPage}
-          options={{
-            title: '',
-            headerBackTitleVisible: false,
+            headerShown: false,
             headerBackImage: 'BackBtn',
             headerStyle: {
               backgroundColor: '#FFFFFF',
