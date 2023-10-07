@@ -121,19 +121,37 @@ const MyPage = ({navigation}) => {
 
   // 회원탈퇴
   const handleWithdraw = async () => {
-    try {
-      const res = await authClient({
-        method: 'delete',
-        url: '/users',
-      });
-      // LandingPage로 navigate
-      navigation.navigate('LandingPage');
-      await AsyncStorage.clear();
-      Alert.alert('회원탈퇴 되었습니다.');
-    } catch (error) {
-      console.log('회원탈퇴 실패', error);
-    }
+    // 회원탈퇴 다이얼로그 추가
+    Alert.alert(
+      '회원 탈퇴 확인',
+      '정말로 회원을 탈퇴하시겠습니까?',
+      [
+        {
+          text: '예',
+          onPress: async () => {
+            try {
+              const res = await authClient({
+                method: 'delete',
+                url: '/users',
+              });
+              // LandingPage로 navigate
+              navigation.navigate('LandingPage');
+              await AsyncStorage.clear();
+              Alert.alert('회원 탈퇴되었습니다.');
+            } catch (error) {
+              console.log(error);
+            }
+          },
+        },
+        {
+          text: '아니요',
+          style: 'cancel',
+        },
+      ],
+      { cancelable: false }
+    );
   };
+
 
   return (
     <View style={styles.container}>
