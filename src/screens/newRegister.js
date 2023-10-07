@@ -29,9 +29,15 @@ export default function SignUpScreen() {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [age, setAge] = useState('');
+  const [email, setEmail] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [PasswordLength, setPasswordLength] = useState('');
   const [ConfirmPasswordLength, setConfirmPasswordLength] = useState('');
+  const [verification, setVerification] = useState('');
+  const [verificationResult, setVerificationResult] = useState('');
+  const [verificationOpen, setVerificationOpen] = useState(false);
+  const [isVefification, setIsVefification] = useState(false);
+
   //오류메시지 상태저장
   const [nameMessage, setNameMessage] = useState('');
   const [idMessage, setIdMessage] = useState('');
@@ -108,7 +114,7 @@ export default function SignUpScreen() {
     const ageConfirmCurrent = e.nativeEvent.text;
     setAge(ageConfirmCurrent);
 
-    if (age === ageConfirmCurrent) {
+    if (age.length > 0) {
       setIsAge(true);
     } else {
       setIsAge(false);
@@ -117,33 +123,56 @@ export default function SignUpScreen() {
   // 유저생성 요청 api
   const register = async () => {
     // 모든 필드의 유효성을 확인
-    if (isName && isId && isPassword && isPasswordConfirm && isAge) {
-      console.log(username, userId, password, age);
-      try {
-        const res = await noAuthClient({
-          method: 'post',
-          url: `/users`,
-          data: {
-            username: username,
-            userId: userId,
-            password: password,
-            age: Number(age),
-          },
-        });
+    if (isVefification) {
+      if (isName && isId && isPassword && isPasswordConfirm && isAge) {
+        try {
+          const res = await noAuthClient({
+            method: 'post',
+            url: `/users`,
+            data: {
+              username: username,
+              userId: userId,
+              password: password,
+              age: Number(age),
+              email,
+            },
+          });
 
-        if (res.status === 201) {
-          Alert.alert('유저 생성 성공');
-          navigation.navigate('LoginPage'); // 회원가입 성공 시 로그인 페이지로 이동
-        } else {
-          // 서버 응답이 실패인 경우
-          Alert.alert('유저 생성 실패', '유저 생성에 실패했습니다.');
+          if (res.status === 201) {
+            Alert.alert('유저 생성 성공');
+            navigation.navigate('LoginPage'); // 회원가입 성공 시 로그인 페이지로 이동
+          } else {
+            // 서버 응답이 실패인 경우
+            Alert.alert('유저 생성 실패', '유저 생성에 실패했습니다.');
+          }
+        } catch (error) {
+          Alert.alert(error.response.message);
         }
-      } catch (error) {
-        console.log('Test Error:', error.response);
+      } else {
+        // 필드 중 하나라도 유효하지 않으면 오류 메시지 표시
+        Alert.alert('입력 정보를 확인하세요', '유효하지 않은 정보가 있습니다.');
       }
     } else {
-      // 필드 중 하나라도 유효하지 않으면 오류 메시지 표시
-      Alert.alert('입력 정보를 확인하세요', '유효하지 않은 정보가 있습니다.');
+      Alert.alert('이메일 인증이 필요합니다.');
+    }
+  };
+
+  // 인증
+  const verificationBackend = async () => {
+    try {
+      const res = await noAuthClient({
+        method: 'post',
+        url: '/mail/authentication',
+        data: {
+          email,
+        },
+      });
+
+      Alert.alert('이메일 보내는 데 성공하였습니다.');
+      setVerificationResult(res.data);
+      setVerificationOpen(true);
+    } catch (error) {
+      Alert.alert('이메일 보내는 데 실패했습니다.');
     }
   };
 
@@ -219,10 +248,8 @@ export default function SignUpScreen() {
               returnKeyType="next"
               value={password}
               onChangeText={text => {
-                console.log(`비밀번호: ${text}`);
                 const Length = text.length;
                 setPasswordLength(Length);
-                console.log(`비밀번호 길이: ${PasswordLength}`);
 
                 const passwordRegex =
                   /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
@@ -258,14 +285,12 @@ export default function SignUpScreen() {
               returnKeyType="next"
               value={confirmPassword}
               onChangeText={text => {
-                console.log(`비밀번호: ${text} ${password}`);
                 const Length = text.length;
                 setConfirmPasswordLength(Length);
-                console.log(`비밀번호 길이: ${ConfirmPasswordLength}`);
                 const passwordConfirmCurrent = text;
                 setConfirmPassword(passwordConfirmCurrent);
                 if (password == passwordConfirmCurrent) {
-                  setIsPasswordConfirm(false);
+                  setIsPasswordConfirm(true);
                   setPasswordConfirmMessage('비밀번호를 똑같이 입력했어요 : )');
                 } else {
                   setIsPasswordConfirm(false);
@@ -293,6 +318,80 @@ export default function SignUpScreen() {
               value={age}
               onChange={onChangeAge}
             />
+            <Text style={styles.label}>Email</Text>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <TextInput
+                style={{...styles.input, width: '88%', marginRight: '3%'}}
+                placeholder="Enter Email"
+                value={email}
+                onChangeText={text => setEmail(text)}
+                autoCapitalize="none"
+              />
+              <TouchableOpacity
+                style={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginBottom: '3%',
+                }}
+                onPress={verificationBackend}>
+                <Text>전송</Text>
+              </TouchableOpacity>
+            </View>
+            {verificationOpen ? (
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <TextInput
+                  autoCapitalize="none"
+                  style={{
+                    backgroundColor: 'transparent',
+                    width: '50%',
+                    marginRight: '3%',
+                    height: hp(5),
+                    padding: wp('2%'),
+                    borderBottomWidth: 1,
+                    borderBottomColor: 'black',
+                  }}
+                  placeholder="Enter Email"
+                  value={verification}
+                  onChangeText={text => setVerification(text)}
+                />
+                <TouchableOpacity
+                  style={{
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}
+                  onPress={() => {
+                    if (verification === verificationResult) {
+                      Alert.alert('이메일 인증에 성공하셨습니다.');
+                      setIsVefification(true);
+                      setVerificationOpen(false);
+                    } else {
+                      Alert.alert('인증번호가 일치하지 않습니다.');
+                    }
+                  }}>
+                  <Text>확인</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              isVefification && (
+                <Text style={{color: 'red', marginLeft: '2%'}}>
+                  인증되었습니다.
+                </Text>
+              )
+            )}
           </ScrollView>
           {/* 버튼 */}
           <TouchableOpacity style={styles.signUpButton} onPress={register}>
