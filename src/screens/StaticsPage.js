@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView, Alert, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView, Alert, SafeAreaView , ActivityIndicator} from 'react-native';
 import authClient from '../apis/authClient';
 import Footer from '../components/footer';
 import { BarChart } from 'react-native-chart-kit';
@@ -100,34 +100,45 @@ export default function StaticsPage({ navigation }) {
       {/* 자주 대화한 내용 막대 그래프 */}
       {showFrequentResult && (
         <ScrollView style={styles.resultBox}>
-          <BarChart
-            data={frequentChartData}
-            width={300}
-            height={200}
-            yAxisSuffix=""
-            yAxisInterval={1}
-            chartConfig={{
-              backgroundColor: 'white',
-              backgroundGradientFrom: 'white',
-              backgroundGradientTo: 'white',
-              decimalPlaces: 0, // 소수점 없애기
-              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            }}
-          />
-          {frequentKeywords.map((item, index) => (
-            <View key={index} style={styles.frequentKeywordBox}>
-              <Text>Count: {item.count}</Text>
-              <Text>Keyword: {item.keyword}</Text>
+          {isLoadingFrequent ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="green" />
             </View>
-          ))}
+          ) : (
+            <>
+              <BarChart
+                data={frequentChartData}
+                width={300}
+                height={200}
+                yAxisSuffix=""
+                yAxisInterval={1}
+                chartConfig={{
+                  backgroundColor: 'white',
+                  backgroundGradientFrom: 'white',
+                  backgroundGradientTo: 'white',
+                  decimalPlaces: 0, // 소수점 없애기
+                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                }}
+              />
+              {frequentKeywords.map((item, index) => (
+                <View key={index} style={styles.frequentKeywordBox}>
+                  <Text>Count: {item.count}</Text>
+                  <Text>Keyword: {item.keyword}</Text>
+                </View>
+              ))}
+            </>
+          )}
         </ScrollView>
       )}
+
 
       {/* 위험 의심 키워드 */}
       {showDangerResult && (
         <ScrollView style={styles.resultBox}>
           {isLoadingDanger ? (
-            <Text>Loading...</Text>
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="green" />
+            </View>
           ) : (
             dangerKeywords.map((item, index) => (
               <View key={index} style={styles.dangerKeywordBox}>
