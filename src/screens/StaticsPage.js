@@ -12,6 +12,7 @@ export default function StaticsPage({ navigation }) {
   const [dangerKeywords, setDangerKeywords] = useState([]);
   const [isLoadingFrequent, setIsLoadingFrequent] = useState(false);
   const [isLoadingDanger, setIsLoadingDanger] = useState(false);
+  const [selectedDangerKeyword, setSelectedDangerKeyword] = useState(null);
 
   const toggleResult = (content) => {
     setShowFrequentResult(false);
@@ -84,7 +85,7 @@ export default function StaticsPage({ navigation }) {
             style={styles.startButton}
             onPress={() => toggleResult('자주 대화한 내용')}>
             <Text style={styles.startStoryText}>자주 대화한 내용</Text>
-            {isLoadingFrequent && <Text>Loading...</Text>}
+            
           </TouchableOpacity>
         </View>
         <View style={styles.buttonWrapper}>
@@ -92,7 +93,7 @@ export default function StaticsPage({ navigation }) {
             style={styles.startButton}
             onPress={() => toggleResult('위험 의심 내용')}>
             <Text style={styles.startStoryText}>위험 의심 내용</Text>
-            {isLoadingDanger && <Text>Loading...</Text>}
+            
           </TouchableOpacity>
         </View>
       </View>
@@ -117,13 +118,13 @@ export default function StaticsPage({ navigation }) {
                   backgroundGradientFrom: 'white',
                   backgroundGradientTo: 'white',
                   decimalPlaces: 0, // 소수점 없애기
-                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  color: (opacity = 1) => `rgba(50, 100, 10, ${opacity})`,
                 }}
               />
               {frequentKeywords.map((item, index) => (
                 <View key={index} style={styles.frequentKeywordBox}>
-                  <Text>Count: {item.count}</Text>
-                  <Text>Keyword: {item.keyword}</Text>
+                  <Text>집계 횟수: {item.count}회</Text>
+                  <Text>키워드: {item.keyword}</Text>
                 </View>
               ))}
             </>
@@ -141,12 +142,23 @@ export default function StaticsPage({ navigation }) {
             </View>
           ) : (
             dangerKeywords.map((item, index) => (
-              <View key={index} style={styles.dangerKeywordBox}>
-                <Text>Keyword: {item.keyword}</Text>
-                <Text>Count: {item.count}</Text>
-                <Text>Content: {item.content.join(', ')}</Text>
-              </View>
+              <TouchableOpacity
+                key={index}
+                style={styles.dangerKeywordBox}
+                onPress={() => setSelectedDangerKeyword(item)}
+              >
+                <Text>키워드: {item.keyword}</Text>
+                <Text>집계 횟수: {item.count}회</Text>
+              </TouchableOpacity>
             ))
+          )}
+          {selectedDangerKeyword && (
+            <View style={styles.dangerKeywordContentBox}>
+              <Text style={styles.dangerKeywordContentTitle}>
+                Content: {selectedDangerKeyword.keyword} 
+              </Text>
+              <Text>{selectedDangerKeyword.content.join(', ')}</Text>
+            </View>
           )}
         </ScrollView>
       )}
@@ -203,7 +215,6 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     margin: 10,
     borderRadius: 20,
-    width: '70%',
   },
   frequentKeywordBox: {
     alignItems: 'center',
@@ -212,6 +223,20 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     margin: 10,
     borderRadius: 20,
-    width: '70%',
+  },
+  dangerKeywordContentBox: {
+    backgroundColor: '#D4EDDA',
+    padding: 10,
+    marginTop: 10,
+    borderRadius: 10,
+  },
+  dangerKeywordContentTitle: {
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
