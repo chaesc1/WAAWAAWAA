@@ -103,10 +103,10 @@ export default function LoginScreen() {
         </SafeAreaView>
         <View style={styles.formContainer}>
           <View style={styles.form}>
-            <Text style={styles.label}>ID</Text>
+            <Text style={styles.label}>아이디</Text>
             <TextInput
               style={styles.input}
-              placeholder="ID"
+              placeholder="아이디를 입력해주세요."
               value={userId}
               onChangeText={setUserId}
               autoCapitalize="none"
@@ -114,10 +114,10 @@ export default function LoginScreen() {
               underlineColorAndroid="#f000"
               blurOnSubmit={false}
             />
-            <Text style={styles.label}>Password</Text>
+            <Text style={styles.label}>비밀번호</Text>
             <TextInput
               style={styles.input}
-              placeholder="password"
+              placeholder="비밀번호를 입력해주세요."
               value={userPassword}
               secureTextEntry={true} // 비밀번호 타입으로 변경
               onChangeText={setUserPassword}
@@ -198,17 +198,19 @@ const styles = StyleSheet.create({
   },
   form: {
     marginTop: wp('-20%'),
+    padding: 10,
   },
   label: {
     marginLeft: wp('1.3%'),
     color: 'gray',
+    marginBottom: hp('1%'),
   },
   input: {
     padding: wp('4%'),
     backgroundColor: '#F0F0F0',
     color: 'gray',
     borderRadius: wp('8%'),
-    marginBottom: wp('2%'),
+    marginBottom: wp('3%'),
   },
   forgotPassword: {
     alignItems: 'flex-end',

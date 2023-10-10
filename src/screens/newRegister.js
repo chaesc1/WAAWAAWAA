@@ -205,10 +205,10 @@ export default function SignUpScreen() {
         </SafeAreaView>
         <View style={styles.formContainer}>
           <ScrollView style={styles.form}>
-            <Text style={styles.label}>Name</Text>
+            <Text style={styles.label}>이름</Text>
             <TextInput
               style={styles.input}
-              placeholder="Enter Name"
+              placeholder="이름을 입력해주세요."
               value={username}
               autoCapitalize="none"
               returnKeyType="next"
@@ -223,10 +223,10 @@ export default function SignUpScreen() {
                 {nameMessage}{' '}
               </Text>
             )}
-            <Text style={styles.label}>ID</Text>
+            <Text style={styles.label}>아이디</Text>
             <TextInput
               style={styles.input}
-              placeholder="Enter ID"
+              placeholder="아이디를 입력해주세요."
               autoCapitalize="none"
               returnKeyType="next"
               value={userId}
@@ -239,10 +239,10 @@ export default function SignUpScreen() {
                 {idMessage}{' '}
               </Text>
             )}
-            <Text style={styles.label}>Password</Text>
+            <Text style={styles.label}>비밀번호</Text>
             <TextInput
               style={styles.input}
-              placeholder="Enter Password"
+              placeholder="비밀번호를 입력해주세요."
               secureTextEntry
               autoCapitalize="none"
               returnKeyType="next"
@@ -276,11 +276,11 @@ export default function SignUpScreen() {
                 {passwordMessage}{' '}
               </Text>
             )}
-            <Text style={styles.label}>ReEnter Password</Text>
+            <Text style={styles.label}>비밀번호 확인</Text>
             <TextInput
               style={styles.input}
               secureTextEntry
-              placeholder="ReEnter Password"
+              placeholder="비밀번호와 동일하게 입력해주세요."
               autoCapitalize="none"
               returnKeyType="next"
               value={confirmPassword}
@@ -311,14 +311,14 @@ export default function SignUpScreen() {
                 {passwordConfirmMessage}{' '}
               </Text>
             )}
-            <Text style={styles.label}>Age</Text>
+            <Text style={styles.label}>나이</Text>
             <TextInput
               style={styles.input}
-              placeholder="Enter Age"
+              placeholder="나이를 입력해주세요."
               value={age}
               onChange={onChangeAge}
             />
-            <Text style={styles.label}>Email</Text>
+            <Text style={styles.label}>이메일</Text>
             <View
               style={{
                 display: 'flex',
@@ -327,7 +327,7 @@ export default function SignUpScreen() {
               }}>
               <TextInput
                 style={{...styles.input, width: '88%', marginRight: '3%'}}
-                placeholder="Enter Email"
+                placeholder="이메일을 입력해주세요."
                 value={email}
                 onChangeText={text => setEmail(text)}
                 autoCapitalize="none"
@@ -338,7 +338,7 @@ export default function SignUpScreen() {
                   display: 'flex',
                   flexDirection: 'row',
                   alignItems: 'center',
-                  marginBottom: '3%',
+                  marginBottom: '6%',
                 }}
                 onPress={verificationBackend}>
                 <Text>전송</Text>
@@ -454,10 +454,12 @@ const styles = StyleSheet.create({
   },
   form: {
     marginTop: hp('-37.5%'),
+    padding: 10,
   },
   label: {
     color: 'gray',
     marginLeft: wp('1.3%'),
+    marginBottom: hp('1%'),
   },
   input: {
     height: hp(5),
@@ -465,7 +467,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F0F0F0',
     color: 'gray',
     borderRadius: wp('8%'),
-    marginBottom: wp('2%'),
+    marginBottom: wp('5%'),
   },
   signUpButton: {
     backgroundColor: '#1E2B22',
