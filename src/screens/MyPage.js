@@ -35,10 +35,18 @@ const MyPage = ({navigation}) => {
     }
   };
 
-  // 비밀번호 변경
-  const handlePasswordChange = async () => {
-    console.log('비밀번호 변경 시도:', password);
-    if (password === confirmPassword) {
+  // 비밀번호 변경가능 유효성 검사
+  const isPasswordValid = password => {
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return passwordRegex.test(password);
+  };
+  
+
+  // 비밀번호 변경 -> 숫자, 영문자, 특수문자 조합으로 8자리 이상 안되면 fail
+const handlePasswordChange = async () => {
+  console.log('비밀번호 변경 시도:', password);
+  if (password === confirmPassword) {
+    if (isPasswordValid(password)) { // 비밀번호 유효성 검사
       try {
         await authClient({
           method: 'put',
@@ -48,16 +56,21 @@ const MyPage = ({navigation}) => {
           },
         });
 
-        Alert.alert('비밀번호가 성공적으로 변경되었어! 다시 로그인을 해줘!');
+        Alert.alert('비밀번호가 성공적으로 변경되었어! 다시 로그인을 해줘');
+
         // 로그아웃 및 로그인 페이지로 이동
         await logout();
+
       } catch (error) {
         console.log(error.response.data);
       }
     } else {
-      Alert.alert('비밀번호가 일치하지않아. 다시 확인해줘!');
+      Alert.alert('비밀번호는 숫자, 특수문자, 영어를 포함하고 8자리 이상이어야해.');
     }
-  };
+  } else {
+    Alert.alert('비밀번호가 일치하지않아. 다시 확인해줘!');
+  }
+};
 
   // 로그아웃
   const logout = async () => {
