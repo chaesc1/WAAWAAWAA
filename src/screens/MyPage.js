@@ -218,12 +218,6 @@ const handlePasswordChange = async () => {
             </TouchableOpacity>
           </View>
         )}
-        {/* {selectedMenu === 1 && (
-          <View style={styles.accordionContent}>
-            
-            <Text>Statistics Content</Text>
-          </View>
-        )} */}
         <TouchableOpacity
           style={styles.menuItem}
           onPress={() => toggleAccordion(2)}>
@@ -252,9 +246,6 @@ const handlePasswordChange = async () => {
         </TouchableOpacity>
         {selectedMenu === 3 && (
           <View style={styles.accordionContent}>
-            {/* Your nickname change form can go here */}
-
-            {/* Your age settings form can go here */}
             <TextInput
               style={styles.input}
               placeholder="변경하고 싶으신 닉네임을 입력해주세요."
@@ -266,7 +257,7 @@ const handlePasswordChange = async () => {
               style={styles.confirmButton}>
               <Text style={styles.confirmButtonText}>변경하기</Text>
             </TouchableOpacity>
-            {/* 추가: 비밀번호 변경 시 사용자 정보 조회 */}
+
           </View>
         )}
 
@@ -313,8 +304,8 @@ const styles = StyleSheet.create({
   },
 
   profileInfoContainer: {
-    flex: 1, // 자식 엘리먼트가 공간을 골고루 차지하도록 함
-    marginLeft: 20, // 이미지와 텍스트 사이 간격 추가
+    flex: 1, 
+    marginLeft: 20, 
   },
 
   image: {
@@ -322,14 +313,14 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     backgroundColor: 'pink',
-    marginRight: 20, // 이미지와 텍스트 사이 간격 추가
+    marginRight: 20, 
   },
 
   username: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#FF57A6',
-    marginBottom: 10, // 이름 아래 간격 추가
+    marginBottom: 10, 
   },
 
   age: {
@@ -400,11 +391,11 @@ const styles = StyleSheet.create({
 
   withdrawButton: {
     //position: 'absolute',
-    //bottom: 20, // 화면 하단 여백 조정
-    backgroundColor: '#FFA3A0', // 버튼 배경색 변경
-    paddingVertical: 15, // 높이 늘림
+    //bottom: 20, 
+    backgroundColor: '#FFA3A0', 
+    paddingVertical: 15, 
     paddingHorizontal: 20,
-    alignSelf: 'center', // 중앙 정렬
+    alignSelf: 'center', 
     alignItems: 'center',
     borderRadius: 14,
   },
@@ -416,11 +407,11 @@ const styles = StyleSheet.create({
 
   graphIcon: {
     fontSize: 24,
-    color: '#FFA3A0', // 아이콘 색상
-    marginRight: 10, // 아이콘과 텍스트 간격
+    color: '#FFA3A0', 
+    marginRight: 10, 
   },
   statButtonContent: {
-    flexDirection: 'column', // 세로로 배치
+    flexDirection: 'column', 
     
   },
   statButtonTitle: {
