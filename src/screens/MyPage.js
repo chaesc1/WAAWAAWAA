@@ -13,7 +13,7 @@ import {
 import Footer from '../components/footer';
 import authClient from '../apis/authClient';
 import Lottie from 'lottie-react-native';
-import newLoginPage from '../screens/newLoginPage'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 const MyPage = ({navigation}) => {
   const [selectedMenu, setSelectedMenu] = useState(null);
@@ -181,10 +181,12 @@ const handlePasswordChange = async () => {
       autoPlay
       loop
     />
+    <View style={styles.profileInfoContainer}>
         <Text style={styles.username}>{user ? user.username : '이름'}</Text>
         <Text style={styles.age}>
           {user ? `나이: ${user.age}살` : '나이: ?'}
         </Text>
+        </View>
       </View>
       {/* <ScrollView contentContainerStyle={styles.scrollContent}> */}
       <View style={styles.menuContainer}>
@@ -216,12 +218,6 @@ const handlePasswordChange = async () => {
             </TouchableOpacity>
           </View>
         )}
-        <TouchableOpacity
-          style={styles.menuItem}
-          // 통계 페이지로 연결 시켜둠.
-          onPress={() => navigation.navigate('StaticsPage')}>
-          <Text style={styles.menuText}>통계 페이지</Text>
-        </TouchableOpacity>
         {/* {selectedMenu === 1 && (
           <View style={styles.accordionContent}>
             
@@ -231,7 +227,7 @@ const handlePasswordChange = async () => {
         <TouchableOpacity
           style={styles.menuItem}
           onPress={() => toggleAccordion(2)}>
-          <Text style={styles.menuText}>나이 설정</Text>
+          <Text style={styles.menuText}>나이 재설정</Text>
         </TouchableOpacity>
         {selectedMenu === 2 && (
           <View style={styles.accordionContent}>
@@ -274,17 +270,125 @@ const handlePasswordChange = async () => {
           </View>
         )}
 
-        <TouchableOpacity style={styles.button} onPress={handleWithdraw}>
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => navigation.navigate('StaticsPage')}>
+          <FontAwesome5 name="chart-line" style={styles.graphIcon} /> 
+          <View style={styles.statButtonContent}>
+            <Text style={styles.statButtonTitle}>상담 통계 페이지 </Text>
+            
+            <Text style={styles.statButtonDescription}>
+            {user ? user.username : '이름'}이가 대화한 내용들을 알고싶다면?
+              접속해봐!
+            </Text>
+          </View>
+        </TouchableOpacity>
+
+
+        <TouchableOpacity style={styles.withdrawButton} onPress={handleWithdraw}>
           <Text style={styles.buttonText}>회원탈퇴</Text>
         </TouchableOpacity>
       </View>
-
       {/* </ScrollView> */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    padding: 20,
+    backgroundColor: '#FFD2E0',
+  },
+
+  profileContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 20,
+  },
+
+  profileInfoContainer: {
+    flex: 1, // 자식 엘리먼트가 공간을 골고루 차지하도록 함
+    marginLeft: 20, // 이미지와 텍스트 사이 간격 추가
+  },
+
+  image: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: 'pink',
+    marginRight: 20, // 이미지와 텍스트 사이 간격 추가
+  },
+
+  username: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FF57A6',
+    marginBottom: 10, // 이름 아래 간격 추가
+  },
+
+  age: {
+    fontSize: 16,
+    color: '#FF57A6',
+  },
+
+  menuItem: {
+    backgroundColor: '#FFC3A0',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    marginBottom: 15,
+    borderRadius: 20,
+  },
+
+  accordionContent: {
+    borderTopWidth: 1,
+    borderTopColor: 'gray',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginBottom: 5,
+    backgroundColor: '#FFBBD0',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
+  },
+
+  input: {
+    borderWidth: 1,
+    borderColor: '#FF57A6',
+    padding: 10,
+    marginBottom: 10,
+  },
+
+  menuContainer: {
+    alignSelf: 'stretch',
+  },
+
+  confirmButton: {
+    backgroundColor: '#FF81C0',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+
+  confirmButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+
   button: {
     backgroundColor: '#CBFFA9',
     paddingVertical: 10,
@@ -293,85 +397,42 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 14,
   },
-  buttonText: {
-    fontSize: 18,
-  },
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start', // Align profile section to the top
-    padding: 20,
-    backgroundColor: '#FAF1E4',
-  },
-  scrollContent: {
-    flexGrow: 1, // Allow scrolling when content overflows
-  },
 
-  profileContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 10,
-  },
-  username: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  age: {
-    fontSize: 16,
-    color: 'gray',
-  },
-  menuContainer: {
-    alignSelf: 'stretch',
-  },
-  menuItem: {
-    backgroundColor: '#CBFFA9',
-    paddingVertical: 10,
+  withdrawButton: {
+    //position: 'absolute',
+    //bottom: 20, // 화면 하단 여백 조정
+    backgroundColor: '#FFA3A0', // 버튼 배경색 변경
+    paddingVertical: 15, // 높이 늘림
     paddingHorizontal: 20,
+    alignSelf: 'center', // 중앙 정렬
     alignItems: 'center',
-    marginBottom: 10,
     borderRadius: 14,
   },
-  menuText: {
-    fontSize: 18,
-  },
-  accordionContent: {
-    borderTopWidth: 1,
-    borderTopColor: 'gray',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    marginBottom: 5,
-    backgroundColor: '#B5C99A',
-    shadowOpacity: 0.3,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: 'gray',
-    padding: 10,
-    marginBottom: 10,
-  },
-  confirmButton: {
-    backgroundColor: '#BA704F',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  confirmButtonText: {
+  withdrawButtonText: {
     color: 'white',
     fontSize: 18,
+    fontWeight: 'bold',
   },
-  image: {
-    width: 100, // 이미지의 너비 설정
-    height: 100, // 이미지의 높이 설정
-    borderRadius: 75, // 반지름을 절반으로 설정하여 동그랗게 만듭니다.
-    backgroundColor: 'black',
-    marginBottom: 10,
+
+  graphIcon: {
+    fontSize: 24,
+    color: '#FFA3A0', // 아이콘 색상
+    marginRight: 10, // 아이콘과 텍스트 간격
+  },
+  statButtonContent: {
+    flexDirection: 'column', // 세로로 배치
+    
+  },
+  statButtonTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  statButtonDescription: {
+    fontSize: 14,
+    color: '#666',
   },
 });
+
 
 export default MyPage;
