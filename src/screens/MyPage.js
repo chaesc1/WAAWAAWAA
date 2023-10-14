@@ -13,6 +13,7 @@ import {
 import Footer from '../components/footer';
 import authClient from '../apis/authClient';
 import Lottie from 'lottie-react-native';
+import newLoginPage from '../screens/newLoginPage'
 
 const MyPage = ({navigation}) => {
   const [selectedMenu, setSelectedMenu] = useState(null);
@@ -46,13 +47,31 @@ const MyPage = ({navigation}) => {
             password: password,
           },
         });
+
+        Alert.alert('비밀번호가 성공적으로 변경되었어! 다시 로그인을 해줘!');
+        // 로그아웃 및 로그인 페이지로 이동
+        await logout();
       } catch (error) {
         console.log(error.response.data);
       }
     } else {
-      Alert.alert('비밀번호를 다시 확인해주세요.');
+      Alert.alert('비밀번호가 일치하지않아. 다시 확인해줘!');
     }
   };
+
+  // 로그아웃
+  const logout = async () => {
+  try {
+    // AsyncStorage를 clear
+    await AsyncStorage.clear();
+
+    // LandingPage로 navigate
+    navigation.navigate('LandingPage');
+    console.log('로그아웃 되었어!');
+  } catch (error) {
+    console.error('로그아웃 오류:', error);
+  }
+}
 
   // 나이 변경
   const handleAgeChange = async () => {
@@ -103,20 +122,6 @@ const MyPage = ({navigation}) => {
       setUser(userData);
     } catch (error) {
       console.log(error);
-    }
-  };
-
-  // logout
-  const logout = async () => {
-    try {
-      // AsyncStorage를 clear
-      await AsyncStorage.clear();
-
-      // LandingPage로 navigate
-      navigation.navigate('LandingPage');
-      console.log('로그아웃 되었음!');
-    } catch (error) {
-      console.error('로그아웃 오류:', error);
     }
   };
 
