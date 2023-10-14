@@ -16,6 +16,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import Voice from '@react-native-voice/voice';
+import {ArrowLeftIcon} from 'react-native-heroicons/solid';
 import Tts from 'react-native-tts';
 
 import {AccessToken, sendConnectEndingText} from '../constants';
@@ -23,7 +24,7 @@ import Footer from '../components/footer';
 
 Tts.requestInstallData();
 
-export default CounsellingRe = () => {
+export default CounsellingRe = ({navigation}) => {
   const [messages, setMessages] = useState([]);
   const [result, setResult] = useState();
   const [recording, setRecording] = useState(recording);
@@ -165,6 +166,20 @@ export default CounsellingRe = () => {
 
   return (
     <View style={styles.container}>
+      <Image
+        blurRadius={40}
+        source={require('../../assets/images/Background_2.png')}
+        style={styles.backgroundImage}
+      />
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.backButtonContainer}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}>
+            <ArrowLeftIcon size={wp('6%')} color="white" />
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
       <SafeAreaView style={{flex: 1}}>
         {/* Icon */}
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
@@ -178,7 +193,7 @@ export default CounsellingRe = () => {
           <View
             style={{
               height: hp(50),
-              backgroundColor: book === 1 ? '#CBD5E0' : '#FFCDD6',
+              backgroundColor: 'transparent',
               borderRadius: 20,
               padding: 16,
               marginBottom: 16,
@@ -338,7 +353,7 @@ export default CounsellingRe = () => {
           </TouchableOpacity>
         </View>
       </SafeAreaView>
-      <Footer/>
+      <Footer />
     </View>
   );
 };
@@ -346,11 +361,23 @@ export default CounsellingRe = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
-    padding: 2,
-    paddingTop: 5,
-    paddingBottom: 0,
-    
+  },
+  backgroundImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    zIndex: -1,
+  },
+  backButtonContainer: {
+    justifyContent: 'flex-start',
+    width: wp(10),
+  },
+  backButton: {
+    backgroundColor: '#1E2B22',
+    padding: wp('1%'),
+    borderTopRightRadius: wp('5%'),
+    borderBottomLeftRadius: wp('5%'),
+    marginLeft: wp('2%'),
   },
   scrollView: {
     height: hp(60),
