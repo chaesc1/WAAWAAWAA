@@ -32,6 +32,7 @@ const QuizPage_test = ({navigation}) => {
   const [speaking, setSpeaking] = useState(false);
   const [topic, setTopic] = useState(''); //처음 주제 설정
   const [result, setResult] = useState(''); //이후 말하는 text 설정
+  const [hideClearButton, setHideClearButton] = useState(false);
   const scrollViewRef = useRef();
 
   const fetchResponse = () => {
@@ -117,13 +118,16 @@ const QuizPage_test = ({navigation}) => {
   const stopSpeaking = () => {
     Tts.stop();
     setSpeaking(false);
+    setHideClearButton(true);
   };
   const speechStartHandler = e => {
     // console.log('speech start event', e);
+    setHideClearButton(true);
   };
   const speechEndHandler = e => {
     setRecording(false);
     // console.log('speech stop event', e);
+    setHideClearButton(true);
   };
   const speechResultsHandler = e => {
     console.log('speech event: ', e);
@@ -131,6 +135,7 @@ const QuizPage_test = ({navigation}) => {
     // console.log('Topic : ', topic);
 
     setResult(text);
+    setHideClearButton(true);
   };
 
   const speechErrorHandler = e => {
@@ -145,6 +150,7 @@ const QuizPage_test = ({navigation}) => {
     } catch (error) {
       console.log('errpr:', error);
     }
+    setHideClearButton(true);
   };
 
   const stopRecording = async () => {
@@ -158,6 +164,7 @@ const QuizPage_test = ({navigation}) => {
     } catch (error) {
       console.log('errpr:', error);
     }
+    setHideClearButton(true);
   };
   useEffect(() => {
     // voice handler events
@@ -168,6 +175,7 @@ const QuizPage_test = ({navigation}) => {
 
     // text to speech events
     // TTS 초기화
+    Tts.setIgnoreSilentSwitch('ignore');
     Tts.setDefaultLanguage('ko-KR'); // 한국어 설정
     Tts.setDefaultRate(0.6); // 음성 속도 설정
 
@@ -190,6 +198,7 @@ const QuizPage_test = ({navigation}) => {
         source={require('../../assets/images/Background_2.png')}
         style={styles.backgroundImage}
       />
+
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.backButtonContainer}>
           <TouchableOpacity
@@ -206,6 +215,19 @@ const QuizPage_test = ({navigation}) => {
             autoPlay
           />
         </View>
+        <View style={styles.triangle}></View>
+        <View style={styles.speechBubble}>
+          {messages.map((message, index) => {
+            if (message.role == 'assistant') {
+              //text gpt 대답 부분
+              return (
+                <View key={index} style={styles.assistantMessageContainer}>
+                  <Text style={styles.assistantMessage}>{message.content}</Text>
+                </View>
+              );
+            }
+          })}
+        </View>
       </SafeAreaView>
       {/* 녹음 , clear, 정지 버튼 */}
       <View>
@@ -215,9 +237,11 @@ const QuizPage_test = ({navigation}) => {
           style={styles.textContainer}
           onChangeText={text => setResult(text)}
         />
-        <TouchableOpacity style={styles.sendButton} onPress={fetchResponse}>
-          <Text style={styles.buttonText}>전송</Text>
-        </TouchableOpacity>
+        {!loading && (
+          <TouchableOpacity style={styles.sendButton} onPress={fetchResponse}>
+            <Text style={styles.buttonText}>전송</Text>
+          </TouchableOpacity>
+        )}
       </View>
       <View style={styles.buttonsContainer}>
         {loading ? (
@@ -250,7 +274,7 @@ const QuizPage_test = ({navigation}) => {
           </TouchableOpacity>
         )}
         {/* right side */}
-        {messages.length > 0 && (
+        {messages.length > 0 && !hideClearButton && (
           <TouchableOpacity style={styles.clearButton} onPress={clear}>
             <Text style={styles.buttonText}>Clear</Text>
           </TouchableOpacity>
@@ -287,6 +311,32 @@ const styles = StyleSheet.create({
     borderTopRightRadius: wp('5%'),
     borderBottomLeftRadius: wp('5%'),
     marginLeft: wp('2%'),
+  },
+  speechBubble: {
+    position: 'absolute',
+    backgroundColor: '#00aabb',
+    width: wp(80),
+    height: hp(10),
+    borderRadius: 12,
+    alignSelf: 'center',
+    padding: 16,
+    marginTop: hp(15),
+  },
+  triangle: {
+    position: 'absolute',
+    left: '50%',
+    width: wp(1),
+    height: 0,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderTopWidth: 20,
+    borderTopColor: '#00aabb',
+    borderRightWidth: 20,
+    borderRightColor: 'transparent',
+    borderLeftWidth: 20,
+    borderLeftColor: 'transparent',
+    marginLeft: wp(-10), // 중앙 정렬을 위해 마이너스 마진 설정
+    marginTop: hp(25),
   },
   textContainer: {
     backgroundColor: '#FFFFFF',

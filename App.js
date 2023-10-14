@@ -129,6 +129,7 @@ const App = () => {
           options={{
             title: '',
             headerBackTitleVisible: false,
+            headerShown: false,
             headerBackImage: 'BackBtn',
             headerStyle: {
               backgroundColor: '#FFFFFF',
