@@ -8,6 +8,7 @@ import RegisterPage from './src/screens/RegisterPage'; //회원가입
 import ConnectEndingPage from './src/screens/ConnectEnding'; //끝말잇기
 import TwentyQuestionPage from './src/screens/TwentyQuestion'; // 스무고개 페이지
 import StaticsPage from './src/screens/StaticsPage'; // 통계 페이지
+import ForgetPassword from './src/screens/ForgetPassword'; // 비밀번호 잊으셨나요 페이지
 import MyPage from './src/screens/MyPage';
 import Footer from './src/components/footer'; // 하단바
 import QuizPage2 from './src/screens/QuizPage';
@@ -71,6 +72,20 @@ const App = () => {
         <Stack.Screen
           name="LoginPage"
           component={newLogin}
+          options={{
+            title: '',
+            headerBackTitleVisible: false,
+            headerBackImage: 'BackBtn',
+            headerShown: false,
+            headerStyle: {
+              backgroundColor: '#FAF1E4',
+            },
+          }}
+        />
+        {/* 비밀번호를 잊으셨나요 화면 */}
+        <Stack.Screen
+          name="ForgetPassword"
+          component={ForgetPassword}
           options={{
             title: '',
             headerBackTitleVisible: false,

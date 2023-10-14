@@ -15,6 +15,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ArrowLeftIcon} from 'react-native-heroicons/solid';
@@ -27,9 +28,7 @@ import {
 
 export default function LoginScreen() {
   const navigation = useNavigation();
-  const [isLandscape, setIsLandscape] = useState(false);
   const [userId, setUserId] = useState('');
-  const [userPassword, setUserPassword] = useState('');
   const [isStoredAccessToken, setIsStoredAccessToken] = useState(false);
 
   const getAccessTokenData = async () => {
@@ -47,30 +46,27 @@ export default function LoginScreen() {
   // 유저 로그인 요청 api
   const login = async () => {
     try {
-      const res = await noAuthClient({
+      await noAuthClient({
         method: 'post',
-        url: `/signin`,
+        url: `/mail/reset-password`,
         data: {
           userId: userId,
-          password: userPassword,
         },
       });
 
-      //setRefreshToken(res.data.refreshToken);
-
-      navigation.navigate('MemberMainPage');
-
-      await AsyncStorage.setItem('accessToken', res.data.accessToken);
-      await AsyncStorage.setItem('refreshToken', res.data.refreshToken);
-      await AsyncStorage.setItem('userId', res.data.userId);
-
-      const storedAccessToken = await AsyncStorage.getItem('accessToken');
-      const storedRefreshToken = await AsyncStorage.getItem('refreshToken');
-      const storedUserId = await AsyncStorage.getItem('userId');
-
-      console.log('Stored access token:', storedAccessToken);
-      console.log('Stored refresh token:', storedRefreshToken);
-      console.log('Stored userId:', storedUserId);
+      Alert.alert(
+        '메일 발송 성공!',
+        '로그인 페이지로 가서 로그인 후, 반드시 비밀번호 재설정을 해야해!',
+        [
+          {
+            text: '알겠어',
+            onPress: () => {
+              setUserId('');
+              navigation.navigate('LoginPage');
+            },
+          },
+        ],
+      );
     } catch (err) {
       console.error(err);
     }
@@ -103,10 +99,12 @@ export default function LoginScreen() {
         </SafeAreaView>
         <View style={styles.formContainer}>
           <View style={styles.form}>
-            <Text style={styles.label}>아이디</Text>
+            <Text style={styles.formLabel}>
+              비밀번호를 재설정할 아이디를 입력해주세요
+            </Text>
             <TextInput
               style={styles.input}
-              placeholder="아이디를 입력해주세요."
+              placeholder="비밀번호를 재설정할 아이디를 입력해주세요."
               value={userId}
               onChangeText={setUserId}
               autoCapitalize="none"
@@ -114,39 +112,12 @@ export default function LoginScreen() {
               underlineColorAndroid="#f000"
               blurOnSubmit={false}
             />
-            <Text style={styles.label}>비밀번호</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="비밀번호를 입력해주세요."
-              value={userPassword}
-              secureTextEntry={true} // 비밀번호 타입으로 변경
-              onChangeText={setUserPassword}
-              autoCapitalize="none"
-              returnKeyType="next"
-              underlineColorAndroid="#f000"
-              blurOnSubmit={false}
-            />
-            <TouchableOpacity
-              style={styles.forgotPassword}
-              onPress={() => navigation.navigate('ForgetPassword')}>
-              <Text style={styles.forgotPasswordText}>
-                비밀번호를 잊으셨나요?
-              </Text>
-            </TouchableOpacity>
             <TouchableOpacity
               style={styles.loginButton}
               onPress={() => {
-                //navigation.navigate('MyPage')
                 login();
               }}>
-              <Text style={styles.loginButtonText}>로그인</Text>
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.orText}>Or</Text>
-          <View style={styles.signupContainer}>
-            <Text style={styles.signupText}>계정이 아직 없으신가요?</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-              <Text style={styles.signupLink}>회원가입</Text>
+              <Text style={styles.loginButtonText}>비밀번호 재설정</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -196,13 +167,20 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: wp('12%'),
     borderTopRightRadius: wp('12%'),
     paddingHorizontal: wp('4%'),
-    paddingTop: hp('15%'),
   },
   form: {
-    marginTop: wp('-20%'),
     padding: 10,
+    paddingTop: hp('7%'),
+    justifyContent: 'center',
+  },
+  formLabel: {
+    marginLeft: wp('1.3%'),
+    fontSize: 17,
+    color: 'black',
+    marginBottom: hp('1%'),
   },
   label: {
+    marginTop: wp('2%'),
     marginLeft: wp('1.3%'),
     color: 'gray',
     marginBottom: hp('1%'),
@@ -212,6 +190,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F0F0F0',
     color: 'gray',
     borderRadius: wp('8%'),
+    marginTop: wp('3%'),
     marginBottom: wp('3%'),
   },
   forgotPassword: {
@@ -225,7 +204,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#1E2B22',
     borderRadius: wp('8%'),
     paddingVertical: wp('4%'),
-    marginTop: hp('5%'),
   },
   loginButtonText: {
     fontSize: wp('4%'),
