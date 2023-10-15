@@ -160,7 +160,7 @@ const QuizPage_test = ({navigation}) => {
       await Voice.stop();
       setRecording(false);
       //fetch Response
-      fetchResponse();
+      //fetchResponse();
     } catch (error) {
       console.log('errpr:', error);
     }
@@ -216,18 +216,25 @@ const QuizPage_test = ({navigation}) => {
           />
         </View>
         <View style={styles.triangle}></View>
-        <View style={styles.speechBubble}>
+        <ScrollView style={styles.speechBubble}>
           {messages.map((message, index) => {
             if (message.role == 'assistant') {
               //text gpt 대답 부분
               return (
-                <View key={index} style={styles.assistantMessageContainer}>
-                  <Text style={styles.assistantMessage}>{message.content}</Text>
+                <View style={{flex: 1, flexDirection: 'column'}}>
+                  <View style={{flex: 1, backgroundColor: 'red'}}></View>
+                  <View key={index} style={styles.assistantMessageContainer}>
+                    {/* <Text style={styles.assistantMessage}>{message.content}</Text> */}
+                    <Text style={styles.assistantMessage}>
+                      한줄일떄 테스트요
+                    </Text>
+                  </View>
+                  <View style={{flex: 1, backgroundColor: 'blue'}}></View>
                 </View>
               );
             }
           })}
-        </View>
+        </ScrollView>
       </SafeAreaView>
       {/* 녹음 , clear, 정지 버튼 */}
       <View>
@@ -315,12 +322,12 @@ const styles = StyleSheet.create({
   speechBubble: {
     position: 'absolute',
     backgroundColor: '#00aabb',
-    width: wp(80),
-    height: hp(10),
+    width: wp(90),
+    height: hp(17.5),
     borderRadius: 12,
     alignSelf: 'center',
     padding: 16,
-    marginTop: hp(15),
+    marginTop: hp(13),
   },
   triangle: {
     position: 'absolute',
@@ -336,7 +343,8 @@ const styles = StyleSheet.create({
     borderLeftWidth: 20,
     borderLeftColor: 'transparent',
     marginLeft: wp(-10), // 중앙 정렬을 위해 마이너스 마진 설정
-    marginTop: hp(25),
+    marginTop: hp(30),
+    zIndex: -1,
   },
   textContainer: {
     backgroundColor: '#FFFFFF',
@@ -345,6 +353,17 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginLeft: wp(3),
     paddingLeft: wp(3),
+  },
+  assistantMessageContainer: {
+    flex: 1,
+    justifyContent: 'center', // 수직 중앙 정렬 (상하 중앙 정렬)
+    alignItems: 'center', // 수직 중앙 정렬 (상하 중앙 정렬)
+    alignSelf: 'center',
+  },
+  assistantMessage: {
+    fontSize: wp(5),
+    textAlign: 'center', // 가로 중앙 정렬 (가운데 정렬)
+    color: '#374151',
   },
   image: {
     width: wp('50%'),
