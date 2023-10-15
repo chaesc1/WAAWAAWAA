@@ -14,7 +14,11 @@ import Footer from '../components/footer';
 import authClient from '../apis/authClient';
 import Lottie from 'lottie-react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-
+import {ArrowLeftIcon} from 'react-native-heroicons/solid';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 const MyPage = ({navigation}) => {
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [password, setPassword] = useState('');
@@ -37,54 +41,56 @@ const MyPage = ({navigation}) => {
 
   // 비밀번호 변경가능 유효성 검사
   const isPasswordValid = password => {
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordRegex =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return passwordRegex.test(password);
   };
-  
 
   // 비밀번호 변경 -> 숫자, 영문자, 특수문자 조합으로 8자리 이상 안되면 fail
-const handlePasswordChange = async () => {
-  console.log('비밀번호 변경 시도:', password);
-  if (password === confirmPassword) {
-    if (isPasswordValid(password)) { // 비밀번호 유효성 검사
-      try {
-        await authClient({
-          method: 'put',
-          url: '/users/password',
-          data: {
-            password: password,
-          },
-        });
+  const handlePasswordChange = async () => {
+    console.log('비밀번호 변경 시도:', password);
+    if (password === confirmPassword) {
+      if (isPasswordValid(password)) {
+        // 비밀번호 유효성 검사
+        try {
+          await authClient({
+            method: 'put',
+            url: '/users/password',
+            data: {
+              password: password,
+            },
+          });
 
-        Alert.alert('비밀번호가 성공적으로 변경되었어! 다시 로그인을 해줘');
+          Alert.alert('비밀번호가 성공적으로 변경되었어! 다시 로그인을 해줘');
 
-        // 로그아웃 및 로그인 페이지로 이동
-        await logout();
-
-      } catch (error) {
-        console.log(error.response.data);
+          // 로그아웃 및 로그인 페이지로 이동
+          await logout();
+        } catch (error) {
+          console.log(error.response.data);
+        }
+      } else {
+        Alert.alert(
+          '비밀번호는 숫자, 특수문자, 영어를 포함하고 8자리 이상이어야해.',
+        );
       }
     } else {
-      Alert.alert('비밀번호는 숫자, 특수문자, 영어를 포함하고 8자리 이상이어야해.');
+      Alert.alert('비밀번호가 일치하지않아. 다시 확인해줘!');
     }
-  } else {
-    Alert.alert('비밀번호가 일치하지않아. 다시 확인해줘!');
-  }
-};
+  };
 
   // 로그아웃
   const logout = async () => {
-  try {
-    // AsyncStorage를 clear
-    await AsyncStorage.clear();
+    try {
+      // AsyncStorage를 clear
+      await AsyncStorage.clear();
 
-    // LandingPage로 navigate
-    navigation.navigate('LandingPage');
-    console.log('로그아웃 되었어!');
-  } catch (error) {
-    console.error('로그아웃 오류:', error);
-  }
-}
+      // LandingPage로 navigate
+      navigation.navigate('LandingPage');
+      console.log('로그아웃 되었어!');
+    } catch (error) {
+      console.error('로그아웃 오류:', error);
+    }
+  };
 
   // 나이 변경
   const handleAgeChange = async () => {
@@ -167,25 +173,31 @@ const handlePasswordChange = async () => {
           style: 'cancel',
         },
       ],
-      { cancelable: false }
+      {cancelable: false},
     );
   };
 
-
   return (
     <View style={styles.container}>
+      <View style={styles.backButtonContainer}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}>
+          <ArrowLeftIcon size={wp('6%')} color="white" />
+        </TouchableOpacity>
+      </View>
       <View style={styles.profileContainer}>
-      <Lottie
-      source={require('../../assets/animations/newBear.json')}
-      style={styles.image}
-      autoPlay
-      loop
-    />
-    <View style={styles.profileInfoContainer}>
-        <Text style={styles.username}>{user ? user.username : '이름'}</Text>
-        <Text style={styles.age}>
-          {user ? `나이: ${user.age}살` : '나이: ?'}
-        </Text>
+        <Lottie
+          source={require('../../assets/animations/newBear.json')}
+          style={styles.image}
+          autoPlay
+          loop
+        />
+        <View style={styles.profileInfoContainer}>
+          <Text style={styles.username}>{user ? user.username : '이름'}</Text>
+          <Text style={styles.age}>
+            {user ? `나이: ${user.age}살` : '나이: ?'}
+          </Text>
         </View>
       </View>
       {/* <ScrollView contentContainerStyle={styles.scrollContent}> */}
@@ -257,26 +269,26 @@ const handlePasswordChange = async () => {
               style={styles.confirmButton}>
               <Text style={styles.confirmButtonText}>변경하기</Text>
             </TouchableOpacity>
-
           </View>
         )}
 
         <TouchableOpacity
           style={styles.menuItem}
           onPress={() => navigation.navigate('StaticsPage')}>
-          <FontAwesome5 name="chart-line" style={styles.graphIcon} /> 
+          <FontAwesome5 name="chart-line" style={styles.graphIcon} />
           <View style={styles.statButtonContent}>
             <Text style={styles.statButtonTitle}>상담 통계 페이지 </Text>
-            
+
             <Text style={styles.statButtonDescription}>
-            {user ? user.username : '이름'}이가 대화한 내용들을 알고싶다면?
+              {user ? user.username : '이름'}이가 대화한 내용들을 알고싶다면?
               접속해봐!
             </Text>
           </View>
         </TouchableOpacity>
 
-
-        <TouchableOpacity style={styles.withdrawButton} onPress={handleWithdraw}>
+        <TouchableOpacity
+          style={styles.withdrawButton}
+          onPress={handleWithdraw}>
           <Text style={styles.buttonText}>회원탈퇴</Text>
         </TouchableOpacity>
       </View>
@@ -287,25 +299,37 @@ const handlePasswordChange = async () => {
 
 const styles = StyleSheet.create({
   container: {
+    position: 'relative',
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
     padding: 20,
     backgroundColor: '#FFD2E0',
   },
-
+  backButtonContainer: {
+    justifyContent: 'flex-start',
+    width: wp(10),
+    marginTop: wp(6.4),
+    right: wp(3),
+  },
+  backButton: {
+    backgroundColor: '#1E2B22',
+    padding: wp('1%'),
+    borderTopRightRadius: wp('5%'),
+    borderBottomLeftRadius: wp('5%'),
+    marginLeft: wp('2%'),
+  },
   profileContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
     backgroundColor: 'white',
-    padding: 20,
+    padding: 15,
     borderRadius: 20,
+    marginTop: hp(3),
   },
 
   profileInfoContainer: {
-    flex: 1, 
-    marginLeft: 20, 
+    flex: 1,
+    marginLeft: 20,
   },
 
   image: {
@@ -313,14 +337,14 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     backgroundColor: 'pink',
-    marginRight: 20, 
+    marginRight: 20,
   },
 
   username: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#FF57A6',
-    marginBottom: 10, 
+    marginBottom: 10,
   },
 
   age: {
@@ -391,11 +415,11 @@ const styles = StyleSheet.create({
 
   withdrawButton: {
     //position: 'absolute',
-    //bottom: 20, 
-    backgroundColor: '#FFA3A0', 
-    paddingVertical: 15, 
+    //bottom: 20,
+    backgroundColor: '#FFA3A0',
+    paddingVertical: 15,
     paddingHorizontal: 20,
-    alignSelf: 'center', 
+    alignSelf: 'center',
     alignItems: 'center',
     borderRadius: 14,
   },
@@ -407,12 +431,11 @@ const styles = StyleSheet.create({
 
   graphIcon: {
     fontSize: 24,
-    color: '#FFA3A0', 
-    marginRight: 10, 
+    color: '#FFA3A0',
+    marginRight: 10,
   },
   statButtonContent: {
-    flexDirection: 'column', 
-    
+    flexDirection: 'column',
   },
   statButtonTitle: {
     fontSize: 18,
@@ -424,6 +447,5 @@ const styles = StyleSheet.create({
     color: '#666',
   },
 });
-
 
 export default MyPage;
