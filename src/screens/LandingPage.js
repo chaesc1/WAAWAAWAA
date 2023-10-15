@@ -18,7 +18,12 @@ import {
 
 export default function LandingPage({navigation}) {
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <Image
+        blurRadius={40}
+        source={require('../../assets/images/Background_2.png')}
+        style={styles.backgroundImage}
+      />
       <View style={styles.textContainer}>
         <Text style={{fontWeight: 'bold', fontSize: wp(10)}}>
           Play With OPENAI
@@ -35,17 +40,21 @@ export default function LandingPage({navigation}) {
           <Text style={styles.startButtonText}>시작하기</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAF1E4',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 24,
+  },
+  backgroundImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    zIndex: -1,
   },
   textContainer: {
     marginBottom: hp(5),

@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import OnboardingPage from './src/screens/OnboardingPage';
 import LandingPage from './src/screens/LandingPage';
 import LoginPage from './src/screens/LoginPage';
 import MemberMainPage from './src/screens/MemberMainPage'; //로그인시 메인페이지
@@ -33,31 +34,15 @@ const Stack = createNativeStackNavigator();
 //const Tab = createBottomTabNavigator();
 
 const App = () => {
-  // const [loggedIn, setLoggedIn] = useState(false);
-  // const userId =  AsyncStorage.getItem('userId');
-  // console.log(userId);
-  // const checkLoginStatus = async () => {
-  //   try {
-  //     if (userId != null) {
-  //       setLoggedIn(true);
-  //     } else {
-  //       console.log('에러에러');
-  //       setLoggedIn(false);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error reading userId from AsyncStorage:', error);
-  //   }
-  // };
-  // console.log("현재 loggedIn 상태:"+loggedIn)
-
-  // useEffect(() => {
-  //   checkLoginStatus();
-  // }, [userId]);
-
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="Onbording">
         {/* 초기화면 */}
+        <Stack.Screen
+          name="Onboarding"
+          options={{headerShown: false}}
+          component={OnboardingPage}
+        />
         <Stack.Screen
           name="LandingPage"
           component={LandingPage}
