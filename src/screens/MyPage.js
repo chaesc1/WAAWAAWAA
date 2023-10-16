@@ -211,7 +211,7 @@ const MyPage = ({navigation}) => {
           <View style={styles.accordionContent}>
             <TextInput
               style={styles.input}
-              placeholder="변경할 비밀번호"
+              placeholder="숫자, 영문자, 특수문자 조합으로 8자리이상"
               value={password}
               onChangeText={text => setPassword(text)}
               secureTextEntry
