@@ -72,8 +72,8 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   characterIcon: {
-    width: wp('10%'), // 캐릭터 이미지 크기 조정
-    height: wp('10%'), // 캐릭터 이미지 크기 조정
+    width: wp('10%'), 
+    height: wp('10%'), 
   },
   
 });
