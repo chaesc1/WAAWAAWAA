@@ -116,6 +116,7 @@ const App = () => {
           options={{
             title: '',
             headerBackTitleVisible: false,
+            headerShown: false,
             headerBackImage: 'BackBtn',
             headerStyle: {
               backgroundColor: '#FFFFFF',
@@ -150,19 +151,6 @@ const App = () => {
             },
           }}
         />
-        {/* 스무고개 페이지 */}
-        <Stack.Screen
-          name="TwentyQuestion"
-          component={TwentyQuestionPage}
-          options={{
-            title: '',
-            headerBackTitleVisible: false,
-            headerBackImage: 'BackBtn',
-            headerStyle: {
-              backgroundColor: '#FFFFFF',
-            },
-          }}
-        />
         {/* 끝말잇기 페에지 */}
         <Stack.Screen
           name="ConnectStart"
@@ -171,6 +159,7 @@ const App = () => {
             title: '',
             headerBackTitleVisible: false,
             headerBackImage: 'BackBtn',
+            headerShown: false,
             headerStyle: {
               backgroundColor: '#FFFFFF',
             },
