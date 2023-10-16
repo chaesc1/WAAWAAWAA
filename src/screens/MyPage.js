@@ -118,7 +118,7 @@ const MyPage = ({navigation}) => {
         method: 'put',
         url: '/users/username',
         data: {
-          username: nickname, // 닉네임 값을 요청 데이터에 포함
+          username: nickname, 
         },
       });
     } catch (error) {
@@ -200,7 +200,6 @@ const MyPage = ({navigation}) => {
           </Text>
         </View>
       </View>
-      {/* <ScrollView contentContainerStyle={styles.scrollContent}> */}
       <View style={styles.menuContainer}>
         <TouchableOpacity
           style={styles.menuItem}
@@ -237,7 +236,6 @@ const MyPage = ({navigation}) => {
         </TouchableOpacity>
         {selectedMenu === 2 && (
           <View style={styles.accordionContent}>
-            {/* Your age settings form can go here */}
             <TextInput
               style={styles.input}
               placeholder="변경하고 싶으신 나이를 입력해주세요."
