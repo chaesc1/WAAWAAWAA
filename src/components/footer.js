@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import isTokenAvailable from '../utils/isTokenAvailable';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -23,8 +23,8 @@ const Footer = ({}) => {
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.navigate('MyPage')}>
         <View style={styles.tabBarButton}>
-          <Lottie 
-            source ={require('../../assets/animations/mypage.json')}
+          <Lottie
+            source={require('../../assets/animations/mypage.json')}
             style={styles.characterIcon}
             autoPlay
             loop
@@ -34,14 +34,14 @@ const Footer = ({}) => {
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('MemberMainPage')}>
         <View style={styles.tabBarButton}>
-        <Icon name="grid-outline" size={wp('8.5%')} color="#000000" />
+          <Icon name="grid-outline" size={wp('8.5%')} color="#000000" />
           <Text style={styles.tabBarText}>Main Menu</Text>
         </View>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleLogout}>
         <View style={styles.tabBarButton}>
-          <Lottie 
-            source ={require('../../assets/animations/logout.json')}
+          <Lottie
+            source={require('../../assets/animations/logout.json')}
             style={styles.characterIcon}
             autoPlay
             loop
@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
     height: hp('7%'),
     width: wp('100%'),
     position: 'relative',
+    marginBottom: hp(2),
   },
   tabBarButton: {
     flexDirection: 'column',
@@ -72,10 +73,9 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   characterIcon: {
-    width: wp('10%'), 
-    height: wp('10%'), 
+    width: wp('10%'),
+    height: wp('10%'),
   },
-  
 });
 
 export default Footer;
