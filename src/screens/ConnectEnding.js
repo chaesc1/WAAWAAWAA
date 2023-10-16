@@ -21,9 +21,11 @@ import {ConnectEndApi} from '../api/OpenAI';
 import Tts from 'react-native-tts';
 import authClient from '../apis/authClient';
 import Footer from '../components/footer';
+import Lottie from 'lottie-react-native';
+import {ArrowLeftIcon} from 'react-native-heroicons/solid';
 Tts.requestInstallData();
 
-export default CounsellingRe = () => {
+export default CounsellingRe = ({navigation}) => {
   const [messages, setMessages] = useState([]);
   const [result, setResult] = useState();
   const [recording, setRecording] = useState(recording);
@@ -272,118 +274,114 @@ export default CounsellingRe = () => {
 
   return (
     <View style={styles.container}>
-      <SafeAreaView style={{flex: 1}}>
-        {/* Icon */}
-        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-          <Image
-            source={require('../../assets/images/bot.png')}
-            style={{height: hp(15), width: hp(15)}}
+      <Image
+        blurRadius={40}
+        source={require('../../assets/images/Background_2.png')}
+        style={styles.backgroundImage}
+      />
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.backButtonContainer}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}>
+            <ArrowLeftIcon size={wp('6%')} color="white" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.imageContainer}>
+          <Lottie
+            source={require('../../assets/animations/GreenBear.json')}
+            style={styles.image}
+            loop
+            autoPlay
           />
         </View>
-        {/* feature,message */}
-        {messages.length > 0 ? (
-          <View style={{flex: 1.5, marginVertical: 10}}>
-            <View
-              style={{
-                height: hp(55),
-                backgroundColor: '#CBD5E0',
-                borderRadius: 20,
-                padding: 16,
-              }}>
-              {messages.length > 0 ? (
-                <View style={{flex: 1, marginVertical: 1}}>
-                  <Text style={styles.assistantHeading}>끝말잇기!!!</Text>
-                  <ScrollView
-                    ref={scrollViewRef}
-                    bounces={false}
-                    style={styles.scrollView}
-                    showsVerticalScrollIndicator={false}>
-                    {messages.map((message, index) => {
-                      if (message.sender == 'assistant') {
-                        //text gpt 대답 부분
-                        return (
-                          <View
-                            key={index}
-                            style={styles.assistantMessageContainer}>
-                            <Text style={styles.assistantMessage}>
-                              {message.content}
-                            </Text>
-                          </View>
-                        );
-                      } else {
-                        //user input
-                        return (
-                          <View key={index} style={styles.userMessageContainer}>
-                            <View style={styles.userMessageContent}>
-                              <Text style={styles.userMessageText}>
-                                {message.content}
-                              </Text>
-                            </View>
-                          </View>
-                        );
-                      }
-                    })}
-                  </ScrollView>
+        <View style={styles.triangle}></View>
+        <ScrollView style={styles.speechBubble}>
+          {messages.map((message, index) => {
+            if (message.sender == 'assistant') {
+              //text gpt 대답 부분
+              return (
+                <View style={{flex: 1, flexDirection: 'column'}}>
+                  <View style={{flex: 1, backgroundColor: 'red'}}></View>
+                  <View key={index} style={styles.assistantMessageContainer}>
+                    <Text style={styles.assistantMessage}>
+                      {message.content}
+                    </Text>
+                  </View>
+                  <View style={{flex: 1, backgroundColor: 'blue'}}></View>
                 </View>
-              ) : (
-                <Features />
-              )}
-            </View>
-          </View>
-        ) : (
-          <Features />
-        )}
-        {/* 녹음 , clear, 정지 버튼 */}
-        <View style={styles.buttonsContainer}>
-          <TextInput
-            value={result}
-            placeholder="your text"
-            style={{flex: 1}}
-            onChangeText={text => setResult(text)}
-          />
-          {loading ? (
-            <Image
-              source={require('../../assets/images/loading.gif')}
-              style={styles.buttonImage}
-            />
-          ) : recording ? (
-            <TouchableOpacity style={styles.button} onPress={stopRecording}>
-              {/* Recording Stop Button */}
-              <Image
-                source={require('../../assets/images/voiceLoading-unscreen.gif')}
-                style={styles.buttonImage}
-              />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.button} onPress={startRecording}>
-              {/* Recording start Button */}
-              <Image
-                source={require('../../assets/images/recordingIcon.png')}
-                style={styles.buttonImage}
-              />
-            </TouchableOpacity>
-          )}
-
-          {!loading && (
-            <TouchableOpacity onPress={fetchResponse}>
-              <Text>전송</Text>
-            </TouchableOpacity>
-          )}
-        </View>
+              );
+            } else {
+              return (
+                <View key={index} style={styles.userMessageContainer}>
+                  <View style={styles.userMessageContent}>
+                    <Text style={styles.userMessageText}>
+                      {message.content}
+                    </Text>
+                  </View>
+                </View>
+              );
+            }
+          })}
+        </ScrollView>
       </SafeAreaView>
-      <Footer />
-      {/* right side */}
-      {messages.length > 0 && !hideClearButton && (
-        <TouchableOpacity style={styles.clearButton} onPress={clear}>
-          <Text style={styles.buttonText}>Clear</Text>
-        </TouchableOpacity>
-      )}
-      {/* left side */}
-      {speaking > 0 && (
-        <TouchableOpacity style={styles.stopButton} onPress={stopSpeaking}>
-          <Text style={styles.buttonText}>Stop</Text>
-        </TouchableOpacity>
-      )}
+      {/* 녹음 , clear, 정지 버튼 */}
+      <View>
+        <TextInput
+          value={result}
+          placeholder="적어서도 보내봐!!"
+          style={styles.textContainer}
+          onChangeText={text => setResult(text)}
+        />
+        {!loading && (
+          <TouchableOpacity style={styles.sendButton} onPress={fetchResponse}>
+            <Text style={styles.buttonText}>전송</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+      <View style={styles.buttonsContainer}>
+        {loading ? (
+          <Lottie
+            source={require('../../assets/animations/loading.json')}
+            style={styles.loadingIcon}
+            loop
+            autoPlay
+          />
+        ) : recording ? (
+          <TouchableOpacity style={styles.button} onPress={stopRecording}>
+            {/* Recording Stop Button */}
+            <Lottie
+              source={require('../../assets/animations/micOnLoading.json')}
+              style={styles.buttonImage}
+              loop
+              autoPlay
+            />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.button} onPress={startRecording}>
+            {/* Recording start Button */}
+            <Lottie
+              source={require('../../assets/animations/ReadyRecord.json')}
+              style={styles.buttonImage}
+              loop
+              autoPlay
+              speed={1.2}
+            />
+          </TouchableOpacity>
+        )}
+        {/* right side */}
+        {messages.length > 0 && !hideClearButton && (
+          <TouchableOpacity style={styles.clearButton} onPress={clear}>
+            <Text style={styles.buttonText}>Clear</Text>
+          </TouchableOpacity>
+        )}
+        {/* left side */}
+        {speaking > 0 && (
+          <TouchableOpacity style={styles.stopButton} onPress={stopSpeaking}>
+            <Text style={styles.buttonText}>Stop</Text>
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 };
@@ -391,20 +389,59 @@ export default CounsellingRe = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
-    paddingBottom: 0,
+    position: 'relative',
   },
-  scrollView: {
-    height: hp(60),
-    backgroundColor: '#F4F4F4',
-    borderRadius: 10,
-    padding: 8,
+  backgroundImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    zIndex: -1,
   },
-  assistantHeading: {
-    fontSize: wp(5),
-    fontWeight: 'bold',
-    color: '#374151',
-    marginLeft: 8,
+  backButtonContainer: {
+    justifyContent: 'flex-start',
+    width: wp(10),
+  },
+  backButton: {
+    backgroundColor: '#1E2B22',
+    padding: wp('1%'),
+    borderTopRightRadius: wp('5%'),
+    borderBottomLeftRadius: wp('5%'),
+    marginLeft: wp('2%'),
+  },
+  speechBubble: {
+    position: 'absolute',
+    backgroundColor: '#00aabb',
+    width: wp(90),
+    height: hp(17.5),
+    borderRadius: 12,
+    alignSelf: 'center',
+    padding: 16,
+    marginTop: hp(13),
+  },
+  triangle: {
+    position: 'absolute',
+    left: '50%',
+    width: wp(1),
+    height: 0,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderTopWidth: 20,
+    borderTopColor: '#00aabb',
+    borderRightWidth: 20,
+    borderRightColor: 'transparent',
+    borderLeftWidth: 20,
+    borderLeftColor: 'transparent',
+    marginLeft: wp(-10), // 중앙 정렬을 위해 마이너스 마진 설정
+    marginTop: hp(30),
+    zIndex: -1,
+  },
+  textContainer: {
+    backgroundColor: '#FFFFFF',
+    width: wp(80),
+    height: hp(4),
+    borderRadius: 30,
+    marginLeft: wp(3),
+    paddingLeft: wp(3),
   },
   assistantMessageContainer: {
     width: wp(75),
@@ -416,6 +453,7 @@ const styles = StyleSheet.create({
   },
   assistantMessage: {
     fontSize: wp(4),
+
     color: '#374151',
   },
   userMessageContainer: {
@@ -431,16 +469,20 @@ const styles = StyleSheet.create({
     flex: 0,
     justifyContent: 'center',
   },
-  userMessageText: {
-    fontSize: wp(4),
+  image: {
+    width: wp('50%'),
+    height: hp('40%'),
   },
-  buttonsContainer: {
-    flexDirection: 'row',
+  imageContainer: {
+    marginTop: hp(20),
     justifyContent: 'center',
     alignItems: 'center',
-    paddingLeft: 16,
-    paddingRight: 16,
-    marginTop: 15, // Add margin top for spacing
+  },
+  loadingIcon: {
+    width: hp(10),
+    height: hp(10),
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   button: {
     width: hp(10),
@@ -448,10 +490,18 @@ const styles = StyleSheet.create({
     borderRadius: hp(5),
     alignItems: 'center',
     justifyContent: 'center',
+    // marginRight: 8, // Add margin right for spacing
+  },
+  buttonsContainer: {
+    width: wp(100),
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: hp(10.5), // Add margin top for spacing
   },
   buttonImage: {
-    width: hp(10),
-    height: hp(10),
+    width: hp(20),
+    height: hp(20),
   },
   clearButton: {
     backgroundColor: '#6B7280',
@@ -459,7 +509,14 @@ const styles = StyleSheet.create({
     padding: 8,
     position: 'absolute',
     right: wp(5),
-    top: 10,
+    bottom: 10,
+  },
+  sendButton: {
+    backgroundColor: '#6B7280',
+    borderRadius: 20,
+    padding: wp(2.3),
+    position: 'absolute',
+    right: wp(3),
   },
   stopButton: {
     backgroundColor: '#EF4444',

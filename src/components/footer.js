@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     // width: wp('100%'),
     position: 'relative',
     marginBottom: hp(2),
-    right: 4,
+    right: 3,
   },
   tabBarButton: {
     flexDirection: 'column',
