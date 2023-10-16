@@ -14,6 +14,7 @@ import {
 import authClient from '../apis/authClient';
 import Footer from '../components/footer';
 import { BarChart } from 'react-native-chart-kit';
+import {ArrowLeftIcon} from 'react-native-heroicons/solid';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -87,48 +88,71 @@ export default function StaticsPage({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={{ fontWeight: 'bold', fontSize: 20, paddingTop: 30 }}>
-        대화했던 내용들의 통계를 볼 수 있어요!
-      </Text>
+      <View style={styles.topBar}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}>
+         <ArrowLeftIcon size={wp('6%')} color="white" />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.titleContainer}>
+        <Text style={styles.titleText}>
+          대화했던 내용들의 키워드를 확인해봐!
+        </Text>
+      </View>
 
       <View style={styles.buttonContainer}>
         <View style={styles.buttonWrapper}>
           <TouchableOpacity
             style={styles.startButton}
             onPress={() => toggleResult('자주 대화한 내용')}>
-            <Text style={styles.startStoryText}>자주 대화한 내용</Text>
+            <Text style={styles.startStoryText}>💬 자주 대화한 내용 💬</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.buttonWrapper}>
           <TouchableOpacity
             style={styles.startButton}
             onPress={() => toggleResult('위험 의심 내용')}>
-            <Text style={styles.startStoryText}>💥위험 의심 내용💥</Text>
+            <Text style={styles.startStoryText}>💥 위험 의심 내용💥</Text>
           </TouchableOpacity>
         </View>
       </View>
 
       {showFrequentResult && (
         <View style={styles.chartContainer}>
-          <BarChart
-            data={frequentChartData}
-            width={wp('90%')}
-            height={hp('20%')} // 조정된 높이
-            yAxisSuffix="회" // 세로 단위
-            yAxisInterval={3} // 세로 단위 간격
-            chartConfig={{
-              backgroundGradientFrom: 'white',
-              backgroundGradientTo: 'white',
-              decimalPlaces: 0,
-              color: (opacity = 0.3) => `rgba(255, 87, 166, ${opacity})`,
-              barPercentage: 0.6, // 그래프 막대의 너비 설정
-              style: {
-                borderRadius: 30, // 바차트 모서리 둥글게
-                paddingTop: 20, // 바차트와 상단 간격 추가
-              },
-            }}
-          />
+        <BarChart
+          data={frequentChartData}
+          width={wp('90%')}
+          height={hp('22%')} 
+          yAxisSuffix="회" 
+          yAxisInterval={10} 
+          fromZero={true} 
+          chartConfig={{
+            backgroundGradientFrom: 'white',
+            backgroundGradientTo: 'white',
+            decimalPlaces: 1,
+            color: (opacity = 0.3) => `rgba(255, 87, 166, ${opacity})`,
+            barPercentage: 0.8, 
+          }}
+          style={{
+            borderRadius: 10, 
+            
+          }}
+        />
         </View>
+      )}
+      
+      {showDangerResult && (
+        <>
+        {selectedDangerKeyword && (
+          <View style={styles.dangerKeywordContentBox}>
+            <Text style={styles.dangerKeywordContentTitle}>
+              KeyWord: {selectedDangerKeyword.keyword}
+            </Text>
+            <Text>{selectedDangerKeyword.content.join(', ')}</Text>
+          </View>
+        )}
+        </>
       )}
 
       <ScrollView style={styles.resultBox}>
@@ -153,7 +177,7 @@ export default function StaticsPage({ navigation }) {
           <>
             {isLoadingDanger ? (
               <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="green" />
+                <ActivityIndicator size="large" color="red" />
               </View>
             ) : (
               dangerKeywords.map((item, index) => (
@@ -167,14 +191,7 @@ export default function StaticsPage({ navigation }) {
                 </TouchableOpacity>
               ))
             )}
-            {selectedDangerKeyword && (
-              <View style={styles.dangerKeywordContentBox}>
-                <Text style={styles.dangerKeywordContentTitle}>
-                  Content: {selectedDangerKeyword.keyword}
-                </Text>
-                <Text>{selectedDangerKeyword.content.join(', ')}</Text>
-              </View>
-            )}
+            
           </>
         )}
       </ScrollView>
@@ -190,9 +207,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#FFD2E0',
   },
+  topBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: wp(3),
+  },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     marginTop: 20,
   },
   buttonWrapper: {
@@ -201,17 +223,24 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   startButton: {
-    width: '100%',
-    height: 40,
-    backgroundColor: '#FF81C0',
+    width: wp('45%'), 
+    height: 40, 
+    backgroundColor: '#FF81C0', 
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: 15, 
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   startStoryText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 16, 
   },
   resultBox: {
     backgroundColor: 'white',
@@ -221,37 +250,70 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
     borderRadius: 10,
+    
   },
   chartContainer: {
     paddingTop: 20, // 상단 여백 추가
     alignItems: 'center',
     borderRadius: 30, 
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   dangerKeywordBox: {
     alignItems: 'center',
-    backgroundColor: '#B0D9B1',
+    backgroundColor: '#FFC3A0',
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 8, 
     margin: 10,
     borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   frequentKeywordBox: {
     alignItems: 'center',
-    backgroundColor: '#B0D9B1',
+    backgroundColor: '#FFC3A0',
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 8, 
     margin: 10,
     borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   dangerKeywordContentBox: {
-    backgroundColor: '#D4EDDA',
-    padding: 10,
-    marginTop: 10,
+    backgroundColor: 'white',
+    padding: 20, 
+    width: '90%',
+    marginTop: 20,
+    marginBottom: 10,
     borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   dangerKeywordContentTitle: {
     fontWeight: 'bold',
     fontSize: 16,
+    marginBottom: 10, 
   },
   loadingContainer: {
     flex: 1,
@@ -270,5 +332,14 @@ const styles = StyleSheet.create({
     borderTopRightRadius: wp('5%'),
     borderBottomLeftRadius: wp('5%'),
     marginLeft: wp('2%'),
+  },
+  titleContainer: {
+    alignItems: 'center',
+  },
+  titleText: {
+    fontWeight: 'bold',
+    paddingTop: 10,
+    fontSize: 20, 
+    color: 'black', 
   },
 });

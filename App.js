@@ -181,6 +181,7 @@ const App = () => {
           name="StaticsPage"
           component={StaticsPage}
           options={{
+            headerShown: false,
             title: '',
             headerBackTitleVisible: false,
             headerBackImage: 'BackBtn',
