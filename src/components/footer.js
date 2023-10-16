@@ -16,7 +16,7 @@ const Footer = ({}) => {
   const handleLogout = async () => {
     const userId = AsyncStorage.getItem('userId');
     await AsyncStorage.clear();
-    navigation.navigate('LandingPage');
+    navigation.navigate('Onboarding');
   };
 
   return (
@@ -29,13 +29,13 @@ const Footer = ({}) => {
             autoPlay
             loop
           />
-          <Text style={styles.tabBarText}>My Page</Text>
+          <Text style={styles.tabBarText}>마이페이지</Text>
         </View>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('MemberMainPage')}>
         <View style={styles.tabBarButton}>
           <Icon name="grid-outline" size={wp('8.5%')} color="#000000" />
-          <Text style={styles.tabBarText}>Main Menu</Text>
+          <Text style={styles.tabBarText}>메인메뉴</Text>
         </View>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleLogout}>
@@ -46,7 +46,7 @@ const Footer = ({}) => {
             autoPlay
             loop
           />
-          <Text style={styles.tabBarText}>Log Out</Text>
+          <Text style={styles.tabBarText}>로그아웃</Text>
         </View>
       </TouchableOpacity>
     </View>
@@ -59,9 +59,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     height: hp('7%'),
-    width: wp('100%'),
+    // width: wp('100%'),
     position: 'relative',
     marginBottom: hp(2),
+    right: 4,
   },
   tabBarButton: {
     flexDirection: 'column',
