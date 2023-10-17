@@ -193,7 +193,7 @@ export default function StaticsPage({navigation}) {
           </>
         )}
       </ScrollView>
-      <Footer />
+      {/* <Footer /> */}
     </SafeAreaView>
   );
 }
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
   backButtonContainer: {
     justifyContent: 'flex-start',
     width: wp(10),
-    marginTop: wp(6.4),
+    marginTop: wp(0),
     left: wp(0.5),
   },
   backButton: {
