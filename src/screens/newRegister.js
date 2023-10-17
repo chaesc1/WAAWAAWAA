@@ -114,12 +114,13 @@ export default function SignUpScreen() {
     const ageConfirmCurrent = e.nativeEvent.text;
     setAge(ageConfirmCurrent);
 
-    if (age.length > 0) {
+    if (ageConfirmCurrent.length > 0) {
       setIsAge(true);
     } else {
       setIsAge(false);
     }
   }, []);
+
   // 유저생성 요청 api
   const register = async () => {
     // 모든 필드의 유효성을 확인
@@ -150,6 +151,7 @@ export default function SignUpScreen() {
         }
       } else {
         // 필드 중 하나라도 유효하지 않으면 오류 메시지 표시
+
         Alert.alert('입력 정보를 확인하세요', '유효하지 않은 정보가 있습니다.');
       }
     } else {
