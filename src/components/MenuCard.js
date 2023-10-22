@@ -18,7 +18,7 @@ const MenuCard = ({item, index}) => {
       animation="slideInLeft"
       duration={1000}
       style={styles.container}>
-      <View style={styles.imageContainer}>
+      <View>
         <Lottie source={item.image} style={styles.image} loop autoPlay />
       </View>
       <View style={styles.textContainer}>
@@ -38,18 +38,14 @@ const MenuCard = ({item, index}) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: wp('55%'),
-    height: hp('50%'),
+    width: wp('65%'),
+    height: hp('60%'),
     marginVertical: hp('10%'),
     marginRight: wp('3%'),
     padding: wp('3%'),
     paddingTop: hp('4%'),
     borderRadius: hp('2%'),
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  imageContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
   },
   image: {
     width: 150,
@@ -57,17 +53,23 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
+    gap: 10,
+    marginTop: hp('2%'),
     paddingHorizontal: wp('2%'),
     paddingVertical: hp('1%'),
   },
   titleText: {
-    fontSize: hp('2.5%'),
+    fontSize: wp('7%'),
+    textAlign: 'center',
     fontWeight: 'bold',
-    color: 'white',
+    color: '#000',
+    // color: '#F9F7E9',
   },
   descText: {
     fontSize: hp('1.8%'),
-    color: 'white',
+    textAlign: 'center',
+    color: '#000',
+    // color: '#F9F7E9',
   },
   menuContainer: {
     flexDirection: 'row',

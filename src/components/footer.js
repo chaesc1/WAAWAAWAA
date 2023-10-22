@@ -21,57 +21,64 @@ const Footer = ({}) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.navigate('MyPage')}>
-        <View style={styles.tabBarButton}>
-          <Lottie
-            source={require('../../assets/animations/mypage.json')}
-            style={styles.characterIcon}
-            autoPlay
-            loop
-          />
-          <Text style={styles.tabBarText}>마이페이지</Text>
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('MemberMainPage')}>
-        <View style={styles.tabBarButton}>
-          <Icon name="grid-outline" size={wp('8.5%')} color="#000000" />
-          <Text style={styles.tabBarText}>메인메뉴</Text>
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={handleLogout}>
-        <View style={styles.tabBarButton}>
-          <Lottie
-            source={require('../../assets/animations/logout.json')}
-            style={styles.characterIcon}
-            autoPlay
-            loop
-          />
-          <Text style={styles.tabBarText}>로그아웃</Text>
-        </View>
-      </TouchableOpacity>
+      <View>
+        <Text
+          style={{
+            fontSize: wp('7%'),
+            fontWeight: 'bold',
+            color: '#000',
+            // color: 'rgba(255, 255, 255, 0.8)',
+          }}>
+          게임 선택하기
+        </Text>
+      </View>
+      <View style={styles.iconContainer}>
+        <TouchableOpacity onPress={() => navigation.navigate('MyPage')}>
+          <View style={styles.tabBarButton}>
+            <Image
+              tintColor="#000"
+              // tintColor="rgba(255, 255, 255, 0.8)"
+              source={require('../../assets/images/person.png')}
+              style={styles.characterIcon}
+              autoPlay
+              loop
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    paddingVertical: 10,
+    paddingHorizontal: 25,
+    padding: 5,
+    zIndex: 1000,
+    marginBottom: hp('-10%'),
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    height: hp('7%'),
-    // width: wp('100%'),
+    height: 'fit-content',
+    width: wp('100%'),
     position: 'relative',
-    marginBottom: hp(2),
-    right: 3,
+    top: 20,
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    gap: 10,
   },
   tabBarButton: {
     flexDirection: 'column',
     alignItems: 'center',
+    gap: 5,
   },
   tabBarText: {
     fontSize: wp('3%'),
     fontWeight: 'bold',
-    color: '#000000',
+    color: '#000',
+    // color: 'rgba(255, 255, 255, 0.8)',
   },
   characterIcon: {
     width: wp('10%'),

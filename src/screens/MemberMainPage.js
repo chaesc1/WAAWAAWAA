@@ -18,58 +18,17 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-
 export default function HomeScreen() {
   const [activeCategory, setActiveCategory] = useState('');
 
   return (
     <View style={styles.container}>
       <Image
-        blurRadius={40}
-        source={require('../../assets/images/Background_2.png')}
+        source={require('../../assets/images/simple.jpg')}
         style={styles.backgroundImage}
       />
       <SafeAreaView style={styles.flex1}>
-        {/* 상단 3단 메뉴바 제작 예정? */}
-        <View style={styles.topButtonsContainer}>
-          <View style={styles.iconContainer}>
-            <Bars3CenterLeftIcon size={25} stroke={100} color="black" />
-          </View>
-        </View>
-
-        {/* 상단 카테고리 스크롤 뷰 */}
-        <ScrollView
-          style={styles.categoriesScroll}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.categoriesScrollContainer}>
-          {categories.map((category, index) => {
-            let isActive = category == activeCategory;
-            let textStyle = isActive
-              ? styles.activeCategoryText
-              : styles.categoryText;
-            return (
-              <Animatable.View
-                key={index}
-                delay={index * 120}
-                animation="slideInDown">
-                <TouchableOpacity
-                  style={styles.categoryButton}
-                  onPress={() => setActiveCategory(category)}>
-                  <Text style={textStyle}>{category}</Text>
-                  {isActive ? (
-                    <View style={styles.imageContainer}>
-                      <Image
-                        source={require('../../assets/images/line.png')}
-                        style={styles.lineImage}
-                      />
-                    </View>
-                  ) : null}
-                </TouchableOpacity>
-              </Animatable.View>
-            );
-          })}
-        </ScrollView>
+        <Footer />
 
         {/* food cards */}
         <ScrollView
@@ -81,7 +40,6 @@ export default function HomeScreen() {
           ))}
         </ScrollView>
       </SafeAreaView>
-      <Footer />
     </View>
   );
 }
@@ -90,6 +48,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative',
+    backgroundColor: '#61BFAD',
   },
   backgroundImage: {
     position: 'absolute',
@@ -112,26 +71,17 @@ const styles = StyleSheet.create({
     padding: 0,
     right: wp(2),
   },
-  categoriesScroll: {
-    marginTop: hp(3),
-    paddingTop: hp(3),
-    maxHeight: hp(10),
-  },
-  categoriesScrollContainer: {
-    alignContent: 'center',
-    paddingHorizontal: wp(10),
-  },
   categoryButton: {
     marginRight: wp(22.5),
   },
   categoryText: {
-    color: 'black',
+    color: '#F9F8E8',
     fontSize: 16,
     fontWeight: 'bold',
     textTransform: 'uppercase',
   },
   activeCategoryText: {
-    color: 'black',
+    color: '#F9F8E8',
     fontSize: 16,
     fontWeight: '500',
     textTransform: 'uppercase',
@@ -142,5 +92,6 @@ const styles = StyleSheet.create({
   },
   foodCardsScroll: {
     paddingHorizontal: wp(5),
+    alignItems: 'center',
   },
 });
