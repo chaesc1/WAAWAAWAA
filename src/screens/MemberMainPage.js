@@ -27,8 +27,41 @@ export default function HomeScreen() {
         source={require('../../assets/images/simple.jpg')}
         style={styles.backgroundImage}
       />
+
       <SafeAreaView style={styles.flex1}>
-        <Footer />
+        {/* 상단 카테고리 스크롤 뷰 */}
+        <ScrollView
+          style={styles.categoriesScroll}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.categoriesScrollContainer}>
+          {categories.map((category, index) => {
+            let isActive = category == activeCategory;
+            let textStyle = isActive
+              ? styles.activeCategoryText
+              : styles.categoryText;
+            return (
+              <Animatable.View
+                key={index}
+                delay={index * 120}
+                animation="slideInDown">
+                <TouchableOpacity
+                  style={styles.categoryButton}
+                  onPress={() => setActiveCategory(category)}>
+                  <Text style={textStyle}>{category}</Text>
+                  {isActive ? (
+                    <View style={styles.imageContainer}>
+                      <Image
+                        source={require('../../assets/images/line.png')}
+                        style={styles.lineImage}
+                      />
+                    </View>
+                  ) : null}
+                </TouchableOpacity>
+              </Animatable.View>
+            );
+          })}
+        </ScrollView>
 
         {/* food cards */}
         <ScrollView
@@ -39,6 +72,7 @@ export default function HomeScreen() {
             <MenuCard item={item} index={index} key={index} />
           ))}
         </ScrollView>
+        <Footer />
       </SafeAreaView>
     </View>
   );
@@ -71,17 +105,26 @@ const styles = StyleSheet.create({
     padding: 0,
     right: wp(2),
   },
+  categoriesScroll: {
+    marginTop: hp(3),
+    paddingTop: hp(3),
+    maxHeight: hp(10),
+  },
+  categoriesScrollContainer: {
+    alignContent: 'center',
+    paddingHorizontal: wp(10),
+  },
   categoryButton: {
     marginRight: wp(22.5),
   },
   categoryText: {
-    color: '#F9F8E8',
+    color: 'black',
     fontSize: 16,
     fontWeight: 'bold',
     textTransform: 'uppercase',
   },
   activeCategoryText: {
-    color: '#F9F8E8',
+    color: '#000',
     fontSize: 16,
     fontWeight: '500',
     textTransform: 'uppercase',
