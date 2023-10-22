@@ -29,7 +29,7 @@ const Footer = ({}) => {
             color: '#000',
             // color: 'rgba(255, 255, 255, 0.8)',
           }}>
-          게임 선택하기
+          🥁 게임 선택하기
         </Text>
       </View>
       <View style={styles.iconContainer}>

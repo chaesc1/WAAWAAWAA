@@ -222,7 +222,7 @@ export default CounsellingRe = ({navigation}) => {
     <View style={styles.container}>
       <Image
         blurRadius={40}
-        source={require('../../assets/images/Background_2.png')}
+        source={require('../../assets/images/simple.jpg')}
         style={styles.backgroundImage}
       />
       <SafeAreaView style={styles.safeArea}>
@@ -232,6 +232,7 @@ export default CounsellingRe = ({navigation}) => {
             style={styles.backButton}>
             <ArrowLeftIcon size={wp('6%')} color="white" />
           </TouchableOpacity>
+          <Text style={styles.pageTitle}>상담</Text>
         </View>
         <View style={styles.imageContainer}>
           <Lottie
@@ -344,10 +345,23 @@ const styles = StyleSheet.create({
     zIndex: -1,
   },
   backButtonContainer: {
+    alignItems: 'center',
     justifyContent: 'flex-start',
     width: wp(10),
+    marginTop: wp(6.4),
+    marginBottom: wp(3),
+    right: wp(3),
+    flexDirection: 'row',
+    gap: 20,
+    paddingHorizontal: 20,
+  },
+  pageTitle: {
+    width: wp('50%'),
+    fontSize: wp('6%'),
+    fontWeight: 'bold',
   },
   backButton: {
+    width: wp('8%'),
     backgroundColor: '#1E2B22',
     padding: wp('1%'),
     borderTopRightRadius: wp('5%'),
