@@ -35,6 +35,7 @@ const StoryPage = ({navigation}) => {
   const [speaking, setSpeaking] = useState(false);
   const [answerCount, setAnswerCount] = useState(0);
   const [book, setBook] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const startTextToSpeech = message => {
     setSpeaking(true);
@@ -182,8 +183,6 @@ const StoryPage = ({navigation}) => {
     //   '모두가 사이좋게 물고기를 나눠먹었답니다',
     // ],
   ];
-
-  const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <View style={styles.container}>
