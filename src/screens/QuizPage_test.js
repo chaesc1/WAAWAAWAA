@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Image,
@@ -7,16 +7,11 @@ import {
   SafeAreaView,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator,
   ScrollView,
   Alert,
 } from 'react-native';
 import Voice from '@react-native-voice/voice';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import Features from '../components/QuizFeature'; //첫 초기화면 굳이 넣어햐하나?
-import {QuizGenerate} from '../api/OpenAI'; //퀴즈 생성 api 호출
-import Tts from 'react-native-tts'; //TTS Library
-import Footer from '../components/footer';
+import Tts from 'react-native-tts';
 import {ArrowLeftIcon} from 'react-native-heroicons/solid';
 import Lottie from 'lottie-react-native';
 
@@ -24,90 +19,44 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import authClient from '../apis/authClient';
 
 const QuizPage_test = ({navigation}) => {
+  const [quiz, setQuiz] = useState([]);
+  const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
   const [messages, setMessages] = useState([]);
   const [recording, setRecording] = useState(recording);
   const [loading, setLoading] = useState(false);
   const [speaking, setSpeaking] = useState(false);
-  const [topic, setTopic] = useState(''); //처음 주제 설정
   const [result, setResult] = useState(''); //이후 말하는 text 설정
   const [hideClearButton, setHideClearButton] = useState(false);
-  const scrollViewRef = useRef();
 
-  const fetchResponse = () => {
-    if (topic.trim().length > 0 && result.trim().length > 0) {
-      //주제 값이 있으면
-      //처음에는 quizGenerate를 호출해야하고
-      let newMessages = [...messages];
-      newMessages.push({role: 'user', content: result.trim()});
-      setMessages([...newMessages]);
-      updateScrollView();
-      setLoading(true);
-
-      // console.log('topic', topic);
-      // console.log('newMessage', newMessages);
-      // console.log('result.trim', result.trim());
-
-      // fetching response from chatGPT with our prompt and old messages
-      QuizGenerate(result.trim(), newMessages).then(res => {
-        console.log('got api data');
-        setLoading(false);
-        if (res.success) {
-          setMessages([...res.data]);
-          setResult('');
-          updateScrollView();
-
-          // now play the response to user
-          startTextToSpeech(res.data[res.data.length - 1]);
-        } else {
-          Alert.alert('Error', res.msg);
-        }
-      });
-    } else {
-      setTopic(result.trim());
-      let newMessages = [...messages];
-      newMessages.push({role: 'user', content: result.trim()});
-      setMessages([...newMessages]);
-      updateScrollView();
-      setLoading(true);
-
-      QuizGenerate(result.trim(), newMessages).then(res => {
-        console.log('got api data');
-        setLoading(false);
-        if (res.success) {
-          setMessages([...res.data]);
-          setResult('');
-          updateScrollView();
-
-          // now play the response to user
-          startTextToSpeech(res.data[res.data.length - 1]);
-        } else {
-          Alert.alert('Error', res.msg);
-        }
-      });
-    }
-  };
   const startTextToSpeech = message => {
     setSpeaking(true);
-    if (!message.content.includes('https')) {
+    if (!message.includes('https')) {
       Tts.getInitStatus().then(() => {
-        Tts.speak(message.content, {
+        Tts.speak(message, {
           iosVoiceId: 'com.apple.ttsbundle.Yuna-compact',
           rate: 0.5,
         });
       });
     }
-  };
 
-  const updateScrollView = () => {
-    setTimeout(() => {
-      scrollViewRef?.current?.scrollToEnd({animated: true});
-    }, 200);
+    const correctAnswer = quiz[currentQuizIndex].answer === result;
+    if (correctAnswer) {
+      Alert.alert('잘했어요!');
+      if (currentQuizIndex + 1 < quiz.length) {
+        setCurrentQuizIndex(currentQuizIndex + 1);
+      } else {
+        setCurrentQuizIndex(0);
+      }
+      setResult('');
+    } else {
+      Alert.alert('조금 더 생각해봐');
+    }
   };
 
   const clear = () => {
-    setTopic('');
     setLoading(false);
     setMessages([]);
     setSpeaking(false);
@@ -121,18 +70,15 @@ const QuizPage_test = ({navigation}) => {
     setHideClearButton(true);
   };
   const speechStartHandler = e => {
-    // console.log('speech start event', e);
     setHideClearButton(true);
   };
   const speechEndHandler = e => {
     setRecording(false);
-    // console.log('speech stop event', e);
     setHideClearButton(true);
   };
   const speechResultsHandler = e => {
     console.log('speech event: ', e);
     const text = e.value[0];
-    // console.log('Topic : ', topic);
 
     setResult(text);
     setHideClearButton(true);
@@ -166,27 +112,38 @@ const QuizPage_test = ({navigation}) => {
     }
     setHideClearButton(true);
   };
+
+  const getQuizData = async () => {
+    try {
+      const res = await authClient({
+        method: 'get',
+        url: '/quiz',
+      });
+      const userData = res.data;
+      setQuiz(userData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
+    getQuizData();
+
     // voice handler events
     Voice.onSpeechStart = speechStartHandler;
     Voice.onSpeechEnd = speechEndHandler;
     Voice.onSpeechResults = speechResultsHandler;
     Voice.onSpeechError = speechErrorHandler;
-
     // text to speech events
     // TTS 초기화
     Tts.setIgnoreSilentSwitch('ignore');
     Tts.setDefaultLanguage('ko-KR'); // 한국어 설정
     Tts.setDefaultRate(0.6); // 음성 속도 설정
-
     Tts.addEventListener('tts-start', event => console.log('start', event));
     Tts.addEventListener('tts-finish', event => {
-      // console.log('finish', event);
       setSpeaking(false);
     });
     Tts.addEventListener('tts-cancel', event => console.log('cancel', event));
     return () => {
-      // destroy the voice instance after component unmounts
       Voice.destroy().then(Voice.removeAllListeners);
     };
   }, []);
@@ -217,25 +174,15 @@ const QuizPage_test = ({navigation}) => {
           />
         </View>
         <View style={styles.triangle}></View>
-        <ScrollView style={styles.speechBubble}>
-          {messages.map((message, index) => {
-            if (message.role == 'assistant') {
-              //text gpt 대답 부분
-              return (
-                <View style={{flex: 1, flexDirection: 'column'}}>
-                  <View style={{flex: 1, backgroundColor: 'red'}}></View>
-                  <View key={index} style={styles.assistantMessageContainer}>
-                    {/* <Text style={styles.assistantMessage}>{message.content}</Text> */}
-                    <Text style={styles.assistantMessage}>
-                      한줄일떄 테스트요
-                    </Text>
-                  </View>
-                  <View style={{flex: 1, backgroundColor: 'blue'}}></View>
-                </View>
-              );
-            }
-          })}
-        </ScrollView>
+        <View style={styles.speechBubble}>
+          <ScrollView>
+            <View style={styles.textWrap}>
+              <Text style={{fontSize: 16}}>
+                {quiz[currentQuizIndex]?.question}
+              </Text>
+            </View>
+          </ScrollView>
+        </View>
       </SafeAreaView>
       {/* 녹음 , clear, 정지 버튼 */}
       <View>
@@ -246,7 +193,9 @@ const QuizPage_test = ({navigation}) => {
           onChangeText={text => setResult(text)}
         />
         {!loading && (
-          <TouchableOpacity style={styles.sendButton} onPress={fetchResponse}>
+          <TouchableOpacity
+            style={styles.sendButton}
+            onPress={() => startTextToSpeech(result)}>
             <Text style={styles.buttonText}>전송</Text>
           </TouchableOpacity>
         )}
@@ -336,12 +285,19 @@ const styles = StyleSheet.create({
   speechBubble: {
     position: 'absolute',
     backgroundColor: '#00aabb',
-    width: wp(90),
-    height: hp(17.5),
-    borderRadius: 12,
     alignSelf: 'center',
+    width: wp(90),
+    height: hp(12.5),
+    borderRadius: 12,
     padding: 16,
-    marginTop: hp(13),
+    marginTop: hp(18),
+    flex: 1,
+  },
+  textWrap: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: hp(8.5),
   },
   triangle: {
     position: 'absolute',
