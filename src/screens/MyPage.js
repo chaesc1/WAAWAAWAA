@@ -118,7 +118,7 @@ const MyPage = ({navigation}) => {
         method: 'put',
         url: '/users/username',
         data: {
-          username: nickname, 
+          username: nickname,
         },
       });
     } catch (error) {
@@ -305,8 +305,8 @@ const styles = StyleSheet.create({
   backButtonContainer: {
     justifyContent: 'flex-start',
     width: wp(10),
-    marginTop: wp(6.4),
-    right: wp(3),
+    marginTop: wp(2),
+    right: wp(4.5),
   },
   backButton: {
     backgroundColor: '#1E2B22',
