@@ -1,20 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import OnboardingPage from './src/screens/OnboardingPage';
-import LandingPage from './src/screens/LandingPage';
-import LoginPage from './src/screens/LoginPage';
 import MemberMainPage from './src/screens/MemberMainPage'; //로그인시 메인페이지
-import CounsellingPage from './src/screens/CounsellingRe'; //상담페이지
-import QuizPage from './src/screens/QuizPage_test'; //퀴즈 페이지
-import RegisterPage from './src/screens/RegisterPage'; //회원가입
+import CounsellingPage from './src/screens/CounsellingPage'; //상담페이지
+import QuizPage from './src/screens/QuizPage'; //퀴즈 페이지
 import ConnectEndingPage from './src/screens/ConnectEnding'; //끝말잇기
 import TwentyQuestionPage from './src/screens/TwentyQuestion'; // 스무고개 페이지
 import StaticsPage from './src/screens/StaticsPage'; // 통계 페이지
 import ForgetPassword from './src/screens/ForgetPassword'; // 비밀번호 잊으셨나요 페이지
 import MyPage from './src/screens/MyPage';
-import Footer from './src/components/footer'; // 하단바
-import QuizPage2 from './src/screens/QuizPage';
-import newLogin from './src/screens/newLoginPage';
-import newRegister from './src/screens/newRegister';
+import newLogin from './src/screens/LoginPage';
+import newRegister from './src/screens/RegisterPage';
 // //tailwind
 // import tw from 'twrnc';
 // import {config, GluestackUIProvider, Text} from '@gluestack-ui/themed';
@@ -27,11 +22,9 @@ import StoryPage from './src/screens/StoryPage';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
-//const Tab = createBottomTabNavigator();
 
 const App = () => {
   return (
@@ -42,16 +35,6 @@ const App = () => {
           name="Onboarding"
           options={{headerShown: false}}
           component={OnboardingPage}
-        />
-        <Stack.Screen
-          name="LandingPage"
-          component={LandingPage}
-          options={{
-            title: '',
-            headerBackTitleVisible: false,
-            headerBackImage: 'BackBtn',
-            headerShown: false,
-          }}
         />
         {/* 로그인 화면 */}
         <Stack.Screen
