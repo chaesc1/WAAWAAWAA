@@ -1,169 +1,479 @@
-import {useState, useEffect} from 'react';
-import {StyleSheet, Dimensions} from 'react-native';
-import config from '../../config/index';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-const apiUrl = 'https://api.openai.com/v1/chat/completions';
-
+import {
+  Alert,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import Features from '../components/feature';
+import Voice from '@react-native-voice/voice';
+import {apiCall} from '../api/OpenAI';
+import Tts from 'react-native-tts';
+import authClient from '../apis/authClient';
+import Footer from '../components/footer';
+import Lottie from 'lottie-react-native';
+import {ArrowLeftIcon} from 'react-native-heroicons/solid';
+Tts.requestInstallData();
 
-import axios from 'axios';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  FlatList,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
-import {
-  GiftedChat,
-  Bubble,
-  InputToolbar,
-  LeftAction,
-} from 'react-native-gifted-chat';
-
-const ChatScreen = () => {
+export default CounsellingRe = ({navigation}) => {
   const [messages, setMessages] = useState([]);
+  const [result, setResult] = useState();
+  const [recording, setRecording] = useState(recording);
+  const [loading, setLoading] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
+  const [hideClearButton, setHideClearButton] = useState(false);
+  const scrollViewRef = useRef();
 
-  useEffect(() => {
-    // GPT가 먼저 말을 건네도록 초기 대화를 시작합니다.
-    const startChat = async () => {
-      const response = await sendMessage('안녕하세요');
-      handleResponse(response);
-    };
-
-    startChat();
-  }, []);
-
-  const sendMessage = async message => {
+  const getMessage = async () => {
     try {
-      const response = await axios.post(
-        apiUrl,
-        {
-          messages: [
-            {
-              role: 'system',
-              content: '또래상담사 :',
-            },
-            {
-              role: 'user',
-              content: message,
-            },
-          ],
-          model: 'gpt-3.5-turbo',
-          temperature: 0.6,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${config.OPENAI_API_KEY}`,
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-
-      return response.data.choices[0].message.content;
-    } catch (err) {
-      console.log(config.OPENAI_API_KEY);
-      console.log(err, 'API call error');
+      const res = await authClient({
+        method: 'get',
+        url: '/counseling',
+      });
+      setMessages(res.data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  const handleSend = async newMessages => {
-    const userMessage = newMessages[0].text;
+  const fetchResponse = async () => {
+    if (result.trim().length > 0) {
+      let newMessages = [...messages];
+      newMessages.push({role: 'user', content: result.trim()});
+      updateScrollView();
+      setLoading(true);
 
-    setMessages(prev =>
-      GiftedChat.append(prev, [
-        {
-          _id: Math.random().toString(36).substring(7),
-          text: userMessage,
-          createdAt: new Date(),
-          user: {
-            _id: 1,
-            name: 'Developer',
-          },
-        },
-      ]),
-    );
+      if (newMessages.length > 0) {
+        const body = {
+          sender: newMessages[newMessages.length - 1].role,
+          content: newMessages[newMessages.length - 1].content,
+          time: new Date(),
+        };
 
-    const gptResponse = await sendMessage(userMessage);
-    handleResponse(gptResponse);
+        try {
+          authClient({
+            method: 'post',
+            url: '/counseling',
+            data: body,
+          });
+          await getMessage();
+          setHideClearButton(false);
+          setResult('');
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      apiCall(result.trim(), newMessages).then(async res => {
+        setLoading(false);
+        if (res.success) {
+          setResult('');
+          updateScrollView();
+          const body = {
+            content: res.data[res.data.length - 1].content,
+            sender: res.data[res.data.length - 1].role,
+            time: new Date(),
+          };
+
+          try {
+            await authClient({
+              method: 'post',
+              url: '/counseling',
+              data: body,
+            });
+            await getMessage();
+            setHideClearButton(false);
+          } catch (error) {
+            console.error(error);
+          }
+
+          // now play the response to user
+          startTextToSpeech(res.data[res.data.length - 1]);
+        } else {
+          Alert.alert('Error', res.msg);
+        }
+      });
+    }
+  };
+  const startTextToSpeech = message => {
+    setSpeaking(true);
+    if (!message.content.includes('https')) {
+      Tts.getInitStatus().then(() => {
+        Tts.speak(message.content, {
+          iosVoiceId: 'com.apple.ttsbundle.Yuna-compact',
+          rate: 0.5,
+        });
+      });
+    }
   };
 
-  const handleResponse = response => {
-    const gptMessage = {
-      _id: Math.random().toString(36).substring(7),
-      text: response,
-      createdAt: new Date(),
-      user: {
-        _id: 2,
-        name: 'GPT-3.5-turbo',
-      },
+  const updateScrollView = () => {
+    setTimeout(() => {
+      scrollViewRef?.current?.scrollToEnd({animated: true});
+    }, 200);
+  };
+
+  const clear = async () => {
+    try {
+      const res = await authClient({
+        method: 'delete',
+        url: '/counseling',
+      });
+      console.log(res.data);
+      Alert.alert('다시 시작해볼까?');
+      setLoading(false);
+      getMessage();
+    } catch (error) {
+      console.log(error);
+    }
+
+    setLoading(true);
+    setSpeaking(false);
+    Voice.stop();
+    Tts.stop();
+  };
+  const stopSpeaking = () => {
+    Tts.stop();
+    setSpeaking(false);
+    setHideClearButton(true);
+  };
+  const speechStartHandler = e => {
+    console.log('speech start event', e);
+    setHideClearButton(true);
+  };
+  const speechEndHandler = e => {
+    setRecording(false);
+    console.log('speech stop event', e);
+    setHideClearButton(true);
+  };
+  const speechResultsHandler = e => {
+    console.log('speech event: ', e);
+    const text = e.value[0];
+    setResult(text);
+    setHideClearButton(true);
+  };
+
+  const speechErrorHandler = e => {
+    console.log('speech error: ', e);
+  };
+
+  const startRecording = async () => {
+    setRecording(true);
+    Tts.stop();
+    try {
+      await Voice.start('ko-KR');
+    } catch (error) {
+      console.log('errpr:', error);
+    }
+    setHideClearButton(true);
+  };
+
+  const stopRecording = async () => {
+    setRecording(true);
+    Tts.stop();
+    try {
+      await Voice.stop();
+      setRecording(false);
+      //fetch Response
+      // fetchResponse();
+    } catch (error) {
+      console.log('errpr:', error);
+    }
+    setHideClearButton(true);
+  };
+  useEffect(() => {
+    getMessage();
+    setLoading(true);
+    // voice handler events
+    Voice.onSpeechStart = speechStartHandler;
+    Voice.onSpeechEnd = speechEndHandler;
+    Voice.onSpeechResults = speechResultsHandler;
+    Voice.onSpeechError = speechErrorHandler;
+
+    // text to speech events
+    // TTS 초기화
+    Tts.setIgnoreSilentSwitch('ignore');
+    Tts.setDefaultLanguage('ko-KR'); // 한국어 설정
+    Tts.setDefaultRate(0.6); // 음성 속도 설정
+
+    Tts.addEventListener('tts-start', event => console.log('start', event));
+    Tts.addEventListener('tts-finish', event => {
+      console.log('finish', event);
+      setSpeaking(false);
+    });
+    Tts.addEventListener('tts-cancel', event => console.log('cancel', event));
+    return () => {
+      // destroy the voice instance after component unmounts
+      Voice.destroy().then(Voice.removeAllListeners);
     };
-
-    setMessages(prev => GiftedChat.append(prev, [gptMessage]));
-  };
-
-  const user = {
-    _id: 1,
-    name: 'Developer',
-  };
-
-  //TextInput 관련 쪽 -> 왼쪽에 마이크 버튼 넣고 싶은데.
-  const renderInputToolbar = props => {
-    return <InputToolbar {...props} containerStyle={styles.input} />;
-  };
+  }, []);
 
   return (
-    <View style={{flex: 1, backgroundColor: '#F3E99F'}}>
-      <GiftedChat
-        messages={messages}
-        onSend={handleSend}
-        user={user}
-        renderBubble={props => (
-          <Bubble
-            {...props}
-            wrapperStyle={{
-              right: {
-                backgroundColor: '#2eccEE',
-              },
-              left: {
-                backgroundColor: '#1abc9c',
-              },
-            }}
-            textStyle={{
-              right: {
-                color: '#000',
-              },
-              left: {
-                color: '#000',
-              },
-            }}
-          />
-        )}
-        renderInputToolbar={renderInputToolbar}
+    <View style={styles.container}>
+      <Image
+        blurRadius={40}
+        source={require('../../assets/images/Background_2.png')}
+        style={styles.backgroundImage}
       />
-      {/* <Icon name="heart" size={30} color="#900" /> */}
-      {Platform.OS === 'ios' ? (
-        <KeyboardAvoidingView behavior="padding" />
-      ) : null}
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.backButtonContainer}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}>
+            <ArrowLeftIcon size={wp('6%')} color="white" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.imageContainer}>
+          <Lottie
+            source={require('../../assets/animations/GreenBear.json')}
+            style={styles.image}
+            loop
+            autoPlay
+          />
+        </View>
+        <View style={styles.triangle}></View>
+        <ScrollView style={styles.speechBubble}>
+          {messages.map((message, index) => {
+            if (message.sender == 'assistant') {
+              //text gpt 대답 부분
+              return (
+                <View style={{flex: 1, flexDirection: 'column'}}>
+                  <View style={{flex: 1, backgroundColor: 'red'}}></View>
+                  <View key={index} style={styles.assistantMessageContainer}>
+                    <Text style={styles.assistantMessage}>
+                      {message.content}
+                    </Text>
+                  </View>
+                  <View style={{flex: 1, backgroundColor: 'blue'}}></View>
+                </View>
+              );
+            } else {
+              return (
+                <View key={index} style={styles.userMessageContainer}>
+                  <View style={styles.userMessageContent}>
+                    <Text style={styles.userMessageText}>
+                      {message.content}
+                    </Text>
+                  </View>
+                </View>
+              );
+            }
+          })}
+        </ScrollView>
+      </SafeAreaView>
+      {/* 녹음 , clear, 정지 버튼 */}
+      <View>
+        <TextInput
+          value={result}
+          placeholder="적어서도 보내봐!!"
+          style={styles.textContainer}
+          onChangeText={text => setResult(text)}
+        />
+        {!loading && (
+          <TouchableOpacity style={styles.sendButton} onPress={fetchResponse}>
+            <Text style={styles.buttonText}>전송</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+      <View style={styles.buttonsContainer}>
+        {loading ? (
+          <Lottie
+            source={require('../../assets/animations/loading.json')}
+            style={styles.loadingIcon}
+            loop
+            autoPlay
+          />
+        ) : recording ? (
+          <TouchableOpacity style={styles.button} onPress={stopRecording}>
+            {/* Recording Stop Button */}
+            <Lottie
+              source={require('../../assets/animations/micOnLoading.json')}
+              style={styles.buttonImage}
+              loop
+              autoPlay
+            />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.button} onPress={startRecording}>
+            {/* Recording start Button */}
+            <Lottie
+              source={require('../../assets/animations/ReadyRecord.json')}
+              style={styles.buttonImage}
+              loop
+              autoPlay
+              speed={1.2}
+            />
+          </TouchableOpacity>
+        )}
+        {/* right side */}
+        {messages.length > 0 && !hideClearButton && (
+          <TouchableOpacity style={styles.clearButton} onPress={clear}>
+            <Text style={styles.buttonText}>Clear</Text>
+          </TouchableOpacity>
+        )}
+        {/* left side */}
+        {speaking > 0 && (
+          <TouchableOpacity style={styles.stopButton} onPress={stopSpeaking}>
+            <Text style={styles.buttonText}>Stop</Text>
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 };
 
-export default ChatScreen;
-
 const styles = StyleSheet.create({
-  messageContainer: {
-    paddingBottom: 16,
+  container: {
+    flex: 1,
+    position: 'relative',
   },
-  input: {
-    backgroundColor: '#D9D9D9',
-    borderColor: 'transparent',
-    borderWidth: 0,
-    borderRadius: 4,
+  backgroundImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    zIndex: -1,
+  },
+  backButtonContainer: {
+    justifyContent: 'flex-start',
+    width: wp(10),
+  },
+  backButton: {
+    backgroundColor: '#1E2B22',
+    padding: wp('1%'),
+    borderTopRightRadius: wp('5%'),
+    borderBottomLeftRadius: wp('5%'),
+    marginLeft: wp('2%'),
+  },
+  speechBubble: {
+    position: 'absolute',
+    backgroundColor: '#00aabb',
+    width: wp(90),
+    height: hp(17.5),
+    borderRadius: 12,
+    alignSelf: 'center',
+    padding: 16,
+    marginTop: hp(13),
+  },
+  triangle: {
+    position: 'absolute',
+    left: '50%',
+    width: wp(1),
+    height: 0,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderTopWidth: 20,
+    borderTopColor: '#00aabb',
+    borderRightWidth: 20,
+    borderRightColor: 'transparent',
+    borderLeftWidth: 20,
+    borderLeftColor: 'transparent',
+    marginLeft: wp(-10), // 중앙 정렬을 위해 마이너스 마진 설정
+    marginTop: hp(30),
+    zIndex: -1,
+  },
+  textContainer: {
+    backgroundColor: '#FFFFFF',
+    width: wp(80),
+    height: hp(4),
+    borderRadius: 30,
+    marginLeft: wp(3),
+    paddingLeft: wp(3),
+  },
+  assistantMessageContainer: {
+    width: wp(75),
+    backgroundColor: '#D1FAE5',
+    padding: 8,
+    borderRadius: 20,
+    borderTopLeftRadius: 0,
+    marginBottom: 10,
+  },
+  assistantMessage: {
+    fontSize: wp(4),
+
+    color: '#374151',
+  },
+  userMessageContainer: {
+    width: wp(75),
+    backgroundColor: 'white',
+    padding: 8,
+    borderRadius: 20,
+    borderTopRightRadius: 0,
+    alignSelf: 'flex-end',
+    marginBottom: 10, // 조정된 값
+  },
+  userMessageContent: {
+    flex: 0,
+    justifyContent: 'center',
+  },
+  image: {
+    width: wp('50%'),
+    height: hp('40%'),
+  },
+  imageContainer: {
+    marginTop: hp(20),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingIcon: {
+    width: hp(10),
+    height: hp(10),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  button: {
+    width: hp(10),
+    height: hp(10),
+    borderRadius: hp(5),
+    alignItems: 'center',
+    justifyContent: 'center',
+    // marginRight: 8, // Add margin right for spacing
+  },
+  buttonsContainer: {
+    width: wp(100),
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: hp(10.5), // Add margin top for spacing
+  },
+  buttonImage: {
+    width: hp(20),
+    height: hp(20),
+  },
+  clearButton: {
+    backgroundColor: '#6B7280',
+    borderRadius: 20,
+    padding: 8,
+    position: 'absolute',
+    right: wp(5),
+    bottom: 10,
+  },
+  sendButton: {
+    backgroundColor: '#6B7280',
+    borderRadius: 20,
+    padding: wp(2.3),
+    position: 'absolute',
+    right: wp(3),
+  },
+  stopButton: {
+    backgroundColor: '#EF4444',
+    borderRadius: 20,
+    padding: 8,
+    position: 'absolute',
+    left: wp(5),
+    top: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
