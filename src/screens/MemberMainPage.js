@@ -27,7 +27,6 @@ export default function HomeScreen() {
         source={require('../../assets/images/simple.jpg')}
         style={styles.backgroundImage}
       />
-
       <SafeAreaView style={styles.flex1}>
         {/* 상단 카테고리 스크롤 뷰 */}
         <ScrollView

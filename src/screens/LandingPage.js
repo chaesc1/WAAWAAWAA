@@ -10,7 +10,6 @@ import {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   StatusBar,
 } from 'react-native';
-
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -21,7 +20,7 @@ export default function LandingPage({navigation}) {
     <View style={styles.container}>
       <Image
         blurRadius={40}
-        source={require('../../assets/images/Background_2.png')}
+        source={require('../../assets/images/simple.jpg')}
         style={styles.backgroundImage}
       />
       <View style={styles.textContainer}>

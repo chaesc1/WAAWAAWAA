@@ -81,7 +81,7 @@ export default function LoginScreen() {
       <View style={styles.container}>
         <Image
           blurRadius={40}
-          source={require('../../assets/images/Background_2.png')}
+          source={require('../../assets/images/simple.jpg')}
           style={styles.backgroundImage}
         />
         <SafeAreaView style={styles.safeArea}>
@@ -114,7 +114,7 @@ export default function LoginScreen() {
               underlineColorAndroid="#f000"
               blurOnSubmit={false}
             />
-            <Text style={styles.label}>비밀번호</Text>
+            {/* <Text style={styles.label}>비밀번호</Text> */}
             <TextInput
               style={styles.input}
               placeholder="비밀번호를 입력해주세요."
