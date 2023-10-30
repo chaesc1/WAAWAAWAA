@@ -10,6 +10,7 @@ import ForgetPassword from './src/screens/ForgetPassword'; // 비밀번호 잊�
 import MyPage from './src/screens/MyPage';
 import newLogin from './src/screens/LoginPage';
 import newRegister from './src/screens/RegisterPage';
+import RankingPage from './src/screens/RankingPage';
 // //tailwind
 // import tw from 'twrnc';
 // import {config, GluestackUIProvider, Text} from '@gluestack-ui/themed';
@@ -176,6 +177,7 @@ const App = () => {
             },
           }}
         />
+        
       </Stack.Navigator>
     </NavigationContainer>
   );

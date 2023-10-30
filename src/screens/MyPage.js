@@ -283,6 +283,11 @@ const MyPage = ({navigation}) => {
             </Text>
           </View>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => navigation.navigate('RankingPage')}>
+          <Text style={styles.menuText}>랭킹을 보고싶다면?</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.withdrawButton}
