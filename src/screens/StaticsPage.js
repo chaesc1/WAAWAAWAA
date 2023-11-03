@@ -88,12 +88,17 @@ export default function StaticsPage({navigation}) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Image
+        source={require('../../assets/images/simple.jpg')}
+        style={styles.backgroundImage}
+      />
       <View style={styles.backButtonContainer}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.backButton}>
           <ArrowLeftIcon size={wp('6%')} color="white" />
         </TouchableOpacity>
+        <Text style={styles.pageTitle}>통계</Text>
       </View>
       <View style={styles.topBar}></View>
       <View style={styles.titleContainer}>
@@ -132,7 +137,7 @@ export default function StaticsPage({navigation}) {
               backgroundGradientFrom: 'white',
               backgroundGradientTo: 'white',
               decimalPlaces: 1,
-              color: (opacity = 0.3) => `rgba(255, 87, 166, ${opacity})`,
+              color: (opacity = 0.3) => `rgba(12, 14, 0, ${opacity})`,
               barPercentage: 0.8,
             }}
             style={{
@@ -165,8 +170,10 @@ export default function StaticsPage({navigation}) {
             ) : (
               frequentKeywords.map((item, index) => (
                 <View key={index} style={styles.frequentKeywordBox}>
-                  <Text>집계 횟수: {item.count}회</Text>
-                  <Text>키워드: {item.keyword}</Text>
+                  <Text style={{color: '#11384F'}}>
+                    집계 횟수: {item.count}회
+                  </Text>
+                  <Text style={{color: '#11384F'}}>키워드: {item.keyword}</Text>
                 </View>
               ))
             )}
@@ -185,8 +192,10 @@ export default function StaticsPage({navigation}) {
                   key={index}
                   style={styles.dangerKeywordBox}
                   onPress={() => setSelectedDangerKeyword(item)}>
-                  <Text>키워드: {item.keyword}</Text>
-                  <Text>집계 횟수: {item.count}회</Text>
+                  <Text style={{color: '#11384F'}}>키워드: {item.keyword}</Text>
+                  <Text style={{color: '#11384F'}}>
+                    집계 횟수: {item.count}회
+                  </Text>
                 </TouchableOpacity>
               ))
             )}
@@ -199,25 +208,43 @@ export default function StaticsPage({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  backgroundImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    zIndex: -1,
+  },
   container: {
     position: 'relative',
     flex: 1,
     // alignItems: 'center',
     // justifyContent: 'center',
-    backgroundColor: '#FFD2E0',
+    backgroundColor: '#D8E4E5',
   },
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: wp(3),
   },
+
   backButtonContainer: {
+    alignItems: 'center',
     justifyContent: 'flex-start',
     width: wp(10),
-    marginTop: wp(0),
-    left: wp(0.5),
+    marginTop: wp(6.4),
+    marginBottom: wp(3),
+    right: wp(3),
+    flexDirection: 'row',
+    gap: 20,
+    paddingHorizontal: 20,
+  },
+  pageTitle: {
+    width: wp('50%'),
+    fontSize: wp('6%'),
+    fontWeight: 'bold',
   },
   backButton: {
+    width: wp('8%'),
     backgroundColor: '#1E2B22',
     padding: wp('1%'),
     borderTopRightRadius: wp('5%'),
@@ -237,7 +264,7 @@ const styles = StyleSheet.create({
   startButton: {
     width: wp('45%'),
     height: 40,
-    backgroundColor: '#FF81C0',
+    backgroundColor: '#AECEE0',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 15,
@@ -279,7 +306,7 @@ const styles = StyleSheet.create({
   },
   dangerKeywordBox: {
     alignItems: 'center',
-    backgroundColor: '#FFC3A0',
+    backgroundColor: '#D8E4E5',
     paddingHorizontal: 10,
     paddingVertical: 8,
     margin: 10,
@@ -294,7 +321,7 @@ const styles = StyleSheet.create({
   },
   frequentKeywordBox: {
     alignItems: 'center',
-    backgroundColor: '#FFC3A0',
+    backgroundColor: '#D8E4E5',
     paddingHorizontal: 10,
     paddingVertical: 8,
     margin: hp(1.2),
