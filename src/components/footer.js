@@ -44,6 +44,7 @@ const Footer = ({}) => {
             source={require('../../assets/animations/logout.json')}
             style={styles.characterIcon}
             autoPlay
+            speed={0.8}
             loop
           />
           <Text style={styles.tabBarText}>로그아웃</Text>
