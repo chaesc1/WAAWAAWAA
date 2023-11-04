@@ -1,20 +1,18 @@
-// 좌표 던지는 거 받아서 맞추는 게임
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Touchable } from 'react-native';
-import axios from 'axios';
-import { Card } from 'react-native-elements';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import authClient from '../apis/authClient';
-import {ArrowLeftIcon} from 'react-native-heroicons/solid';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-const MemoryGame = ({navigation}) => {
+import { ArrowLeftIcon } from 'react-native-heroicons/solid';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import LottieView from 'lottie-react-native';
+
+const MemoryGame = ({ navigation }) => {
   const [gameBoard, setGameBoard] = useState([]);
   const [answer, setAnswer] = useState([]);
   const [selectedTiles, setSelectedTiles] = useState([]);
+  const [score, setScore] = useState(0);
+  const [isGameStarted, setIsGameStarted] = useState(false);
+  
 
-  // 게임 시작 api
   const gameStart = async () => {
     try {
       const res = await authClient({
@@ -26,18 +24,19 @@ const MemoryGame = ({navigation}) => {
       });
       console.log(res.data);
       setAnswer(res.data);
+      setIsGameStarted(true);
+      setSelectedTiles([]);
     } catch (error) {
       console.log(error);
     }
   }
 
-  // 게임 점수 등록 api
   const updateScore = async () => {
     try {
       const res = await authClient({
-        method:'get',
-        url:'/memory-game',
-        data: score,
+        method: 'post',
+        url: '/memory-game',
+        data: { score },
       });
       console.log(res.data);
     } catch (error) {
@@ -46,65 +45,98 @@ const MemoryGame = ({navigation}) => {
   }
 
   useEffect(() => {
-    // 게임 보드 초기화
     const board = Array(3).fill(Array(3).fill(0));
     setGameBoard(board);
   }, []);
 
   const handleTileClick = (row, col) => {
-    setSelectedTiles([...selectedTiles, [row, col]]);
+    if (isGameStarted) {
+      if (selectedTiles.length < 3) {
+        setSelectedTiles([...selectedTiles, [row, col]]);
+      }
+    }
   };
 
   const checkAnswer = () => {
-    // 사용자의 선택과 정답을 비교
+    console.log(selectedTiles);
     if (JSON.stringify(selectedTiles) === JSON.stringify(answer)) {
       console.log('정답입니다!');
-      // 게임 통과
+      setScore(score + 1);
     } else {
       console.log('틀렸습니다. 다시 시도하세요.');
-      // 게임 재시작 또는 오류 메시지 표시
     }
-    setSelectedTiles([]); // 선택 초기화
+    gameStart();
+  };
+
+  const saveScore = async () => {
+    try {
+      await updateScore();
+      console.log('스코어가 저장되었습니다.');
+    } catch (error) {
+      console.log('스코어 저장에 실패했습니다.');
+    }
   };
 
   return (
-    
     <View style={styles.container}>
-    <View style={styles.backButtonContainer}>
+      <View style={styles.backButtonContainer}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.backButton}>
           <ArrowLeftIcon size={wp('6%')} color="white" />
         </TouchableOpacity>
       </View>
-      <Text style={styles.title}>기억력 게임</Text>
-      <View style={styles.gameBoard}>
-        {gameBoard.map((row, rowIndex) => (
-          <View style={styles.row} key={rowIndex}>
-            {row.map((_, colIndex) => (
-              <TouchableOpacity
-                key={colIndex}
-                style={[
-                  styles.tile,
-                  selectedTiles.some((tile) => tile[0] === rowIndex && tile[1] === colIndex) && styles.selectedTile
-                ]}
-                onPress={() => handleTileClick(rowIndex, colIndex)}
-              >
-                <Text>눌려!</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        ))}
+      <View style={styles.profileContainer}>
+        <LottieView
+        source={require('../../assets/animations/Game.json')}
+        style={styles.image}
+        autoPlay
+        loop
+        />
+        
       </View>
-      <View style={styles.ButtonContainer}>
       
-      <TouchableOpacity style={styles.resetButton} onPress={gameStart}>
-        <Text>시작!</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.checkButton} onPress={checkAnswer}>
-        <Text>결과 확인!</Text>
-      </TouchableOpacity>
+      <View style={styles.gameBoardContainer}>
+        <View style={styles.gameBoard}>
+          {gameBoard.map((row, rowIndex) => (
+            <View style={styles.row} key={rowIndex}>
+              {row.map((_, colIndex) => (
+                <TouchableOpacity
+                  key={colIndex}
+                  style={[
+                    styles.tile,
+                    selectedTiles.some((tile) => tile[0] === rowIndex && tile[1] === colIndex) && styles.selectedTile
+                  ]}
+                  onPress={() => handleTileClick(rowIndex, colIndex)}
+                >
+                  {isGameStarted && <Text style={styles.tileText}>눌려!</Text>}
+                </TouchableOpacity>
+              ))}
+            </View>
+          ))}
+        </View>
+        <View style={styles.ButtonContainer}>
+          {isGameStarted ? (
+            <TouchableOpacity style={styles.checkButton} onPress={checkAnswer}>
+              <Text style={styles.buttonText}>결과 확인</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.startButton} onPress={gameStart}>
+              <Text style={styles.buttonText}>시작</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity style={styles.saveButton} onPress={saveScore}>
+            <Text style={styles.buttonText}>스코어 저장하기</Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.score}>스코어: {score}</Text>
+        
       </View>
+      <View style={styles.cautionContainer}>
+        <Text style={styles.cautionTitle}>🚨주의사항 및 규칙🚨</Text>
+        <Text style={styles.caution}>규칙들어감</Text></View>
+      
+      
     </View>
   );
 }
@@ -112,10 +144,8 @@ const MemoryGame = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: 'relative',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white'
+    padding: 20,
+    backgroundColor: '#FFD2E0',
   },
   backButtonContainer: {
     justifyContent: 'flex-start',
@@ -130,9 +160,35 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: wp('5%'),
     marginLeft: wp('2%'),
   },
+  profileContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginBottom: 20,
+    backgroundColor: 'white',
+    padding: 15,
+    borderRadius: 20,
+    marginTop: hp(3),
+  },
+  image: {
+    width: 150,
+    height: 150,
+    //marginBottom: 10,
+  },
   title: {
     fontSize: 24,
     marginBottom: 20,
+  },
+  gameBoardContainer: {
+    //flex: 1,
+    alignItems: 'center',
+   // backgroundColor: '#F4CE14',
+    padding: 15,
+    borderRadius: 20,
+    //marginTop: hp(3),
+  },
+  pageTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   gameBoard: {
     borderWidth: 1,
@@ -141,7 +197,6 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    
   },
   tile: {
     width: 60,
@@ -154,6 +209,20 @@ const styles = StyleSheet.create({
   selectedTile: {
     backgroundColor: 'lightblue',
   },
+  tileText: {
+    fontSize: 16,
+  },
+  ButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 20,
+  },
+  startButton: {
+    marginTop: 20,
+    backgroundColor: 'green',
+    padding: 10,
+    borderRadius: 5,
+  },
   checkButton: {
     marginTop: 20,
     backgroundColor: 'skyblue',
@@ -161,18 +230,40 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginLeft: 10,
   },
-  resetButton: {
+  saveButton: {
     marginTop: 20,
-    backgroundColor: 'green',
+    backgroundColor: 'skyblue',
     padding: 10,
     borderRadius: 5,
-    
+    marginLeft: 20,
   },
-  ButtonContainer : {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+  buttonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  score: {
+    fontSize: 18,
     marginTop: 20,
-  }
+  },
+  cautionContainer: {
+    backgroundColor: 'white',
+    flex: 1,
+    flexDirection: 'row',
+    height: 100,
+    borderRadius: 30,
+  },
+ // 수정된 스타일
+cautionTitle: {
+  fontSize: 20, // 더 큰 폰트 크기로 업데이트
+  fontWeight: 'bold',
+  marginBottom: 10, // "caution" 텍스트와의 간격 추가
+},
+
+caution: {
+  fontSize: 16,
+},
+
 });
 
 export default MemoryGame;
