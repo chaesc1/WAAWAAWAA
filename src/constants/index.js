@@ -29,6 +29,12 @@ export const menuItems = [
     link: 'ConnectStart',
     image: require('../../assets/animations/YellowBear.json'),
   },
+  {
+    name: '그림 그리기!',
+    desc: '하고싶은걸 그려봐!',
+    link: 'Drawing',
+    image: require('../../assets/animations/GreenBear.json'),
+  },
 ];
 export const dummyMessages = [
   {
