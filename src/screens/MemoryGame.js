@@ -68,11 +68,14 @@ const MemoryGame = ({ navigation }) => {
     if (JSON.stringify(selectedTiles) === JSON.stringify(answer)) {
       console.log('정답입니다!');
       setScore(score + 1);
+      alert('정답입니다!'); // 정답 알림
     } else {
       console.log('틀렸습니다. 다시 시도하세요.');
+      alert('틀렸습니다. 다시 시도하세요.'); // 틀렸음을 알림
     }
     gameStart();
   };
+  
 
   const saveScore = async () => {
     try {
