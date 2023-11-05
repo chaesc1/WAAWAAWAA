@@ -26,10 +26,16 @@ const MemoryGame = ({ navigation }) => {
       setAnswer(res.data);
       setIsGameStarted(true);
       setSelectedTiles([]);
+  
+      // 정답을 표시하고 1초 후에 숨기기 위한 타이머 설정
+      setTimeout(() => {
+        setAnswer([]); // 정답을 숨김
+      }, 500);
     } catch (error) {
       console.log(error);
     }
   }
+  
 
   const updateScore = async () => {
     try {
@@ -93,28 +99,30 @@ const MemoryGame = ({ navigation }) => {
         autoPlay
         loop
         />
-        
       </View>
       
       <View style={styles.gameBoardContainer}>
         <View style={styles.gameBoard}>
-          {gameBoard.map((row, rowIndex) => (
-            <View style={styles.row} key={rowIndex}>
-              {row.map((_, colIndex) => (
-                <TouchableOpacity
-                  key={colIndex}
-                  style={[
-                    styles.tile,
-                    selectedTiles.some((tile) => tile[0] === rowIndex && tile[1] === colIndex) && styles.selectedTile
-                  ]}
-                  onPress={() => handleTileClick(rowIndex, colIndex)}
-                >
-                  {isGameStarted && <Text style={styles.tileText}>눌려!</Text>}
-                </TouchableOpacity>
-              ))}
-            </View>
-          ))}
+        {gameBoard.map((row, rowIndex) => (
+          <View style={styles.row} key={rowIndex}>
+            {row.map((_, colIndex) => (
+              <TouchableOpacity
+                key={colIndex}
+                style={[
+                  styles.tile,
+                  selectedTiles.some((tile) => tile[0] === rowIndex && tile[1] === colIndex) && styles.selectedTile,
+                  answer.length > 0 && answer.some((ans) => ans[0] === rowIndex && ans[1] === colIndex) && styles.answerTile, // 정답 좌표에 해당하는 타일 스타일 적용
+                ]}
+                onPress={() => handleTileClick(rowIndex, colIndex)}
+              >
+                {isGameStarted && <Text style={styles.tileText}>눌려!</Text>}
+              </TouchableOpacity>
+            ))}
+          </View>
+        ))}
+        
         </View>
+        <Text style={styles.score}>현재 스코어: {score}</Text>
         <View style={styles.ButtonContainer}>
           {isGameStarted ? (
             <TouchableOpacity style={styles.checkButton} onPress={checkAnswer}>
@@ -129,12 +137,12 @@ const MemoryGame = ({ navigation }) => {
             <Text style={styles.buttonText}>스코어 저장하기</Text>
           </TouchableOpacity>
         </View>
-        <Text style={styles.score}>스코어: {score}</Text>
+        
         
       </View>
       <View style={styles.cautionContainer}>
         <Text style={styles.cautionTitle}>🚨주의사항 및 규칙🚨</Text>
-        <Text style={styles.caution}>규칙들어감</Text></View>
+        <Text style={styles.caution}>규칙</Text></View>
       
       
     </View>
@@ -165,8 +173,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
     backgroundColor: 'white',
-    padding: 15,
+    //padding: 15,
     borderRadius: 20,
+    //width: 50,
     marginTop: hp(3),
   },
   image: {
@@ -191,21 +200,26 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   gameBoard: {
+    width: '100%',  
+    aspectRatio: 1,  
     borderWidth: 1,
     borderColor: 'black',
-    width: 200,
   },
+  
   row: {
     flexDirection: 'row',
   },
   tile: {
-    width: 60,
-    height: 60,
+    width: '33.33%', 
+    aspectRatio: 1,  
     borderWidth: 1,
     borderColor: 'black',
     justifyContent: 'center',
     alignItems: 'center',
   },
+  answerTile: {
+    backgroundColor: 'lightgreen', // 정답 좌표에 해당하는 타일을 다르게 스타일링
+  },  
   selectedTile: {
     backgroundColor: 'lightblue',
   },
@@ -215,7 +229,7 @@ const styles = StyleSheet.create({
   ButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginTop: 20,
+    //marginTop: 20,
   },
   startButton: {
     marginTop: 20,
@@ -253,16 +267,15 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 30,
   },
- // 수정된 스타일
-cautionTitle: {
-  fontSize: 20, // 더 큰 폰트 크기로 업데이트
-  fontWeight: 'bold',
-  marginBottom: 10, // "caution" 텍스트와의 간격 추가
-},
-
-caution: {
-  fontSize: 16,
-},
+ 
+  cautionTitle: {
+    fontSize: 20, 
+    fontWeight: 'bold',
+    marginBottom: 10, 
+  },
+  caution: {
+    fontSize: 16,
+  },
 
 });
 
