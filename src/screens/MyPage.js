@@ -176,7 +176,7 @@ const MyPage = ({navigation}) => {
       {cancelable: false},
     );
   };
-
+  
   return (
     <View style={styles.container}>
       <View style={styles.backButtonContainer}>
@@ -186,6 +186,7 @@ const MyPage = ({navigation}) => {
           <ArrowLeftIcon size={wp('6%')} color="white" />
         </TouchableOpacity>
       </View>
+
       <View style={styles.profileContainer}>
         <Lottie
           source={require('../../assets/animations/newBear.json')}
@@ -286,7 +287,12 @@ const MyPage = ({navigation}) => {
         <TouchableOpacity
           style={styles.menuItem}
           onPress={() => navigation.navigate('RankingPage')}>
-          <Text style={styles.menuText}>랭킹을 보고싶다면?</Text>
+          <Text style={styles.menuText}>춘식이의 랭킹이 궁금하다면?🥇</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => navigation.navigate('MemoryGame')}>
+          <Text style={styles.menuText}>기억력 게임 테스트 하러 가기👾</Text>
         </TouchableOpacity>
 
         <TouchableOpacity

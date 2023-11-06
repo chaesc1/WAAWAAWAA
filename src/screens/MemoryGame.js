@@ -7,10 +7,12 @@ import LottieView from 'lottie-react-native';
 
 const MemoryGame = ({ navigation }) => {
   const [gameBoard, setGameBoard] = useState([]);
+  const [hint, setHint] = useState([]); 
   const [answer, setAnswer] = useState([]);
   const [selectedTiles, setSelectedTiles] = useState([]);
   const [score, setScore] = useState(0);
   const [isGameStarted, setIsGameStarted] = useState(false);
+  const [showHint, setShowHint] = useState(false);
   
 
   const gameStart = async () => {
@@ -22,21 +24,24 @@ const MemoryGame = ({ navigation }) => {
         method: 'get',
         url: '/memory-game',
       });
-      console.log(res.data);
+      console.log("server data:", res.data);
       setAnswer(res.data);
+      setHint(res.data); // 힌트로 표시
       setIsGameStarted(true);
       setSelectedTiles([]);
-  
-      // 정답을 표시하고 1초 후에 숨기기 위한 타이머 설정
+      setShowHint(true);
+      
+      // 0.5초 후에 힌트를 초기화
       setTimeout(() => {
-        setAnswer([]); // 정답을 숨김
-      }, 500);
+        setShowHint(false);
+        setHint([]);
+      }, 2000);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
   
-
+  
   const updateScore = async () => {
     try {
       const res = await authClient({
@@ -63,18 +68,23 @@ const MemoryGame = ({ navigation }) => {
     }
   };
 
-  const checkAnswer = () => {
-    console.log(selectedTiles);
-    if (JSON.stringify(selectedTiles) === JSON.stringify(answer)) {
-      console.log('정답입니다!');
-      setScore(score + 1);
-      alert('정답입니다!'); // 정답 알림
+  const checkAnswer =  async () => {
+    console.log(answer);
+    console.log("내 선택:",selectedTiles);
+   // 순서는 신경안쓰고 배열 내의 요소만 비교!
+    const isAnswerCorrect = selectedTiles.every((tile, index) => {
+        return tile[0] === answer[index][0] && tile[1] === answer[index][1];
+    });
+
+    if (isAnswerCorrect) {
+        setScore(score + 1);
+        alert('잘했어! 스코어 증가!! 👍🏻');
     } else {
-      console.log('틀렸습니다. 다시 시도하세요.');
-      alert('틀렸습니다. 다시 시도하세요.'); // 틀렸음을 알림
+        alert('다시해보자!');
     }
     gameStart();
-  };
+};
+
   
 
   const saveScore = async () => {
@@ -106,24 +116,23 @@ const MemoryGame = ({ navigation }) => {
       
       <View style={styles.gameBoardContainer}>
         <View style={styles.gameBoard}>
-        {gameBoard.map((row, rowIndex) => (
-          <View style={styles.row} key={rowIndex}>
-            {row.map((_, colIndex) => (
-              <TouchableOpacity
-                key={colIndex}
-                style={[
-                  styles.tile,
-                  selectedTiles.some((tile) => tile[0] === rowIndex && tile[1] === colIndex) && styles.selectedTile,
-                  answer.length > 0 && answer.some((ans) => ans[0] === rowIndex && ans[1] === colIndex) && styles.answerTile, // 정답 좌표에 해당하는 타일 스타일 적용
-                ]}
-                onPress={() => handleTileClick(rowIndex, colIndex)}
-              >
-                {isGameStarted && <Text style={styles.tileText}>눌려!</Text>}
-              </TouchableOpacity>
-            ))}
-          </View>
-        ))}
-        
+          {gameBoard.map((row, rowIndex) => (
+            <View style={styles.row} key={rowIndex}>
+              {row.map((_, colIndex) => (
+                <TouchableOpacity
+                  key={colIndex}
+                  style={[
+                    styles.tile,
+                    selectedTiles.some((tile) => tile[0] === rowIndex && tile[1] === colIndex) && styles.selectedTile,
+                    hint.length > 0 && hint.some((h) => h[0] === rowIndex && h[1] === colIndex) && styles.hintTile,
+                  ]}
+                  onPress={() => handleTileClick(rowIndex, colIndex)}
+                >
+                  {isGameStarted && <Text style={styles.tileText}>눌려!</Text>}
+                </TouchableOpacity>
+              ))}
+            </View>
+          ))}
         </View>
         <Text style={styles.score}>현재 스코어: {score}</Text>
         <View style={styles.ButtonContainer}>
@@ -140,13 +149,10 @@ const MemoryGame = ({ navigation }) => {
             <Text style={styles.buttonText}>스코어 저장하기</Text>
           </TouchableOpacity>
         </View>
-        
-        
       </View>
       <View style={styles.cautionContainer}>
         <Text style={styles.cautionTitle}>🚨주의사항 및 규칙🚨</Text>
-        <Text style={styles.caution}>규칙</Text></View>
-      
+        <Text style={styles.caution}></Text></View>
       
     </View>
   );
@@ -220,11 +226,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  answerTile: {
-    backgroundColor: 'lightgreen', // 정답 좌표에 해당하는 타일을 다르게 스타일링
-  },  
   selectedTile: {
     backgroundColor: 'lightblue',
+  },
+  hintTile: {
+    backgroundColor: 'lightgreen', 
   },
   tileText: {
     fontSize: 16,
