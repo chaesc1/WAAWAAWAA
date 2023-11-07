@@ -8,12 +8,21 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  View,
   UIManager,
 } from 'react-native';
+
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import {useNavigation} from '@react-navigation/native';
 import {Clear, Save} from '../../assets/images';
+import {ArrowLeftIcon} from 'react-native-heroicons/solid';
 import PencilKitView from './pencilKitView';
 
 const App = () => {
+  const navigation = useNavigation();
   const drawingRef = useRef(null);
   // Add the below code to call the native method
   // `setupToolPicker` after 200ms the component is mounted
@@ -74,6 +83,13 @@ const App = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.backButtonContainer}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}>
+          <ArrowLeftIcon size={wp('6%')} color="white" />
+        </TouchableOpacity>
+      </View>
       <PencilKitView ref={drawingRef} style={styles.container} />
       <Pressable onPress={handleClearDrawing} style={styles.clearBtn}>
         <Image source={Clear} resizeMode={'contain'} style={styles.icon} />
@@ -82,10 +98,10 @@ const App = () => {
         <Image source={Save} resizeMode={'contain'} style={styles.icon} />
       </Pressable>
       <TouchableOpacity onPress={handleUndo} style={styles.undo}>
-        <Text style={styles.undoRedoText}>{'Undo'}</Text>
+        <Text style={styles.undoRedoText}>{'<<<'}</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleRedo} style={styles.redo}>
-        <Text style={styles.undoRedoText}>{'Redo'}</Text>
+        <Text style={styles.undoRedoText}>{'>>>'}</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -95,6 +111,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  backButtonContainer: {
+    justifyContent: 'flex-start',
+    width: wp(10),
+  },
+  backButton: {
+    backgroundColor: '#1E2B22',
+    padding: wp('1%'),
+    borderTopRightRadius: wp('5%'),
+    borderBottomLeftRadius: wp('5%'),
+    marginLeft: wp('2%'),
   },
   icon: {
     height: 50,
@@ -125,8 +152,8 @@ const styles = StyleSheet.create({
   undo: {
     position: 'absolute',
     backgroundColor: '#0004',
-    top: 50,
-    left: 14,
+    top: hp(8),
+    left: wp(15),
     borderRadius: 12,
     paddingVertical: 6,
     paddingHorizontal: 16,
@@ -134,8 +161,8 @@ const styles = StyleSheet.create({
   redo: {
     position: 'absolute',
     backgroundColor: '#0004',
-    top: 50,
-    left: 120,
+    top: hp(8),
+    left: wp(42.5),
     borderRadius: 12,
     paddingVertical: 6,
     paddingHorizontal: 16,
