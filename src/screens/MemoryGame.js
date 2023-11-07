@@ -35,7 +35,7 @@ const MemoryGame = ({ navigation }) => {
       setTimeout(() => {
         setShowHint(false);
         setHint([]);
-      }, 2000);
+      }, 800);
     } catch (error) {
       console.log(error);
     }
