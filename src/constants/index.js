@@ -35,6 +35,12 @@ export const menuItems = [
     link: 'Drawing',
     image: require('../../assets/animations/GreenBear.json'),
   },
+  {
+    name: '기억력 게임',
+    desc: '너의 기억력을 테스트해봐!',
+    link: 'MemoryGame',
+    image: require('../../assets/animations/Bear.json'),
+  }
 ];
 export const dummyMessages = [
   {
