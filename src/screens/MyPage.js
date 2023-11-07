@@ -295,6 +295,18 @@ const MyPage = ({navigation}) => {
                 접속해봐!
               </Text>
             </View>
+            </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => navigation.navigate('RankingPage')}>
+            <View style={styles.statButtonContent}>
+              <Text style={styles.statButtonTitle}>랭킹 페이지 </Text>
+
+              <Text style={styles.statButtonDescription}>
+                {user ? user.username : '이름'}의 랭킹을 알고싶다면?
+                접속해봐!
+              </Text>
+            </View>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.withdrawLogoutButton}
