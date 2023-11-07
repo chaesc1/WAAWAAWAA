@@ -59,6 +59,10 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Save photos to your photo gallery</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>AccessPhotoLibrary</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>

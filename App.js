@@ -4,14 +4,16 @@ import MemberMainPage from './src/screens/MemberMainPage'; //로그인시 메인
 import CounsellingPage from './src/screens/CounsellingPage'; //상담페이지
 import QuizPage from './src/screens/QuizPage'; //퀴즈 페이지
 import ConnectEndingPage from './src/screens/ConnectEnding'; //끝말잇기
-import TwentyQuestionPage from './src/screens/TwentyQuestion'; // 스무고개 페이지
+import DrawingPage from './src/screens/DrawingPage';
 import StaticsPage from './src/screens/StaticsPage'; // 통계 페이지
 import ForgetPassword from './src/screens/ForgetPassword'; // 비밀번호 잊으셨나요 페이지
 import MyPage from './src/screens/MyPage';
 import newLogin from './src/screens/LoginPage';
 import newRegister from './src/screens/RegisterPage';
+
 import RankingPage from './src/screens/RankingPage';
 import MemoryGame from './src/screens/MemoryGame';
+
 // //tailwind
 // import tw from 'twrnc';
 // import {config, GluestackUIProvider, Text} from '@gluestack-ui/themed';
@@ -147,6 +149,20 @@ const App = () => {
             headerShown: false,
             headerStyle: {
               backgroundColor: '#FFFFFF',
+            },
+          }}
+        />
+        {/* 그림그리기 페이지 */}
+        <Stack.Screen
+          name="Drawing"
+          component={DrawingPage}
+          options={{
+            title: '',
+            headerBackTitleVisible: false,
+            headerShown: false,
+            headerBackImage: 'BackBtn',
+            headerStyle: {
+              backgroundColor: '#FAF1E4',
             },
           }}
         />
