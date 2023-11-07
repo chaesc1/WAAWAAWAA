@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#FFD2E0',
+    backgroundColor: '#D8E4E5',
   },
   backButtonContainer: {
     width: wp(10),

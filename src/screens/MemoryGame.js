@@ -35,7 +35,7 @@ const MemoryGame = ({ navigation }) => {
       setTimeout(() => {
         setShowHint(false);
         setHint([]);
-      }, 2000);
+      }, 800);
     } catch (error) {
       console.log(error);
     }
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#FFD2E0',
+    backgroundColor: '#D8E4E5',
   },
   backButtonContainer: {
     justifyContent: 'flex-start',
