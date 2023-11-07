@@ -469,7 +469,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F0F0F0',
     color: 'gray',
     borderRadius: wp('8%'),
-    marginBottom: wp('5%'),
+    marginBottom: wp('2%'),
   },
   signUpButton: {
     backgroundColor: '#1E2B22',

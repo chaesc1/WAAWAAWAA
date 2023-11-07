@@ -15,6 +15,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ArrowLeftIcon} from 'react-native-heroicons/solid';
@@ -31,6 +32,8 @@ export default function LoginScreen() {
   const [userId, setUserId] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [isStoredAccessToken, setIsStoredAccessToken] = useState(false);
+  const [error, setError] = useState(''); // 로그인 에러 처리
+
 
   const getAccessTokenData = async () => {
     setIsStoredAccessToken(
@@ -73,6 +76,11 @@ export default function LoginScreen() {
       console.log('Stored userId:', storedUserId);
     } catch (err) {
       console.error(err);
+      if (err.response && err.response.status === 401) {
+        Alert.alert('아이디나 비밀번호를 다시 확인해주세요.');
+      } else {
+        Alert.alert('자체적으로 에러가 발생했으니 조금있다 다시 시도해주세요.');
+      }
     }
   };
 
@@ -102,6 +110,7 @@ export default function LoginScreen() {
           </View>
         </SafeAreaView>
         <View style={styles.formContainer}>
+        {error !== '' && (<Text style={styles.errorText}>{error}</Text>)}
           <View style={styles.form}>
             <Text style={styles.label}>아이디</Text>
             <TextInput
@@ -258,4 +267,9 @@ const styles = StyleSheet.create({
     color: '#004225',
     fontWeight: '500',
   },
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    marginBottom: wp('2%'),
+  }
 });
