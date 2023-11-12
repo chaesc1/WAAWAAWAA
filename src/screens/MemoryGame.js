@@ -78,26 +78,30 @@ const MemoryGame = ({navigation}) => {
   };
 
   const checkAnswer = async () => {
-    console.log(answer);
-    console.log('내 선택:', selectedTiles);
+    console.log('서버에서 받은 정답:', answer);
+    console.log('내가 선택한 값:', selectedTiles);
   
-    // 정답 배열과 사용자 선택 배열을 1차원 배열로 변환하여 비교
-    const flatAnswer = answer.flat();
-    const flatSelectedTiles = selectedTiles.flat();
+    // 정답 배열과 사용자 선택 배열을 1차원 배열로 변환하여 정렬
+    const flatAnswer = answer.flat().sort();
+    const flatSelectedTiles = selectedTiles.flat().sort();
   
-    // 배열 내의 요소만 비교!
-    const isAnswerCorrect = flatSelectedTiles.every(tile =>
-      flatAnswer.includes(tile)
-    );
+    // 배열 내의 요소와 위치까지 비교
+    const isAnswerCorrect = flatAnswer.every((tile, index) => tile === flatSelectedTiles[index]);
   
-    if (isAnswerCorrect) {
-      setScore(score + 1);
-      Alert.alert('잘했어! 스코어 증가!! 👍🏻');
+    // 사용자가 3칸을 선택하지 않거나, 정답이 아닌 경우 처리
+    if (selectedTiles.length !== 3 || !isAnswerCorrect) {
+      Alert.alert('다시 선택해주세요!');
     } else {
-      Alert.alert('다시해보자!');
+      // 정답일 경우
+      setScore((prevScore) => prevScore + 1);
+      Alert.alert('잘했어! 스코어 증가!! 👍🏻');
     }
+  
+    // 게임을 재시작
     gameStart();
   };
+  
+  
   
   const saveScore = async () => {
     // 게임이 진행 중인 경우에만 확인 창을 띄웁니다.
