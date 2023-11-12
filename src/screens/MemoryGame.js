@@ -78,11 +78,16 @@ const MemoryGame = ({navigation}) => {
   const checkAnswer = async () => {
     console.log(answer);
     console.log('내 선택:', selectedTiles);
-    // 순서는 신경안쓰고 배열 내의 요소만 비교!
-    const isAnswerCorrect = selectedTiles.every((tile, index) => {
-      return tile[0] === answer[index][0] && tile[1] === answer[index][1];
-    });
-
+  
+    // 정답 배열과 사용자 선택 배열을 1차원 배열로 변환하여 비교
+    const flatAnswer = answer.flat();
+    const flatSelectedTiles = selectedTiles.flat();
+  
+    // 배열 내의 요소만 비교!
+    const isAnswerCorrect = flatSelectedTiles.every(tile =>
+      flatAnswer.includes(tile)
+    );
+  
     if (isAnswerCorrect) {
       setScore(score + 1);
       alert('잘했어! 스코어 증가!! 👍🏻');
@@ -91,7 +96,7 @@ const MemoryGame = ({navigation}) => {
     }
     gameStart();
   };
-
+  
   const saveScore = async () => {
     try {
       await updateScore();
