@@ -1,6 +1,8 @@
 import {
   Alert,
   Image,
+  Modal,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -19,7 +21,6 @@ import Voice from '@react-native-voice/voice';
 import {apiCall} from '../api/OpenAI';
 import Tts from 'react-native-tts';
 import authClient from '../apis/authClient';
-import Footer from '../components/footer';
 import Lottie from 'lottie-react-native';
 import {ArrowLeftIcon} from 'react-native-heroicons/solid';
 Tts.requestInstallData();
@@ -32,6 +33,7 @@ export default CounsellingRe = ({navigation}) => {
   const [speaking, setSpeaking] = useState(false);
   const [hideClearButton, setHideClearButton] = useState(false);
   const scrollViewRef = useRef();
+  const [modalVisible, setModalVisible] = useState(false);
 
   const getMessage = async () => {
     try {
@@ -225,6 +227,57 @@ export default CounsellingRe = ({navigation}) => {
         source={require('../../assets/images/simple.jpg')}
         style={styles.backgroundImage}
       />
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>상담 리스트</Text>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => setModalVisible(!modalVisible)}>
+                <Text style={styles.textStyle}>X</Text>
+              </Pressable>
+            </View>
+            <ScrollView style={{width: '100%', maxHeight: hp('40%')}}>
+              {messages.map((message, index) => {
+                if (message.sender == 'assistant') {
+                  //text gpt 대답 부분
+                  return (
+                    <View style={{flex: 1, flexDirection: 'column'}}>
+                      <View style={{flex: 1, backgroundColor: 'red'}}></View>
+                      <View
+                        key={index}
+                        style={styles.assistantMessageContainer}>
+                        <Text style={styles.assistantMessage}>
+                          {message.content}
+                        </Text>
+                      </View>
+                      <View style={{flex: 1, backgroundColor: 'blue'}}></View>
+                    </View>
+                  );
+                } else {
+                  return (
+                    <View key={index} style={styles.userMessageContainer}>
+                      <View style={styles.userMessageContent}>
+                        <Text style={styles.userMessageText}>
+                          {message.content}
+                        </Text>
+                      </View>
+                    </View>
+                  );
+                }
+              })}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.backButtonContainer}>
           <TouchableOpacity
@@ -232,53 +285,48 @@ export default CounsellingRe = ({navigation}) => {
             style={styles.backButton}>
             <ArrowLeftIcon size={wp('6%')} color="white" />
           </TouchableOpacity>
+          <Text style={styles.pageTitle}>상담</Text>
         </View>
         <View style={styles.imageContainer}>
           <Lottie
-            source={require('../../assets/animations/GreenBear.json')}
+            source={require('../../assets/animations/BlueBear.json')}
             style={styles.image}
             loop
             autoPlay
           />
         </View>
         <View style={styles.triangle}></View>
-        <ScrollView style={styles.speechBubble}>
-          {messages.map((message, index) => {
-            if (message.sender == 'assistant') {
-              //text gpt 대답 부분
-              return (
-                <View style={{flex: 1, flexDirection: 'column'}}>
-                  <View style={{flex: 1, backgroundColor: 'red'}}></View>
-                  <View key={index} style={styles.assistantMessageContainer}>
-                    <Text style={styles.assistantMessage}>
-                      {message.content}
-                    </Text>
-                  </View>
-                  <View style={{flex: 1, backgroundColor: 'blue'}}></View>
-                </View>
-              );
-            } else {
-              return (
-                <View key={index} style={styles.userMessageContainer}>
-                  <View style={styles.userMessageContent}>
-                    <Text style={styles.userMessageText}>
-                      {message.content}
-                    </Text>
-                  </View>
-                </View>
-              );
-            }
-          })}
-        </ScrollView>
+        <View style={styles.speechBubble}>
+          <ScrollView>
+            <View style={styles.textWrap}>
+              <Text style={{fontSize: 16}}>
+                {messages
+                  .filter(message => message.sender === 'assistant')
+                  .pop()?.content ?? ''}
+              </Text>
+            </View>
+          </ScrollView>
+        </View>
       </SafeAreaView>
       {/* 녹음 , clear, 정지 버튼 */}
-      <View>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}>
         <TextInput
           value={result}
           placeholder="적어서도 보내봐!!"
           style={styles.textContainer}
           onChangeText={text => setResult(text)}
         />
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setModalVisible(true)}>
+          <Image
+            source={require('../../assets/images/file.png')}
+            style={styles.textStyle}></Image>
+        </TouchableOpacity>
         {!loading && (
           <TouchableOpacity style={styles.sendButton} onPress={fetchResponse}>
             <Text style={styles.buttonText}>전송</Text>
@@ -332,7 +380,7 @@ export default CounsellingRe = ({navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative',
@@ -344,10 +392,23 @@ const styles = StyleSheet.create({
     zIndex: -1,
   },
   backButtonContainer: {
+    alignItems: 'center',
     justifyContent: 'flex-start',
     width: wp(10),
+    marginTop: wp(6.4),
+    marginBottom: wp(3),
+    right: wp(3),
+    flexDirection: 'row',
+    gap: 20,
+    paddingHorizontal: 20,
+  },
+  pageTitle: {
+    width: wp('50%'),
+    fontSize: wp('6%'),
+    fontWeight: 'bold',
   },
   backButton: {
+    width: wp('8%'),
     backgroundColor: '#1E2B22',
     padding: wp('1%'),
     borderTopRightRadius: wp('5%'),
@@ -357,12 +418,19 @@ const styles = StyleSheet.create({
   speechBubble: {
     position: 'absolute',
     backgroundColor: '#00aabb',
-    width: wp(90),
-    height: hp(17.5),
-    borderRadius: 12,
     alignSelf: 'center',
+    width: wp(90),
+    height: hp(12.5),
+    borderRadius: 12,
     padding: 16,
-    marginTop: hp(13),
+    marginTop: hp(18),
+    flex: 1,
+  },
+  textWrap: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: hp(8.5),
   },
   triangle: {
     position: 'absolute',
@@ -383,7 +451,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     backgroundColor: '#FFFFFF',
-    width: wp(80),
+    width: wp(70),
     height: hp(4),
     borderRadius: 30,
     marginLeft: wp(3),
@@ -443,7 +511,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: hp(10.5), // Add margin top for spacing
   },
   buttonImage: {
     width: hp(20),
@@ -475,5 +542,61 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalContainer: {
+    width: wp('90%'),
+    margin: 20,
+    backgroundColor: '#BFE5E9',
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    gap: 10,
+  },
+  modalView: {
+    width: wp('90%'),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingLeft: 20,
+  },
+  storyList: {
+    gap: 10,
+    paddingVertical: 5,
+    width: '100%',
+    borderBottom: '#000',
+    borderBottomWidth: 1,
+    textAlign: 'left',
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonClose: {
+    backgroundColor: 'transparent',
+  },
+  textStyle: {
+    width: 30,
+    height: 30,
+  },
+  modalText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
