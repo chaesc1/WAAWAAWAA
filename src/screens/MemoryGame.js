@@ -1,4 +1,6 @@
 import React, {useState, useEffect} from 'react';
+import { Alert } from 'react-native';
+
 import {
   View,
   Text,
@@ -76,28 +78,63 @@ const MemoryGame = ({navigation}) => {
   };
 
   const checkAnswer = async () => {
-    console.log(answer);
-    console.log('내 선택:', selectedTiles);
-    // 순서는 신경안쓰고 배열 내의 요소만 비교!
-    const isAnswerCorrect = selectedTiles.every((tile, index) => {
-      return tile[0] === answer[index][0] && tile[1] === answer[index][1];
-    });
-
-    if (isAnswerCorrect) {
-      setScore(score + 1);
-      alert('잘했어! 스코어 증가!! 👍🏻');
+    console.log('서버에서 받은 정답:', answer);
+    console.log('내가 선택한 값:', selectedTiles);
+  
+    // 정답 배열과 사용자 선택 배열을 1차원 배열로 변환하여 정렬
+    const flatAnswer = answer.flat().sort();
+    const flatSelectedTiles = selectedTiles.flat().sort();
+  
+    // 배열 내의 요소와 위치까지 비교
+    const isAnswerCorrect = flatAnswer.every((tile, index) => tile === flatSelectedTiles[index]);
+  
+    // 사용자가 3칸을 선택하지 않거나, 정답이 아닌 경우 처리
+    if (selectedTiles.length !== 3 || !isAnswerCorrect) {
+      Alert.alert('다시 선택해주세요!');
     } else {
-      alert('다시해보자!');
+      // 정답일 경우
+      setScore((prevScore) => prevScore + 1);
+      Alert.alert('잘했어! 스코어 증가!! 👍🏻');
     }
+  
+    // 게임을 재시작
     gameStart();
   };
-
+  
+  
+  
   const saveScore = async () => {
-    try {
+    // 게임이 진행 중인 경우에만 확인 창을 띄웁니다.
+    if (isGameStarted) {
+      Alert.alert(
+        '게임 종료',
+        '정말 게임을 그만할거야?🥲',
+        [
+          {
+            text: '아니! ',
+            style: 'cancel',
+          },
+          {
+            text: '응!',
+            onPress: async () => {
+              try {
+                await updateScore();
+                
+                Alert.alert('스코어가 저장되었어!!💯');
+                navigation.navigate('MyPage');
+              } catch (error) {
+                console.log(error);
+              }
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+    } else {
+      // 게임이 진행 중이 아니면 바로 저장
       await updateScore();
-      console.log('스코어가 저장되었습니다.');
-    } catch (error) {
-      console.log('스코어 저장에 실패했습니다.');
+      Alert.alert('스코어가 저장되었습니다!');
+      navigation.navigate('MyPage');
     }
   };
 
@@ -153,14 +190,24 @@ const MemoryGame = ({navigation}) => {
               <Text style={styles.buttonText}>시작</Text>
             </TouchableOpacity>
           )}
-          <TouchableOpacity style={styles.saveButton} onPress={saveScore}>
-            <Text style={styles.buttonText}>스코어 저장하기</Text>
-          </TouchableOpacity>
+          {isGameStarted && (
+            <TouchableOpacity style={styles.saveButton} onPress={saveScore}>
+              <Text style={styles.buttonText}>스코어 저장하기</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
       <View style={styles.cautionContainer}>
         <Text style={styles.cautionTitle}>🚨주의사항 및 규칙🚨</Text>
-        <Text style={styles.caution}></Text>
+        <Text style={styles.caution}>
+            1️⃣ 스코어를 저장하지 않고 나가면 점수 저장이 안 되요.
+        </Text>
+        <Text style={styles.caution}>
+            2️⃣ 힌트는 다시 볼 수 없어요.
+        </Text>
+        <Text style={styles.caution}>
+           3️⃣ 무조건 3칸을 선택해야해요.
+        </Text>
       </View>
     </ScrollView>
   );
@@ -262,7 +309,7 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     marginTop: 20,
-    backgroundColor: 'skyblue',
+    backgroundColor: 'blue',
     padding: 10,
     borderRadius: 5,
     marginLeft: 20,
@@ -279,10 +326,11 @@ const styles = StyleSheet.create({
   cautionContainer: {
     backgroundColor: 'white',
     flex: 1,
-    flexDirection: 'row',
-    height: hp(10),
+    flexDirection: 'column',
+    height: hp(16),
     borderRadius: 30,
     marginBottom: hp(6.5),
+    padding: 10,
   },
 
   cautionTitle: {
@@ -291,7 +339,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   caution: {
-    fontSize: 16,
+    fontSize: 14,
+    marginBottom: 10,
   },
 });
 
