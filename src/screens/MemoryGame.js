@@ -100,9 +100,11 @@ const MemoryGame = ({navigation}) => {
   const saveScore = async () => {
     try {
       await updateScore();
-      console.log('스코어가 저장되었습니다.');
+      // 스코어가 저장되었다는 알림을 띄우고 랭킹 화면으로 이동
+      alert('스코어가 저장되었습니다!');
+      navigation.navigate('RankingPage'); 
     } catch (error) {
-      console.log('스코어 저장에 실패했습니다.');
+      console.log(error);
     }
   };
 
