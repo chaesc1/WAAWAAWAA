@@ -1,4 +1,6 @@
 import React, {useState, useEffect} from 'react';
+import { Alert } from 'react-native';
+
 import {
   View,
   Text,
@@ -98,13 +100,37 @@ const MemoryGame = ({navigation}) => {
   };
   
   const saveScore = async () => {
-    try {
+    // 게임이 진행 중인 경우에만 확인 창을 띄웁니다.
+    if (isGameStarted) {
+      Alert.alert(
+        '게임 종료',
+        '정말 게임을 그만할거야?🥲',
+        [
+          {
+            text: '아니! ',
+            style: 'cancel',
+          },
+          {
+            text: '응!',
+            onPress: async () => {
+              try {
+                await updateScore();
+                
+                Alert.alert('스코어가 저장되었어!!💯');
+                navigation.navigate('MyPage');
+              } catch (error) {
+                console.log(error);
+              }
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+    } else {
+      // 게임이 진행 중이 아니면 바로 저장
       await updateScore();
-      // 스코어가 저장되었다는 알림을 띄우고 랭킹 화면으로 이동
-      alert('스코어가 저장되었습니다!');
-      navigation.navigate('RankingPage'); 
-    } catch (error) {
-      console.log(error);
+      Alert.alert('스코어가 저장되었습니다!');
+      navigation.navigate('MyPage');
     }
   };
 
@@ -160,9 +186,11 @@ const MemoryGame = ({navigation}) => {
               <Text style={styles.buttonText}>시작</Text>
             </TouchableOpacity>
           )}
-          <TouchableOpacity style={styles.saveButton} onPress={saveScore}>
-            <Text style={styles.buttonText}>스코어 저장하기</Text>
-          </TouchableOpacity>
+          {isGameStarted && (
+            <TouchableOpacity style={styles.saveButton} onPress={saveScore}>
+              <Text style={styles.buttonText}>스코어 저장하기</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
       <View style={styles.cautionContainer}>
@@ -269,7 +297,7 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     marginTop: 20,
-    backgroundColor: 'skyblue',
+    backgroundColor: 'blue',
     padding: 10,
     borderRadius: 5,
     marginLeft: 20,
