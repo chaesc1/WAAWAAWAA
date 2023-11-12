@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Image,
@@ -7,18 +7,13 @@ import {
   SafeAreaView,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator,
   ScrollView,
   Alert,
   Modal,
   Pressable,
 } from 'react-native';
 import Voice from '@react-native-voice/voice';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import Features from '../components/QuizFeature'; //첫 초기화면 굳이 넣어햐하나?
-import {QuizGenerate} from '../api/OpenAI'; //퀴즈 생성 api 호출
 import Tts from 'react-native-tts'; //TTS Library
-import Footer from '../components/footer';
 import {ArrowLeftIcon} from 'react-native-heroicons/solid';
 import Lottie from 'lottie-react-native';
 

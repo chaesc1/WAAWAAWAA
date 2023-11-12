@@ -10,7 +10,6 @@ import ForgetPassword from './src/screens/ForgetPassword'; // 비밀번호 잊�
 import MyPage from './src/screens/MyPage';
 import newLogin from './src/screens/LoginPage';
 import newRegister from './src/screens/RegisterPage';
-
 import RankingPage from './src/screens/RankingPage';
 import MemoryGame from './src/screens/MemoryGame';
 
@@ -199,28 +198,29 @@ const App = () => {
           name="RankingPage"
           component={RankingPage}
           options={{
-          title: '',
-          headerBackTitleVisible: false,
-          headerShown: false,
-          headerBackImage: 'BackBtn',
-          headerStyle: {
-            backgroundColor: '#FAF1E4',
-          },
-        }} />
+            title: '',
+            headerBackTitleVisible: false,
+            headerShown: false,
+            headerBackImage: 'BackBtn',
+            headerStyle: {
+              backgroundColor: '#FAF1E4',
+            },
+          }}
+        />
         {/*기억력게임 페이지*/}
         <Stack.Screen
-        name="MemoryGame"
-        component={MemoryGame}
-        options={{
-          title: '',
-          headerBackTitleVisible: false,
-          headerShown: false,
-          headerBackImage: 'BackBtn',
-          headerStyle: {
-            backgroundColor: '#FAF1E4',
-          },
-        }} />
-      
+          name="MemoryGame"
+          component={MemoryGame}
+          options={{
+            title: '',
+            headerBackTitleVisible: false,
+            headerShown: false,
+            headerBackImage: 'BackBtn',
+            headerStyle: {
+              backgroundColor: '#FAF1E4',
+            },
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
