@@ -34,7 +34,6 @@ export default function LoginScreen() {
   const [isStoredAccessToken, setIsStoredAccessToken] = useState(false);
   const [error, setError] = useState(''); // 로그인 에러 처리
 
-
   const getAccessTokenData = async () => {
     setIsStoredAccessToken(
       (await AsyncStorage.getItem('accessToken')) ? true : false,
@@ -89,7 +88,7 @@ export default function LoginScreen() {
       <View style={styles.container}>
         <Image
           blurRadius={40}
-          source={require('../../assets/images/Background_2.png')}
+          source={require('../../assets/images/simple.jpg')}
           style={styles.backgroundImage}
         />
         <SafeAreaView style={styles.safeArea}>
@@ -110,7 +109,7 @@ export default function LoginScreen() {
           </View>
         </SafeAreaView>
         <View style={styles.formContainer}>
-        {error !== '' && (<Text style={styles.errorText}>{error}</Text>)}
+          {error !== '' && <Text style={styles.errorText}>{error}</Text>}
           <View style={styles.form}>
             <Text style={styles.label}>아이디</Text>
             <TextInput
@@ -271,5 +270,5 @@ const styles = StyleSheet.create({
     color: 'red',
     textAlign: 'center',
     marginBottom: wp('2%'),
-  }
+  },
 });

@@ -183,7 +183,7 @@ export default function SignUpScreen() {
       <View style={styles.container}>
         <Image
           blurRadius={40}
-          source={require('../../assets/images/Background_2.png')}
+          source={require('../../assets/images/simple.jpg')}
           style={styles.backgroundImage}
         />
         <SafeAreaView style={styles.safeArea}>

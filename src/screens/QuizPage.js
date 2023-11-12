@@ -195,7 +195,7 @@ const QuizPage_test = ({navigation}) => {
     <View style={styles.container}>
       <Image
         blurRadius={40}
-        source={require('../../assets/images/Background_2.png')}
+        source={require('../../assets/images/simple.jpg')}
         style={styles.backgroundImage}
       />
 
