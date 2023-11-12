@@ -92,9 +92,9 @@ const MemoryGame = ({navigation}) => {
   
     if (isAnswerCorrect) {
       setScore(score + 1);
-      alert('잘했어! 스코어 증가!! 👍🏻');
+      Alert.alert('잘했어! 스코어 증가!! 👍🏻');
     } else {
-      alert('다시해보자!');
+      Alert.alert('다시해보자!');
     }
     gameStart();
   };
@@ -195,7 +195,15 @@ const MemoryGame = ({navigation}) => {
       </View>
       <View style={styles.cautionContainer}>
         <Text style={styles.cautionTitle}>🚨주의사항 및 규칙🚨</Text>
-        <Text style={styles.caution}></Text>
+        <Text style={styles.caution}>
+            1️⃣ 스코어를 저장하지 않고 나가면 점수 저장이 안 되요.
+        </Text>
+        <Text style={styles.caution}>
+            2️⃣ 힌트는 다시 볼 수 없어요.
+        </Text>
+        <Text style={styles.caution}>
+           3️⃣ 무조건 3칸을 선택해야해요.
+        </Text>
       </View>
     </ScrollView>
   );
@@ -314,10 +322,11 @@ const styles = StyleSheet.create({
   cautionContainer: {
     backgroundColor: 'white',
     flex: 1,
-    flexDirection: 'row',
-    height: hp(10),
+    flexDirection: 'column',
+    height: hp(16),
     borderRadius: 30,
     marginBottom: hp(6.5),
+    padding: 10,
   },
 
   cautionTitle: {
@@ -326,7 +335,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   caution: {
-    fontSize: 16,
+    fontSize: 14,
+    marginBottom: 10,
   },
 });
 
