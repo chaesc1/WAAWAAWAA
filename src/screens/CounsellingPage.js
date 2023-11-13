@@ -522,7 +522,7 @@ export const styles = StyleSheet.create({
     padding: 8,
     position: 'absolute',
     right: wp(5),
-    bottom: 10,
+    top: 10,
   },
   sendButton: {
     backgroundColor: '#6B7280',
