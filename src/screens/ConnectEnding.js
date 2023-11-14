@@ -77,91 +77,65 @@ export default CounsellingRe = ({navigation}) => {
     if (result.trim().length > 0) {
       let newMessages = [...messages];
       console.log(gptLastLetter);
-      if (result.trim().slice(0, 1) !== gptLastLetter && messages.length != 0) {
-        Alert.alert('틀렸어!', '다시해!!', [
-          {
-            text: '응',
-            onPress: () => {
-              clearMessage();
-              setLoading(true);
-              setGptLastLetter('');
-            },
-          },
-        ]);
-      } else {
-        newMessages.push({role: 'user', content: result.trim()});
+      newMessages.push({role: 'user', content: result.trim()});
 
-        const body = {
-          sender: newMessages[newMessages.length - 1].role,
-          content: newMessages[newMessages.length - 1].content,
-          time: new Date(),
-        };
+      const body = {
+        sender: newMessages[newMessages.length - 1].role,
+        content: newMessages[newMessages.length - 1].content,
+        time: new Date(),
+      };
 
-        try {
-          await authClient({
-            method: 'post',
-            url: '/word-chain',
-            data: body,
-          });
-          getMessage();
-          setHideClearButton(false);
-        } catch (error) {
-          console.log(error);
-        }
+      try {
+        await authClient({
+          method: 'post',
+          url: '/word-chain',
+          data: body,
+        });
+        getMessage();
+        setHideClearButton(false);
+      } catch (error) {
+        console.log(error);
+      }
 
-        updateScrollView();
-        setLoading(true);
+      updateScrollView();
+      setLoading(true);
 
-        try {
-          const res = await ConnectEndApi(result?.trim() ?? '', newMessages);
-          console.log(res, 'res');
-          const gptResponse = res.data[res.data?.length - 1].content;
+      try {
+        const res = await ConnectEndApi(result?.trim() ?? '', newMessages);
+        console.log(res, 'res');
+        const gptResponse = res.data[res.data?.length - 1].content;
 
-          if (gptResponse === '졌어' || gptResponse.slice(-1) === '.') {
-            Alert.alert('GPT가 졌어!', '너가 이겼다!!', [
-              {
-                text: '우와! 한 번 더?',
-                onPress: () => {
-                  clearMessage();
-                  setLoading(true);
-                  setGptLastLetter('');
-                },
-              },
-            ]);
+        setLoading(false);
+
+        if (res.success) {
+          setGptLastLetter(gptResponse.slice(-1));
+
+          const gptAnswer = res.data?.[res.data?.length - 1];
+
+          const gptBody = {
+            content: gptAnswer?.content,
+            sender: gptAnswer?.role,
+            time: new Date(),
+          };
+
+          try {
+            await authClient({
+              method: 'post',
+              url: '/word-chain',
+              data: gptBody,
+            });
+            getMessage();
+          } catch (error) {
+            console.error(error);
           }
 
-          setLoading(false);
-
-          if (res.success) {
-            setGptLastLetter(gptResponse.slice(-1));
-
-            const gptAnswer = res.data?.[res.data?.length - 1];
-
-            const gptBody = {
-              content: gptAnswer?.content,
-              sender: gptAnswer?.role,
-              time: new Date(),
-            };
-
-            try {
-              await authClient({
-                method: 'post',
-                url: '/word-chain',
-                data: gptBody,
-              });
-              getMessage();
-            } catch (error) {
-              console.error(error);
-            }
-
-            clearTextField();
-            startTextToSpeech(res.data?.[res.data?.length - 1]);
-          } else {
-            Alert.alert('Error', res.msg);
-          }
-        } catch (error) {
-          console.error(error);
+          clearTextField();
+          startTextToSpeech(res.data?.[res.data?.length - 1]);
+        } else {
+          Alert.alert('Error', res.msg);
         }
+      } catch (error) {
+        console.error(error);
       }
     }
   };
@@ -294,7 +268,7 @@ export default CounsellingRe = ({navigation}) => {
         <View style={styles.centeredView}>
           <View style={styles.modalContainer}>
             <View style={styles.modalView}>
-              <Text style={styles.modalText}>상담 리스트</Text>
+              <Text style={styles.modalText}>끝말잇기 리스트</Text>
               <Pressable
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => setModalVisible(!modalVisible)}>
