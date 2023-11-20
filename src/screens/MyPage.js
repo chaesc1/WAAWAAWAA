@@ -104,6 +104,7 @@ const MyPage = ({navigation}) => {
           age: Number(age),
         },
       });
+      checkUser();
       Alert.alert('나이가 변경되었습니다.');
     } catch (error) {
       console.log(error.response.data);
@@ -121,6 +122,7 @@ const MyPage = ({navigation}) => {
           username: nickname,
         },
       });
+      checkUser();
     } catch (error) {
       console.log(error);
     }
@@ -295,7 +297,7 @@ const MyPage = ({navigation}) => {
                 접속해봐!
               </Text>
             </View>
-            </TouchableOpacity>
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.menuItem}
             onPress={() => navigation.navigate('RankingPage')}>
@@ -303,8 +305,7 @@ const MyPage = ({navigation}) => {
               <Text style={styles.statButtonTitle}>랭킹 페이지 </Text>
 
               <Text style={styles.statButtonDescription}>
-                {user ? user.username : '이름'}의 랭킹을 알고싶다면?
-                접속해봐!
+                {user ? user.username : '이름'}의 랭킹을 알고싶다면? 접속해봐!
               </Text>
             </View>
           </TouchableOpacity>
