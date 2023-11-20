@@ -509,6 +509,7 @@
 				DEVELOPMENT_TEAM = XWNM3ZNRKY;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = WaaProject/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -537,6 +538,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XWNM3ZNRKY;
 				INFOPLIST_FILE = WaaProject/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
