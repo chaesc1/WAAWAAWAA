@@ -45,7 +45,7 @@ const MemoryGame = ({navigation}) => {
       setTimeout(() => {
         setShowHint(false);
         setHint([]);
-      }, 800);
+      }, 300);
     } catch (error) {
       console.log(error);
     }
@@ -90,15 +90,15 @@ const MemoryGame = ({navigation}) => {
   
     // 사용자가 3칸을 선택하지 않거나, 정답이 아닌 경우 처리
     if (selectedTiles.length !== 3 || !isAnswerCorrect) {
-      Alert.alert('다시 선택해주세요!');
+      Alert.alert('다시 선택해봐!', undefined, [{ text: '확인', onPress: () => setTimeout(gameStart)}]);
     } else {
       // 정답일 경우
       setScore((prevScore) => prevScore + 1);
-      Alert.alert('잘했어! 스코어 증가!! 👍🏻');
+      Alert.alert('잘했어! 스코어 +1! 👍🏻', undefined, [{ text: '확인', onPress: () => setTimeout(gameStart) }]);
     }
   
     // 게임을 재시작
-    gameStart();
+    //gameStart();
   };
   
   
