@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Alert } from 'react-native';
+import {Alert} from 'react-native';
 
 import {
   View,
@@ -80,29 +80,33 @@ const MemoryGame = ({navigation}) => {
   const checkAnswer = async () => {
     console.log('서버에서 받은 정답:', answer);
     console.log('내가 선택한 값:', selectedTiles);
-  
+
     // 정답 배열과 사용자 선택 배열을 1차원 배열로 변환하여 정렬
     const flatAnswer = answer.flat().sort();
     const flatSelectedTiles = selectedTiles.flat().sort();
-  
+
     // 배열 내의 요소와 위치까지 비교
-    const isAnswerCorrect = flatAnswer.every((tile, index) => tile === flatSelectedTiles[index]);
-  
+    const isAnswerCorrect = flatAnswer.every(
+      (tile, index) => tile === flatSelectedTiles[index],
+    );
+
     // 사용자가 3칸을 선택하지 않거나, 정답이 아닌 경우 처리
     if (selectedTiles.length !== 3 || !isAnswerCorrect) {
-      Alert.alert('다시 선택해봐!', undefined, [{ text: '확인', onPress: () => setTimeout(gameStart)}]);
+      Alert.alert('다시 선택해봐!', undefined, [
+        {text: '확인', onPress: () => setTimeout(gameStart)},
+      ]);
     } else {
       // 정답일 경우
-      setScore((prevScore) => prevScore + 1);
-      Alert.alert('잘했어! 스코어 +1! 👍🏻', undefined, [{ text: '확인', onPress: () => setTimeout(gameStart) }]);
+      setScore(prevScore => prevScore + 1);
+      Alert.alert('잘했어! 스코어 +1! 👍🏻', undefined, [
+        {text: '확인', onPress: () => setTimeout(gameStart)},
+      ]);
     }
-  
+
     // 게임을 재시작
     //gameStart();
   };
-  
-  
-  
+
   const saveScore = async () => {
     // 게임이 진행 중인 경우에만 확인 창을 띄웁니다.
     if (isGameStarted) {
@@ -119,7 +123,7 @@ const MemoryGame = ({navigation}) => {
             onPress: async () => {
               try {
                 await updateScore();
-                
+
                 Alert.alert('스코어가 저장되었어!!💯');
                 navigation.navigate('MyPage');
               } catch (error) {
@@ -128,7 +132,7 @@ const MemoryGame = ({navigation}) => {
             },
           },
         ],
-        { cancelable: false }
+        {cancelable: false},
       );
     } else {
       // 게임이 진행 중이 아니면 바로 저장
@@ -200,14 +204,10 @@ const MemoryGame = ({navigation}) => {
       <View style={styles.cautionContainer}>
         <Text style={styles.cautionTitle}>🚨주의사항 및 규칙🚨</Text>
         <Text style={styles.caution}>
-            1️⃣ 스코어를 저장하지 않고 나가면 점수 저장이 안 되요.
+          1️⃣ 스코어를 저장하지 않고 나가면 점수 저장이 안 돼요.
         </Text>
-        <Text style={styles.caution}>
-            2️⃣ 힌트는 다시 볼 수 없어요.
-        </Text>
-        <Text style={styles.caution}>
-           3️⃣ 무조건 3칸을 선택해야해요.
-        </Text>
+        <Text style={styles.caution}>2️⃣ 힌트는 다시 볼 수 없어요.</Text>
+        <Text style={styles.caution}>3️⃣ 무조건 3칸을 선택해야해요.</Text>
       </View>
     </ScrollView>
   );
