@@ -35,7 +35,7 @@ const QuizPage = ({navigation}) => {
     setSpeaking(true);
     if (!message.includes('https')) {
       Tts.getInitStatus().then(() => {
-        Tts.speak(message, {
+        Tts.speak(quiz[currentQuizIndex]?.question, {
           iosVoiceId: 'com.apple.ttsbundle.Yuna-compact',
           rate: 0.5,
         });
@@ -108,7 +108,7 @@ const QuizPage = ({navigation}) => {
       //fetch Response
       //fetchResponse();
     } catch (error) {
-      console.log('errpr:', error);
+      console.log('error:', error);
     }
     setHideClearButton(true);
   };

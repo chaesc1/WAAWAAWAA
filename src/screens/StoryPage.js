@@ -207,7 +207,7 @@ const StoryPage = ({navigation}) => {
             <ScrollView style={{width: '100%', maxHeight: hp('40%')}}>
               {storyMessage[book].slice(0, answerCount).map((story, i) => {
                 return (
-                  <View style={styles.storyList}>
+                  <View key={i} style={styles.storyList}>
                     <Text style={styles.storyText} key={i}>
                       {story}
                     </Text>

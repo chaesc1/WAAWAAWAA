@@ -132,7 +132,7 @@ export default CounsellingRe = ({navigation}) => {
         url: '/counseling',
       });
       console.log(res.data);
-      Alert.alert('다시 시작해볼까?');
+      Alert.alert('채팅 내역 지우기 성공');
       setLoading(false);
       getMessage();
     } catch (error) {
@@ -250,7 +250,9 @@ export default CounsellingRe = ({navigation}) => {
                 if (message.sender == 'assistant') {
                   //text gpt 대답 부분
                   return (
-                    <View style={{flex: 1, flexDirection: 'column'}}>
+                    <View
+                      key={index}
+                      style={{flex: 1, flexDirection: 'column'}}>
                       <View style={{flex: 1, backgroundColor: 'red'}}></View>
                       <View
                         key={index}
