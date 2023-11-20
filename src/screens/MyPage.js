@@ -318,7 +318,7 @@ const MyPage = ({navigation}) => {
                 [
                   {
                     text: '예',
-                    onPress: () => handleLogout,
+                    onPress: () => handleLogout(),
                   },
                   {
                     text: '아니요',
