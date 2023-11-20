@@ -23,6 +23,8 @@ import {
 import Lottie from 'lottie-react-native';
 import axios from 'axios';
 import noAuthClient from '../apis/noAuthClient';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+
 export default function SignUpScreen() {
   const navigation = useNavigation();
   const [username, setUsername] = useState('');
@@ -179,174 +181,153 @@ export default function SignUpScreen() {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-        <Image
-          blurRadius={40}
-          source={require('../../assets/images/simple.jpg')}
-          style={styles.backgroundImage}
-        />
-        <SafeAreaView style={styles.safeArea}>
-          <View style={styles.backButtonContainer}>
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={styles.backButton}>
-              <ArrowLeftIcon size={wp('6%')} color="white" />
-            </TouchableOpacity>
-          </View>
-          {/* 이미지 */}
-          <View style={styles.imageContainer}>
-            <Lottie
-              source={require('../../assets/animations/Bear.json')}
-              style={styles.image}
-              loop
-              speed={0.8}
-              autoPlay
-            />
-          </View>
-        </SafeAreaView>
-        <View style={styles.formContainer}>
-          <ScrollView style={styles.form}>
-            <Text style={styles.label}>이름</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="이름을 입력해주세요."
-              value={username}
-              autoCapitalize="none"
-              returnKeyType="next"
-              onChange={onChangeNickName}
-              underlineColorAndroid="#f000"
-              blurOnSubmit={false}
-            />
-            {username.length > 0 && (
-              <Text
-                style={{color: 'red'}}
-                className={`message ${isName ? 'success' : 'error'}`}>
-                {nameMessage}{' '}
-              </Text>
-            )}
-            <Text style={styles.label}>아이디</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="아이디를 입력해주세요."
-              autoCapitalize="none"
-              returnKeyType="next"
-              value={userId}
-              onChange={onChangeId}
-              underlineColorAndroid="#f000"
-              blurOnSubmit={false}
-            />
-            {userId.length > 0 && (
-              <Text className={`message ${isId ? 'success' : 'error'}`}>
-                {idMessage}{' '}
-              </Text>
-            )}
-            <Text style={styles.label}>비밀번호</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="비밀번호를 입력해주세요."
-              secureTextEntry
-              autoCapitalize="none"
-              returnKeyType="next"
-              value={password}
-              onChangeText={text => {
-                const Length = text.length;
-                setPasswordLength(Length);
-
-                const passwordRegex =
-                  /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
-                const passwordCurrent = text;
-                // console.log(passwordRegex.test(passwordCurrent));
-                setPassword(passwordCurrent);
-                if (!passwordRegex.test(passwordCurrent)) {
-                  // console.log(`입력된 비밀번호${passwordCurrent}`);
-                  setPasswordMessage(
-                    '숫자,영문자,특수문자 조합으로 8자리 이상 입력해주세요!',
-                  );
-                  setIsPassword(false);
-                } else {
-                  setPasswordMessage('안전한 비밀번호에요 : )');
-                  setIsPassword(true);
-                }
-              }}
-              // onChange={onChangePassword}
-              underlineColorAndroid="#f000"
-              blurOnSubmit={false}
-            />
-            {PasswordLength > 0 && (
-              <Text className={`message ${isPassword ? 'success' : 'error'}`}>
-                {passwordMessage}{' '}
-              </Text>
-            )}
-            <Text style={styles.label}>비밀번호 확인</Text>
-            <TextInput
-              style={styles.input}
-              secureTextEntry
-              placeholder="비밀번호와 동일하게 입력해주세요."
-              autoCapitalize="none"
-              returnKeyType="next"
-              value={confirmPassword}
-              onChangeText={text => {
-                const Length = text.length;
-                setConfirmPasswordLength(Length);
-                const passwordConfirmCurrent = text;
-                setConfirmPassword(passwordConfirmCurrent);
-                if (password == passwordConfirmCurrent) {
-                  setIsPasswordConfirm(true);
-                  setPasswordConfirmMessage('비밀번호를 똑같이 입력했어요 : )');
-                } else {
-                  setIsPasswordConfirm(false);
-                  setPasswordConfirmMessage(
-                    '비밀번호가 틀려요. 다시 확인해주세요',
-                  );
-                }
-              }}
-              // onChange={onChangePasswordConfirm}
-              underlineColorAndroid="#f000"
-              blurOnSubmit={false}
-            />
-            {ConfirmPasswordLength > 0 && (
-              <Text
-                className={`message ${
-                  isPasswordConfirm ? 'success' : 'error'
-                }`}>
-                {passwordConfirmMessage}{' '}
-              </Text>
-            )}
-            <Text style={styles.label}>나이</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="나이를 입력해주세요."
-              value={age}
-              onChange={onChangeAge}
-            />
-            <Text style={styles.label}>이메일</Text>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <TextInput
-                style={{...styles.input, width: '88%', marginRight: '3%'}}
-                placeholder="이메일을 입력해주세요."
-                value={email}
-                onChangeText={text => setEmail(text)}
-                autoCapitalize="none"
-              />
+    <KeyboardAwareScrollView
+      contentContainerStyle={{flex: 1}}
+      extraScrollHeight={20}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <Image
+            blurRadius={40}
+            source={require('../../assets/images/simple.jpg')}
+            style={styles.backgroundImage}
+          />
+          <SafeAreaView style={styles.safeArea}>
+            <View style={styles.backButtonContainer}>
               <TouchableOpacity
-                style={{
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginBottom: '6%',
-                }}
-                onPress={verificationBackend}>
-                <Text>전송</Text>
+                onPress={() => navigation.goBack()}
+                style={styles.backButton}>
+                <ArrowLeftIcon size={wp('6%')} color="white" />
               </TouchableOpacity>
             </View>
-            {verificationOpen ? (
+            {/* 이미지 */}
+            <View style={styles.imageContainer}>
+              <Lottie
+                source={require('../../assets/animations/Bear.json')}
+                style={styles.image}
+                loop
+                speed={0.8}
+                autoPlay
+              />
+            </View>
+          </SafeAreaView>
+          <View style={styles.formContainer}>
+            <ScrollView style={styles.form}>
+              <Text style={styles.label}>이름</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="이름을 입력해주세요."
+                value={username}
+                autoCapitalize="none"
+                returnKeyType="next"
+                onChange={onChangeNickName}
+                underlineColorAndroid="#f000"
+                blurOnSubmit={false}
+              />
+              {username.length > 0 && (
+                <Text
+                  style={{color: 'red'}}
+                  className={`message ${isName ? 'success' : 'error'}`}>
+                  {nameMessage}{' '}
+                </Text>
+              )}
+              <Text style={styles.label}>아이디</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="아이디를 입력해주세요."
+                autoCapitalize="none"
+                returnKeyType="next"
+                value={userId}
+                onChange={onChangeId}
+                underlineColorAndroid="#f000"
+                blurOnSubmit={false}
+              />
+              {userId.length > 0 && (
+                <Text className={`message ${isId ? 'success' : 'error'}`}>
+                  {idMessage}{' '}
+                </Text>
+              )}
+              <Text style={styles.label}>비밀번호</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="비밀번호를 입력해주세요."
+                secureTextEntry
+                autoCapitalize="none"
+                returnKeyType="next"
+                value={password}
+                onChangeText={text => {
+                  const Length = text.length;
+                  setPasswordLength(Length);
+
+                  const passwordRegex =
+                    /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
+                  const passwordCurrent = text;
+                  // console.log(passwordRegex.test(passwordCurrent));
+                  setPassword(passwordCurrent);
+                  if (!passwordRegex.test(passwordCurrent)) {
+                    // console.log(`입력된 비밀번호${passwordCurrent}`);
+                    setPasswordMessage(
+                      '숫자,영문자,특수문자 조합으로 8자리 이상 입력해주세요!',
+                    );
+                    setIsPassword(false);
+                  } else {
+                    setPasswordMessage('안전한 비밀번호에요 : )');
+                    setIsPassword(true);
+                  }
+                }}
+                // onChange={onChangePassword}
+                underlineColorAndroid="#f000"
+                blurOnSubmit={false}
+              />
+              {PasswordLength > 0 && (
+                <Text className={`message ${isPassword ? 'success' : 'error'}`}>
+                  {passwordMessage}{' '}
+                </Text>
+              )}
+              <Text style={styles.label}>비밀번호 확인</Text>
+              <TextInput
+                style={styles.input}
+                secureTextEntry
+                placeholder="비밀번호와 동일하게 입력해주세요."
+                autoCapitalize="none"
+                returnKeyType="next"
+                value={confirmPassword}
+                onChangeText={text => {
+                  const Length = text.length;
+                  setConfirmPasswordLength(Length);
+                  const passwordConfirmCurrent = text;
+                  setConfirmPassword(passwordConfirmCurrent);
+                  if (password == passwordConfirmCurrent) {
+                    setIsPasswordConfirm(true);
+                    setPasswordConfirmMessage(
+                      '비밀번호를 똑같이 입력했어요 : )',
+                    );
+                  } else {
+                    setIsPasswordConfirm(false);
+                    setPasswordConfirmMessage(
+                      '비밀번호가 틀려요. 다시 확인해주세요',
+                    );
+                  }
+                }}
+                // onChange={onChangePasswordConfirm}
+                underlineColorAndroid="#f000"
+                blurOnSubmit={false}
+              />
+              {ConfirmPasswordLength > 0 && (
+                <Text
+                  className={`message ${
+                    isPasswordConfirm ? 'success' : 'error'
+                  }`}>
+                  {passwordConfirmMessage}{' '}
+                </Text>
+              )}
+              <Text style={styles.label}>나이</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="나이를 입력해주세요."
+                value={age}
+                onChange={onChangeAge}
+              />
+              <Text style={styles.label}>이메일</Text>
               <View
                 style={{
                   display: 'flex',
@@ -354,19 +335,11 @@ export default function SignUpScreen() {
                   alignItems: 'center',
                 }}>
                 <TextInput
+                  style={{...styles.input, width: '88%', marginRight: '3%'}}
+                  placeholder="이메일을 입력해주세요."
+                  value={email}
+                  onChangeText={text => setEmail(text)}
                   autoCapitalize="none"
-                  style={{
-                    backgroundColor: 'transparent',
-                    width: '50%',
-                    marginRight: '3%',
-                    height: hp(5),
-                    padding: wp('2%'),
-                    borderBottomWidth: 1,
-                    borderBottomColor: 'black',
-                  }}
-                  placeholder="Enter Email"
-                  value={verification}
-                  onChangeText={text => setVerification(text)}
                 />
                 <TouchableOpacity
                   style={{
@@ -374,41 +347,77 @@ export default function SignUpScreen() {
                     display: 'flex',
                     flexDirection: 'row',
                     alignItems: 'center',
+                    marginBottom: '6%',
                   }}
-                  onPress={() => {
-                    if (verification === verificationResult) {
-                      Alert.alert('이메일 인증에 성공하셨습니다.');
-                      setIsVefification(true);
-                      setVerificationOpen(false);
-                    } else {
-                      Alert.alert('인증번호가 일치하지 않습니다.');
-                    }
-                  }}>
-                  <Text>확인</Text>
+                  onPress={verificationBackend}>
+                  <Text>전송</Text>
                 </TouchableOpacity>
               </View>
-            ) : (
-              isVefification && (
-                <Text style={{color: 'red', marginLeft: '2%'}}>
-                  인증되었습니다.
-                </Text>
-              )
-            )}
-          </ScrollView>
-          {/* 버튼 */}
-          <TouchableOpacity style={styles.signUpButton} onPress={register}>
-            <Text style={styles.signUpButtonText}>회원가입</Text>
-          </TouchableOpacity>
-          <Text style={styles.orText}>Or</Text>
-          <View style={styles.loginContainer}>
-            <Text style={styles.loginText}>이미 계정이 있나요?</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('LoginPage')}>
-              <Text style={styles.loginLink}> 로그인</Text>
+              {verificationOpen ? (
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <TextInput
+                    autoCapitalize="none"
+                    style={{
+                      backgroundColor: 'transparent',
+                      width: '50%',
+                      marginRight: '3%',
+                      height: hp(5),
+                      padding: wp('2%'),
+                      borderBottomWidth: 1,
+                      borderBottomColor: 'black',
+                    }}
+                    placeholder="Enter Email"
+                    value={verification}
+                    onChangeText={text => setVerification(text)}
+                  />
+                  <TouchableOpacity
+                    style={{
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}
+                    onPress={() => {
+                      if (verification === verificationResult) {
+                        Alert.alert('이메일 인증에 성공하셨습니다.');
+                        setIsVefification(true);
+                        setVerificationOpen(false);
+                      } else {
+                        Alert.alert('인증번호가 일치하지 않습니다.');
+                      }
+                    }}>
+                    <Text>확인</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                isVefification && (
+                  <Text style={{color: 'red', marginLeft: '2%'}}>
+                    인증되었습니다.
+                  </Text>
+                )
+              )}
+            </ScrollView>
+            {/* 버튼 */}
+            <TouchableOpacity style={styles.signUpButton} onPress={register}>
+              <Text style={styles.signUpButtonText}>회원가입</Text>
             </TouchableOpacity>
+            <Text style={styles.orText}>Or</Text>
+            <View style={styles.loginContainer}>
+              <Text style={styles.loginText}>이미 계정이 있나요?</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('LoginPage')}>
+                <Text style={styles.loginLink}> 로그인</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
-    </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback>
+    </KeyboardAwareScrollView>
   );
 }
 
