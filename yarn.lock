@@ -6456,7 +6456,7 @@ prompts@^2.0.1, prompts@^2.4.0:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@*, prop-types@^15.5.10, prop-types@^15.7.2, prop-types@^15.7.x, prop-types@^15.8.1:
+prop-types@*, prop-types@^15.5.10, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.7.x, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -6669,10 +6669,18 @@ react-native-image-crop-picker@^0.40.1:
   resolved "https://registry.npmjs.org/react-native-image-crop-picker/-/react-native-image-crop-picker-0.40.1.tgz"
   integrity sha512-rs7W4jrisOiQtRip5WG0N4bxhT1hr5TWSA8Mo2OrlZgIhvTU9gdIw63hKw35rbwzVAzDkPXOBsR3ZolsTBxqww==
 
-react-native-iphone-x-helper@1.3.1:
+react-native-iphone-x-helper@^1.0.3, react-native-iphone-x-helper@1.3.1:
   version "1.3.1"
   resolved "https://registry.npmjs.org/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.3.1.tgz"
   integrity sha512-HOf0jzRnq2/aFUcdCJ9w9JGzN3gdEg0zFE4FyYlp4jtidqU03D5X7ZegGKfT1EWteR0gPBGp9ye5T5FvSWi9Yg==
+
+react-native-keyboard-aware-scroll-view@^0.9.5:
+  version "0.9.5"
+  resolved "https://registry.npmjs.org/react-native-keyboard-aware-scroll-view/-/react-native-keyboard-aware-scroll-view-0.9.5.tgz"
+  integrity sha512-XwfRn+T/qBH9WjTWIBiJD2hPWg0yJvtaEw6RtPCa5/PYHabzBaWxYBOl0usXN/368BL1XktnZPh8C2lmTpOREA==
+  dependencies:
+    prop-types "^15.6.2"
+    react-native-iphone-x-helper "^1.0.3"
 
 react-native-lightbox-v2@0.9.0:
   version "0.9.0"
@@ -6795,7 +6803,7 @@ react-native-view-shot@^3.8.0:
   dependencies:
     html2canvas "^1.4.1"
 
-react-native@*, "react-native@^0.0.0-0 || 0.60 - 0.72 || 1000.0.0", react-native@^0.72.3, "react-native@>= 0.50.0", "react-native@>= 0.60.2", "react-native@>= 0.67", react-native@>=0.35, react-native@>=0.40, react-native@>=0.40.0, react-native@>=0.42.0, react-native@>=0.46, react-native@>=0.58.0, react-native@>=0.61.0, react-native@>=0.63.0, react-native@>=0.63.3:
+react-native@*, "react-native@^0.0.0-0 || 0.60 - 0.72 || 1000.0.0", react-native@^0.72.3, "react-native@>= 0.50.0", "react-native@>= 0.60.2", "react-native@>= 0.67", react-native@>=0.35, react-native@>=0.40, react-native@>=0.40.0, react-native@>=0.42.0, react-native@>=0.46, react-native@>=0.48.4, react-native@>=0.58.0, react-native@>=0.61.0, react-native@>=0.63.0, react-native@>=0.63.3:
   version "0.72.3"
   resolved "https://registry.npmjs.org/react-native/-/react-native-0.72.3.tgz"
   integrity sha512-QqISi+JVmCssNP2FlQ4MWhlc4O/I00MRE1/GClvyZ8h/6kdsyk/sOirkYdZqX3+DrJfI3q+OnyMnsyaXIQ/5tQ==
