@@ -45,7 +45,7 @@ const MemoryGame = ({navigation}) => {
       setTimeout(() => {
         setShowHint(false);
         setHint([]);
-      }, 300);
+      }, 200);
     } catch (error) {
       console.log(error);
     }
@@ -103,8 +103,6 @@ const MemoryGame = ({navigation}) => {
       ]);
     }
 
-    // 게임을 재시작
-    //gameStart();
   };
 
   const saveScore = async () => {
