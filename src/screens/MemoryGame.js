@@ -45,7 +45,7 @@ const MemoryGame = ({navigation}) => {
       setTimeout(() => {
         setShowHint(false);
         setHint([]);
-      }, 300);
+      }, 200);
     } catch (error) {
       console.log(error);
     }
@@ -96,9 +96,6 @@ const MemoryGame = ({navigation}) => {
       setScore((prevScore) => prevScore + 1);
       Alert.alert('잘했어! 스코어 +1! 👍🏻', undefined, [{ text: '확인', onPress: () => setTimeout(gameStart) }]);
     }
-  
-    // 게임을 재시작
-    //gameStart();
   };
   
   
