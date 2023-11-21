@@ -14,6 +14,7 @@ import Voice from '@react-native-voice/voice';
 import Tts from 'react-native-tts';
 import {ArrowLeftIcon} from 'react-native-heroicons/solid';
 import Lottie from 'lottie-react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 import {
   widthPercentageToDP as wp,
@@ -35,7 +36,7 @@ const QuizPage = ({navigation}) => {
     setSpeaking(true);
     if (!message.includes('https')) {
       Tts.getInitStatus().then(() => {
-        Tts.speak(message, {
+        Tts.speak(quiz[currentQuizIndex]?.question, {
           iosVoiceId: 'com.apple.ttsbundle.Yuna-compact',
           rate: 0.5,
         });
@@ -108,7 +109,7 @@ const QuizPage = ({navigation}) => {
       //fetch Response
       //fetchResponse();
     } catch (error) {
-      console.log('errpr:', error);
+      console.log('error:', error);
     }
     setHideClearButton(true);
   };
@@ -149,121 +150,125 @@ const QuizPage = ({navigation}) => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Image
-        blurRadius={40}
-        source={require('../../assets/images/simple.jpg')}
-        style={styles.backgroundImage}
-      />
-
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.backButtonContainer}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}>
-            <ArrowLeftIcon size={wp('6%')} color="white" />
-          </TouchableOpacity>
-          <Text style={styles.pageTitle}>퀴즈</Text>
-        </View>
-        <View style={styles.imageContainer}>
-          <Lottie
-            source={require('../../assets/animations/BlueBear.json')}
-            style={styles.image}
-            loop
-            autoPlay
-          />
-        </View>
-        <View style={styles.triangle}></View>
-        <View style={styles.speechBubble}>
-          <ScrollView>
-            <View style={styles.textWrap}>
-              <Text style={{fontSize: 16}}>
-                {quiz[currentQuizIndex]?.question}
-              </Text>
-            </View>
-          </ScrollView>
-        </View>
-      </SafeAreaView>
-      {/* 녹음 , clear, 정지 버튼 */}
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <TextInput
-          value={result}
-          placeholder="적어서도 보내봐!!"
-          style={styles.textContainer}
-          onChangeText={text => setResult(text)}
+    <KeyboardAwareScrollView
+      contentContainerStyle={{flex: 1}}
+      extraScrollHeight={20}>
+      <View style={styles.container}>
+        <Image
+          blurRadius={40}
+          source={require('../../assets/images/simple.jpg')}
+          style={styles.backgroundImage}
         />
-        <TouchableOpacity
-          style={styles.passButton}
-          onPress={() =>
-            Alert.alert('진짜 넘길 거야?', '다시 한번 생각해봐', [
-              {
-                text: '응',
-                onPress: () => {
-                  if (currentQuizIndex + 1 < quiz.length) {
-                    setCurrentQuizIndex(currentQuizIndex + 1);
-                  } else {
-                    setCurrentQuizIndex(0);
-                  }
-                  setResult('');
-                },
-              },
-              {text: '아니'},
-            ])
-          }>
-          <Text style={styles.buttonText}>넘기기</Text>
-        </TouchableOpacity>
-        {!loading && (
+
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.backButtonContainer}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.backButton}>
+              <ArrowLeftIcon size={wp('6%')} color="white" />
+            </TouchableOpacity>
+            <Text style={styles.pageTitle}>퀴즈</Text>
+          </View>
+          <View style={styles.imageContainer}>
+            <Lottie
+              source={require('../../assets/animations/BlueBear.json')}
+              style={styles.image}
+              loop
+              autoPlay
+            />
+          </View>
+          <View style={styles.triangle}></View>
+          <View style={styles.speechBubble}>
+            <ScrollView>
+              <View style={styles.textWrap}>
+                <Text style={{fontSize: 16}}>
+                  {quiz[currentQuizIndex]?.question}
+                </Text>
+              </View>
+            </ScrollView>
+          </View>
+        </SafeAreaView>
+        {/* 녹음 , clear, 정지 버튼 */}
+
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <TextInput
+            value={result}
+            placeholder="적어서도 보내봐!!"
+            style={styles.textContainer}
+            onChangeText={text => setResult(text)}></TextInput>
           <TouchableOpacity
-            style={styles.sendButton}
-            onPress={() => startTextToSpeech(result)}>
-            <Text style={styles.buttonText}>전송</Text>
+            style={styles.passButton}
+            onPress={() =>
+              Alert.alert('진짜 넘길 거야?', '다시 한번 생각해봐', [
+                {
+                  text: '응',
+                  onPress: () => {
+                    if (currentQuizIndex + 1 < quiz.length) {
+                      setCurrentQuizIndex(currentQuizIndex + 1);
+                    } else {
+                      setCurrentQuizIndex(0);
+                    }
+                    setResult('');
+                  },
+                },
+                {text: '아니'},
+              ])
+            }>
+            <Text style={styles.buttonText}>넘기기</Text>
           </TouchableOpacity>
-        )}
-      </View>
-      <View style={styles.buttonsContainer}>
-        {loading ? (
-          <Lottie
-            source={require('../../assets/animations/loading.json')}
-            style={styles.loadingIcon}
-            loop
-            autoPlay
-          />
-        ) : recording ? (
-          <TouchableOpacity style={styles.button} onPress={stopRecording}>
-            {/* Recording Stop Button */}
+          {!loading && (
+            <TouchableOpacity
+              style={styles.sendButton}
+              onPress={() => startTextToSpeech(result)}>
+              <Text style={styles.buttonText}>전송</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        <View style={styles.buttonsContainer}>
+          {loading ? (
             <Lottie
-              source={require('../../assets/animations/micOnLoading.json')}
-              style={styles.buttonImage}
+              source={require('../../assets/animations/loading.json')}
+              style={styles.loadingIcon}
               loop
               autoPlay
             />
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity style={styles.button} onPress={startRecording}>
-            {/* Recording start Button */}
-            <Lottie
-              source={require('../../assets/animations/ReadyRecord.json')}
-              style={styles.buttonImage}
-              loop
-              autoPlay
-              speed={1.2}
-            />
-          </TouchableOpacity>
-        )}
-        {/* right side */}
-        {messages.length > 0 && !hideClearButton && (
-          <TouchableOpacity style={styles.clearButton} onPress={clear}>
-            <Text style={styles.buttonText}>Clear</Text>
-          </TouchableOpacity>
-        )}
-        {/* left side */}
-        {speaking > 0 && (
-          <TouchableOpacity style={styles.stopButton} onPress={stopSpeaking}>
-            <Text style={styles.buttonText}>Stop</Text>
-          </TouchableOpacity>
-        )}
+          ) : recording ? (
+            <TouchableOpacity style={styles.button} onPress={stopRecording}>
+              {/* Recording Stop Button */}
+              <Lottie
+                source={require('../../assets/animations/micOnLoading.json')}
+                style={styles.buttonImage}
+                loop
+                autoPlay
+              />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.button} onPress={startRecording}>
+              {/* Recording start Button */}
+              <Lottie
+                source={require('../../assets/animations/ReadyRecord.json')}
+                style={styles.buttonImage}
+                loop
+                autoPlay
+                speed={1.2}
+              />
+            </TouchableOpacity>
+          )}
+          {/* right side */}
+          {messages.length > 0 && !hideClearButton && (
+            <TouchableOpacity style={styles.clearButton} onPress={clear}>
+              <Text style={styles.buttonText}>Clear</Text>
+            </TouchableOpacity>
+          )}
+          {/* left side */}
+          {speaking > 0 && (
+            <TouchableOpacity style={styles.stopButton} onPress={stopSpeaking}>
+              <Text style={styles.buttonText}>Stop</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
-    </View>
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -271,6 +276,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative',
+    // top: hp(),
   },
   backgroundImage: {
     position: 'absolute',
@@ -387,7 +393,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: hp(10.5), // Add margin top for spacing
+    marginTop: hp(5), // Add margin top for spacing
   },
   buttonImage: {
     width: hp(20),

@@ -15,6 +15,8 @@ import {
 import Voice from '@react-native-voice/voice';
 import Tts from 'react-native-tts'; //TTS Library
 import {ArrowLeftIcon} from 'react-native-heroicons/solid';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+
 import Lottie from 'lottie-react-native';
 
 import {
@@ -180,137 +182,141 @@ const StoryPage = ({navigation}) => {
   ];
 
   return (
-    <View style={styles.container}>
-      <Image
-        blurRadius={40}
-        source={require('../../assets/images/simple.jpg')}
-        style={styles.backgroundImage}
-      />
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>이야기 리스트</Text>
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}>
-                <Text style={styles.textStyle}>X</Text>
-              </Pressable>
+    <KeyboardAwareScrollView
+      contentContainerStyle={{flex: 1}}
+      extraScrollHeight={20}>
+      <View style={styles.container}>
+        <Image
+          blurRadius={40}
+          source={require('../../assets/images/simple.jpg')}
+          style={styles.backgroundImage}
+        />
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalContainer}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>이야기 리스트</Text>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => setModalVisible(!modalVisible)}>
+                  <Text style={styles.textStyle}>X</Text>
+                </Pressable>
+              </View>
+              <ScrollView style={{width: '100%', maxHeight: hp('40%')}}>
+                {storyMessage[book].slice(0, answerCount).map((story, i) => {
+                  return (
+                    <View key={i} style={styles.storyList}>
+                      <Text style={styles.storyText} key={i}>
+                        {story}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </ScrollView>
             </View>
-            <ScrollView style={{width: '100%', maxHeight: hp('40%')}}>
-              {storyMessage[book].slice(0, answerCount).map((story, i) => {
-                return (
-                  <View style={styles.storyList}>
-                    <Text style={styles.storyText} key={i}>
-                      {story}
-                    </Text>
-                  </View>
-                );
-              })}
+          </View>
+        </Modal>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.backButtonContainer}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.backButton}>
+              <ArrowLeftIcon size={wp('6%')} color="white" />
+            </TouchableOpacity>
+            <Text style={styles.pageTitle}>스토리</Text>
+          </View>
+          <View style={styles.imageContainer}>
+            <Lottie
+              source={require('../../assets/animations/BlueBear.json')}
+              style={styles.image}
+              loop
+              autoPlay
+            />
+          </View>
+          <View style={styles.triangle}></View>
+          <View style={styles.speechBubble}>
+            <ScrollView>
+              <View style={styles.textWrap}>
+                <Text>{storyMessage[book][answerCount]} </Text>
+              </View>
             </ScrollView>
           </View>
-        </View>
-      </Modal>
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.backButtonContainer}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}>
-            <ArrowLeftIcon size={wp('6%')} color="white" />
-          </TouchableOpacity>
-          <Text style={styles.pageTitle}>스토리</Text>
-        </View>
-        <View style={styles.imageContainer}>
-          <Lottie
-            source={require('../../assets/animations/BlueBear.json')}
-            style={styles.image}
-            loop
-            autoPlay
+        </SafeAreaView>
+        {/* 녹음 , clear, 정지 버튼 */}
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <TextInput
+            value={result}
+            placeholder="적어서도 보내봐!!"
+            style={styles.textContainer}
+            onChangeText={text => setResult(text)}
           />
-        </View>
-        <View style={styles.triangle}></View>
-        <View style={styles.speechBubble}>
-          <ScrollView>
-            <View style={styles.textWrap}>
-              <Text>{storyMessage[book][answerCount]} </Text>
-            </View>
-          </ScrollView>
-        </View>
-      </SafeAreaView>
-      {/* 녹음 , clear, 정지 버튼 */}
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <TextInput
-          value={result}
-          placeholder="적어서도 보내봐!!"
-          style={styles.textContainer}
-          onChangeText={text => setResult(text)}
-        />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => setModalVisible(true)}>
-          <Image
-            source={require('../../assets/images/file.png')}
-            style={styles.textStyle}></Image>
-        </TouchableOpacity>
-        {!loading && (
           <TouchableOpacity
-            style={styles.sendButton}
-            onPress={() => startTextToSpeech(result)}>
-            <Text style={styles.buttonText}>전송</Text>
+            style={styles.button}
+            onPress={() => setModalVisible(true)}>
+            <Image
+              source={require('../../assets/images/file.png')}
+              style={styles.textStyle}></Image>
           </TouchableOpacity>
-        )}
-      </View>
-      <View style={styles.buttonsContainer}>
-        {loading ? (
-          <Lottie
-            source={require('../../assets/animations/loading.json')}
-            style={styles.loadingIcon}
-            loop
-            autoPlay
-          />
-        ) : recording ? (
-          <TouchableOpacity style={styles.button} onPress={stopRecording}>
-            {/* Recording Stop Button */}
+          {!loading && (
+            <TouchableOpacity
+              style={styles.sendButton}
+              onPress={() => startTextToSpeech(result)}>
+              <Text style={styles.buttonText}>전송</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        <View style={styles.buttonsContainer}>
+          {loading ? (
             <Lottie
-              source={require('../../assets/animations/micOnLoading.json')}
-              style={styles.buttonImage}
+              source={require('../../assets/animations/loading.json')}
+              style={styles.loadingIcon}
               loop
               autoPlay
             />
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity style={styles.button} onPress={startRecording}>
-            {/* Recording start Button */}
-            <Lottie
-              source={require('../../assets/animations/ReadyRecord.json')}
-              style={styles.buttonImage}
-              loop
-              autoPlay
-              speed={1.2}
-            />
-          </TouchableOpacity>
-        )}
-        {/* right side */}
-        {messages.length > 0 && !hideClearButton && (
-          <TouchableOpacity style={styles.clearButton} onPress={clear}>
-            <Text style={styles.buttonText}>Clear</Text>
-          </TouchableOpacity>
-        )}
-        {/* left side */}
-        {speaking > 0 && (
-          <TouchableOpacity style={styles.stopButton} onPress={stopSpeaking}>
-            <Text style={styles.buttonText}>Stop</Text>
-          </TouchableOpacity>
-        )}
+          ) : recording ? (
+            <TouchableOpacity style={styles.button} onPress={stopRecording}>
+              {/* Recording Stop Button */}
+              <Lottie
+                source={require('../../assets/animations/micOnLoading.json')}
+                style={styles.buttonImage}
+                loop
+                autoPlay
+              />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.button} onPress={startRecording}>
+              {/* Recording start Button */}
+              <Lottie
+                source={require('../../assets/animations/ReadyRecord.json')}
+                style={styles.buttonImage}
+                loop
+                autoPlay
+                speed={1.2}
+              />
+            </TouchableOpacity>
+          )}
+          {/* right side */}
+          {messages.length > 0 && !hideClearButton && (
+            <TouchableOpacity style={styles.clearButton} onPress={clear}>
+              <Text style={styles.buttonText}>Clear</Text>
+            </TouchableOpacity>
+          )}
+          {/* left side */}
+          {speaking > 0 && (
+            <TouchableOpacity style={styles.stopButton} onPress={stopSpeaking}>
+              <Text style={styles.buttonText}>Stop</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
-    </View>
+    </KeyboardAwareScrollView>
   );
 };
 

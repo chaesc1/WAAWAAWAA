@@ -61,7 +61,6 @@ export default function HomeScreen() {
             );
           })}
         </ScrollView>
-
         {/* food cards */}
         <ScrollView
           horizontal

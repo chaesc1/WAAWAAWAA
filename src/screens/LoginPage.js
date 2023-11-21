@@ -25,6 +25,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 export default function LoginScreen() {
   const navigation = useNavigation();
@@ -84,82 +85,86 @@ export default function LoginScreen() {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-        <Image
-          blurRadius={40}
-          source={require('../../assets/images/simple.jpg')}
-          style={styles.backgroundImage}
-        />
-        <SafeAreaView style={styles.safeArea}>
-          <View style={styles.backButtonContainer}>
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={styles.backButton}>
-              <ArrowLeftIcon size={wp('6%')} color="white" />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.imageContainer}>
-            <Lottie
-              source={require('../../assets/animations/newBear.json')}
-              style={styles.image}
-              autoPlay
-              loop
-            />
-          </View>
-        </SafeAreaView>
-        <View style={styles.formContainer}>
-          {error !== '' && <Text style={styles.errorText}>{error}</Text>}
-          <View style={styles.form}>
-            <Text style={styles.label}>아이디</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="아이디를 입력해주세요."
-              value={userId}
-              onChangeText={setUserId}
-              autoCapitalize="none"
-              returnKeyType="next"
-              underlineColorAndroid="#f000"
-              blurOnSubmit={false}
-            />
-            <Text style={styles.label}>비밀번호</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="비밀번호를 입력해주세요."
-              value={userPassword}
-              secureTextEntry={true} // 비밀번호 타입으로 변경
-              onChangeText={setUserPassword}
-              autoCapitalize="none"
-              returnKeyType="next"
-              underlineColorAndroid="#f000"
-              blurOnSubmit={false}
-            />
-            <TouchableOpacity
-              style={styles.forgotPassword}
-              onPress={() => navigation.navigate('ForgetPassword')}>
-              <Text style={styles.forgotPasswordText}>
-                비밀번호를 잊으셨나요?
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.loginButton}
-              onPress={() => {
-                //navigation.navigate('MyPage')
-                login();
-              }}>
-              <Text style={styles.loginButtonText}>로그인</Text>
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.orText}>Or</Text>
-          <View style={styles.signupContainer}>
-            <Text style={styles.signupText}>계정이 아직 없으신가요?</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-              <Text style={styles.signupLink}>회원가입</Text>
-            </TouchableOpacity>
+    <KeyboardAwareScrollView
+      contentContainerStyle={{flex: 1}}
+      extraScrollHeight={20}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <Image
+            blurRadius={40}
+            source={require('../../assets/images/simple.jpg')}
+            style={styles.backgroundImage}
+          />
+          <SafeAreaView style={styles.safeArea}>
+            <View style={styles.backButtonContainer}>
+              <TouchableOpacity
+                onPress={() => navigation.goBack()}
+                style={styles.backButton}>
+                <ArrowLeftIcon size={wp('6%')} color="white" />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.imageContainer}>
+              <Lottie
+                source={require('../../assets/animations/newBear.json')}
+                style={styles.image}
+                autoPlay
+                loop
+              />
+            </View>
+          </SafeAreaView>
+          <View style={styles.formContainer}>
+            {error !== '' && <Text style={styles.errorText}>{error}</Text>}
+            <View style={styles.form}>
+              <Text style={styles.label}>아이디</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="아이디를 입력해주세요."
+                value={userId}
+                onChangeText={setUserId}
+                autoCapitalize="none"
+                returnKeyType="next"
+                underlineColorAndroid="#f000"
+                blurOnSubmit={false}
+              />
+              <Text style={styles.label}>비밀번호</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="비밀번호를 입력해주세요."
+                value={userPassword}
+                secureTextEntry={true} // 비밀번호 타입으로 변경
+                onChangeText={setUserPassword}
+                autoCapitalize="none"
+                returnKeyType="next"
+                underlineColorAndroid="#f000"
+                blurOnSubmit={false}
+              />
+              <TouchableOpacity
+                style={styles.forgotPassword}
+                onPress={() => navigation.navigate('ForgetPassword')}>
+                <Text style={styles.forgotPasswordText}>
+                  비밀번호를 잊으셨나요?
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.loginButton}
+                onPress={() => {
+                  //navigation.navigate('MyPage')
+                  login();
+                }}>
+                <Text style={styles.loginButtonText}>로그인</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.orText}>Or</Text>
+            <View style={styles.signupContainer}>
+              <Text style={styles.signupText}>계정이 아직 없으신가요?</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+                <Text style={styles.signupLink}>회원가입</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
-    </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback>
+    </KeyboardAwareScrollView>
   );
 }
 
