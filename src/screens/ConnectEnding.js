@@ -388,7 +388,7 @@ export default CounsellingRe = ({navigation}) => {
             <TouchableOpacity style={styles.button} onPress={startRecording}>
               {/* Recording start Button */}
               <Lottie
-                source={require('../../assets/animations/ReadyRecord.json')}
+                source={require('../../assets/animations/mic_ready.json')}
                 style={styles.buttonImage}
                 loop
                 autoPlay

@@ -25,7 +25,7 @@ export const apiCall = async (prompt, messages) => {
         {
           role: 'system',
           content:
-            '너는 또래상담사로서 user;의 고민을 들어줘야해. 최대한 간단하게 답해줘.',
+            '너는 또래상담사로서 user;의 고민을 들어줘야해. 최대한 간단하게 답해줘.반말해도 돼',
         },
         {
           role: 'user',
