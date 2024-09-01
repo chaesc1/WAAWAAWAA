@@ -1,6 +1,7 @@
-<h1 align="center">WAA | GPT를 활용한 영유아 학습 어플리케이션</h1>
+<h1 align="center">OPEN AI를 활용한 영유아 학습 어플리케이션 'WAA'</h1>
+<h2>Poster</h3> 
 <p align="center">
-	<img src="./assets/images/poster.png"/ width="50%">
+	<img src="./assets/images/poster.png"/ width="100%">
 </p>	   
 
 <p align="center">
